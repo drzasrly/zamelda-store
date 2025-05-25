@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (isset($_POST['edit_penjual'])) {
+if (isset($_POST['simpan_edit'])) {
     include '../../config/database.php';
 
     function input($data) {
@@ -61,7 +61,7 @@ if (isset($_POST['edit_penjual'])) {
         }
 
         $edit_penjual = mysqli_query($kon, $sql);
-        $edit_status = mysqli_query($kon, "UPDATE pengguna SET status='$status' WHERE kode_pengguna='$kodePenjual'");
+        $edit_status = mysqli_query($kon, "UPDATE pengguna SET status='$status' WHERE kodepengguna='$kodePenjual'");
 
         if ($edit_penjual && $edit_status) {
             mysqli_query($kon, "COMMIT");
