@@ -45,7 +45,7 @@ session_start();
                 }
             } else {
                 $sql="update pelanggan set
-                namaPelanggan='$namaPelanggana',
+                namaPelanggan='$namaPelanggan',
                 noTelp='$noTelp',
                 alamat='$alamat'
                 where idPelanggan=$idPelanggan";    
