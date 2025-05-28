@@ -1,34 +1,34 @@
 <?php
 session_start();
+if (isset($_POST['simpan_tambah'])){
 
+include '../../config/database.php';
+
+function input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+
+// Generate kodePenjual otomatis
+$query = mysqli_query($kon, "SELECT max(idPenjual) as kodeTerbesar FROM penjual");
+$data = mysqli_fetch_array($query);
+$idPenjual = $data['kodeTerbesar'];
+$idPenjual++;
+$huruf = "A";
+$kodePenjual = $huruf . sprintf("%03s", $idPenjual);
+
+// Simpan jika form disubmit
 if (isset($_POST['simpan_tambah'])) {
-
-    include '../../config/database.php';
-
-    function input($data) {
-        $data = trim($data);
-        $data = stripslashes($data);
-        $data = htmlspecialchars($data);
-        return $data;
-    }
-
-    // Mulai transaksi
     mysqli_query($kon, "START TRANSACTION");
 
-    // Generate kodePenjual otomatis
-    $query = mysqli_query($kon, "SELECT MAX(idPenjual) as kodeTerbesar FROM penjual");
-    $data = mysqli_fetch_array($query);
-    $idPenjual = $data['kodeTerbesar'] ?? 0;
-    $idPenjual++;
-    $huruf = "P";
-    $kodePenjual = $huruf . sprintf("%03s", $idPenjual);
-
-    // Ambil data input
+    $kodePenjual = input($_POST["kodePenjual"]);
     $namaPenjual = input($_POST["namaPenjual"]);
     $noTelp = input($_POST["noTelp"]);
     $alamat = input($_POST["alamat"]);
     $status = input($_POST["status"]);
-    $password_raw = input($_POST["password"]);
+    $password = input($_POST["password"]);
 
     // Buat username otomatis dari nama
     $username = strtolower(str_replace(' ', '_', $namaPenjual));
@@ -37,8 +37,7 @@ if (isset($_POST['simpan_tambah'])) {
         $username .= rand(100, 999);
     }
 
-    // Hash password
-    $password = md5($password_raw);
+    //$password = password($password, PASSWORD_DEFAULT);
 
     // Upload foto
     $foto = $_FILES['foto']['name'];
@@ -47,48 +46,52 @@ if (isset($_POST['simpan_tambah'])) {
     $file_tmp = $_FILES['foto']['tmp_name'];
     $ekstensi_diperbolehkan = array('png', 'jpg', 'jpeg', 'gif');
 
-    if (!empty($foto) && in_array($ekstensi, $ekstensi_diperbolehkan)) {
-        $foto_name = $kodePenjual . '_' . time() . '.' . $ekstensi; // beri nama unik
-        $upload_dir = '../../dist/penjual/foto/';
-        if (!move_uploaded_file($file_tmp, $upload_dir . $foto_name)) {
-            $foto_name = 'foto_default.png'; // kalau gagal upload
+    class FileHandler {
+        private $file_tmp;
+        private $file_name;
+
+        public function __construct($file_tmp, $file_name) {
+            $this->file_tmp = $file_tmp;
+            $this->file_name = $file_name;
         }
+
+        public function saveFile($destination) {
+            return move_uploaded_file($this->file_tmp, $destination . $this->file_name);
+        }
+
+        public function getFileName() {
+            return $this->file_name;
+        }
+    }
+
+    if (!empty($foto) && in_array($ekstensi, $ekstensi_diperbolehkan)) {
+        $fileHandler = new FileHandler($file_tmp, $foto);
+        $foto_name = $fileHandler->saveFile('foto/') ? $fileHandler->getFileName() : 'foto_default.png';
     } else {
         $foto_name = 'foto_default.png';
     }
 
-    // Simpan data penjual dulu
-    $sql_penjual = "INSERT INTO penjual (kodePenjual, namaPenjual, foto, alamat, noTelp) 
-                    VALUES ('$kodePenjual', '$namaPenjual', '$foto_name', '$alamat', '$noTelp')";
-    $simpan_penjual = mysqli_query($kon, $sql_penjual);
+    // Simpan ke penjual
+    $sql = "INSERT INTO penjual (kodePenjual, namaPenjual, foto, alamat, noTelp) 
+            VALUES ('$kodePenjual', '$namaPenjual', '$foto_name', '$alamat', '$noTelp')";
+    $simpan_penjual = mysqli_query($kon, $sql);
 
-    if ($simpan_penjual) {
-        // Ambil idPenjual yang baru saja dimasukkan
-        $idPenjual_baru = mysqli_insert_id($kon);
+    // Simpan ke pengguna
+    $level = "penjual";
+    $sql1 = "INSERT INTO pengguna (kodePengguna, username, password, status, level) 
+             VALUES ('$kodePenjual', '$username', '$password', '$status', '$level')";
+    $simpan_pengguna = mysqli_query($kon, $sql1);
 
-        // Simpan data pengguna dengan relasi idPenjual
-        $level = "Penjual";
-        $sql_pengguna = "INSERT INTO pengguna (kodepengguna, username, password, status, level, idPenjual) 
-                         VALUES ('$kodePenjual', '$username', '$password', '$status', '$level', $idPenjual_baru)";
-        $simpan_pengguna = mysqli_query($kon, $sql_pengguna);
-
-        if ($simpan_pengguna) {
-            mysqli_query($kon, "COMMIT");
-            header("Location: ../../dist/index.php?page=penjual&add=berhasil");
-            exit;
-        } else {
-            mysqli_query($kon, "ROLLBACK");
-            header("Location: ../../dist/index.php?page=penjual&add=gagal_pengguna");
-            exit;
-        }
+    if ($simpan_penjual && $simpan_pengguna) {
+        mysqli_query($kon, "COMMIT");
+        header("Location:../../dist/index.php?page=penjual&add=berhasil");
     } else {
         mysqli_query($kon, "ROLLBACK");
-        header("Location: ../../dist/index.php?page=penjual&add=gagal_penjual");
-        exit;
+        header("Location:../../dist/index.php?page=penjual&add=gagal");
     }
+        }
 }
 ?>
-
 
 <?php
     include '../../config/database.php';

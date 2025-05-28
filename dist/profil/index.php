@@ -149,7 +149,7 @@
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label>Nama:</label>
-                                             <input name="nama" value="<?php echo $data['namaPenjual']?>" type="text" class="form-control" placeholder="Masukan nama" required>
+                                             <input name="namaPenjual" value="<?php echo $data['namaPenjual']?>" type="text" class="form-control" placeholder="Masukan nama" required>
                                         </div>
                                     </div>
                                 </div>
@@ -200,7 +200,7 @@
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label>Nama:</label>
-                                             <input name="nama" value="<?php echo $data['namaPelanggan'];?>" type="text" class="form-control" placeholder="Masukan nama" required>
+                                             <input name="namaPelanggan" value="<?php echo $data['namaPelanggan'];?>" type="text" class="form-control" placeholder="Masukan nama" required>
                                         </div>
                                     </div>
                                 </div>

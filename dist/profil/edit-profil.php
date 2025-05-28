@@ -15,7 +15,7 @@ session_start();
         if ($_SESSION["level"]=='Pelanggan' or $_SESSION["level"]=='pelanggan'){
            
             $idPelanggan=$_POST["idPelanggan"];
-            $namaPelanggan=input($_POST["namaPelanggan"]);
+            $namaPelanggan = isset($_POST["namaPelanggan"]) ? input($_POST["namaPelanggan"]) : '';
             $noTelp=input($_POST["noTelp"]);
             $email=input($_POST["email"]);
             $alamat=input($_POST["alamat"]);
@@ -37,7 +37,7 @@ session_start();
                     }
                     
                     $sql="update pelanggan set
-                    namaPelanggan='$nama  Pelanggana',
+                    namaPelanggan='$namaPelanggan',
                     noTelp='$noTelp',
                     alamat='$alamat',
                     foto='$foto_baru'
@@ -45,7 +45,7 @@ session_start();
                 }
             } else {
                 $sql="update pelanggan set
-                namaPelanggan='$namaPelanggana',
+                namaPelanggan='$namaPelanggan',
                 noTelp='$noTelp',
                 alamat='$alamat'
                 where idPelanggan=$idPelanggan";    
@@ -76,9 +76,9 @@ session_start();
         if ($_SESSION["level"]=='Penjual' or $_SESSION["level"]=='penjual'){
            
             $idPenjual=$_POST["idPenjual"];
-            $namaPenjual = isset($_POST["nama"]) ? input($_POST["nama"]) : '';
-            $noTelp=input($_POST["noTelp"]?? '');
-            $alamat=input($_POST["alamat"]?? '');
+            $namaPenjual = isset($_POST["namaPenjual"]) ? input($_POST["namaPenjual"]) : '';
+            $noTelp=input($_POST["noTelp"]);
+            $alamat=input($_POST["alamat"]);
 
             $foto_saat_ini=$_POST['foto_saat_ini'];
             $foto_baru = $_FILES['foto_baru']['name'];

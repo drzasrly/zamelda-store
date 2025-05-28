@@ -1,5 +1,5 @@
 <script>
-    $('title').text('Data Penj');S
+    $('title').text('Data Penjual');S
 </script>
 
 <?php
@@ -42,10 +42,10 @@
                 }    
             }
 
-            if (isset($_GET['setting-akun'])) {
-                if ($_GET['setting-akun']=='berhasil'){
+            if (isset($_GET['detail-akun'])) {
+                if ($_GET['detail-akun']=='berhasil'){
                     echo"<div class='alert alert-success'><strong>Berhasil!</strong> Akun pengguna telah disetting!</div>";
-                }else if ($_GET['setting-akun']=='gagal'){
+                }else if ($_GET['detail-akun']=='gagal'){
                     echo"<div class='alert alert-danger'><strong>Gagal!</strong> Akun pengguna gagal disetting!</div>";
                 }    
             }
@@ -88,7 +88,7 @@
                             <td><?php echo $data['alamat']; ?></td>
                             <td><?php echo $data['noTelp']; ?></td>
                             <td>
-                                <button class="setting-akun btn btn-primary btn-circle" kodePenjual="<?php echo $data['kodePenjual']; ?>" ><i class="fas fa-user"></i></button>
+                                <button class="detail-akun btn btn-primary btn-circle" kodePenjual="<?php echo $data['kodePenjual']; ?>" ><i class="fas fa-user"></i></button>
                                 <button class="btn-edit btn btn-warning btn-circle" idPenjual="<?php echo $data['idPenjual']; ?>" kodePenjual="<?php echo $data['kodePenjual']; ?>" ><i class="fas fa-edit"></i></button>
                                 <a href="penjual/hapus.php?idPenjual=<?php echo $data['idPenjual']; ?>&kodePenjual=<?php echo $data['kodePenjual']; ?>" class="btn-hapus btn btn-danger btn-circle" ><i class="fa fa-trash"></i></a>
                             </td>
@@ -171,16 +171,16 @@
     });
 
     // fungsi setting akun penjual
-    $('.setting-akun').on('click',function(){
+    $('.detail-akun').on('click',function(){
 
         var kode_penjual = $(this).attr("kode_penjual");
         $.ajax({
-            url: 'penjual/setting-akun.php',
+            url: 'penjual/detail-akun.php',
             method: 'post',
             data: {kode_penjual:kode_penjual},
             success:function(data){
                 $('#tampil_data').html(data);  
-                document.getElementById("judul").innerHTML='Setting Akun';
+                document.getElementById("judul").innerHTML='Detail Akun';
             }
         });
             // Membuka modal
