@@ -53,7 +53,9 @@ while ($row = mysqli_fetch_assoc($query)) {
         .slider-track img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
+            image-rendering: auto;
+            image-rendering: -webkit-optimize-contrast;
             flex-shrink: 0;
         }
 

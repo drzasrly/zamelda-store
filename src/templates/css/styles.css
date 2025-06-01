@@ -10302,4 +10302,57 @@ body {
     border: 2px solid #007bff;
 
 }
-/* //test */
+
+.login-container {
+  max-width: 900px;
+  margin: 4rem auto;
+  display: flex;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.left-side {
+  flex: 1;
+  background-color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.right-side {
+  flex: 1;
+  background-color: #ffffff;
+  padding: 3rem;
+}
+
+.login-logo {
+  width: 80%;
+  max-width: 300px;
+  height: auto;
+}
+
+.welcome-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.welcome-subtitle {
+  font-size: 1rem;
+  color: #6c757d;
+  margin-bottom: 2rem;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+  padding: 0.75rem;
+  font-weight: bold;
+  width: 100%;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
