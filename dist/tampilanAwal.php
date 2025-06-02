@@ -1,16 +1,28 @@
 <?php
 session_start();
 include "../config/database.php";
-$query = mysqli_query($kon, "SELECT gambarBarang FROM varianbarang LIMIT 5");
+
+$base_url = "http://localhost/zamelda-store-copy/";
+$query = mysqli_query($kon, "SELECT gambarBarang FROM varianbarang LIMIT 4");
+$gambar = [];
+while ($row = mysqli_fetch_assoc($query)) {
+    $gambar[] = $row['gambarBarang'];
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Zamelda Store - Selamat Datang</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css"
+      integrity="sha384-sVZpIOzfvFV1XoLz1vMeHWK6y94E7Oa+FFa4svZJGRw1bPvS+fCEXnYQ6vUu6fwN"
+      crossorigin="anonymous"
+    />
 
     <style>
         * {
@@ -21,71 +33,60 @@ $query = mysqli_query($kon, "SELECT gambarBarang FROM varianbarang LIMIT 5");
 
         body {
             font-family: 'Times New Roman', Times, serif;
-            color: #393E46;
+            background-color: #b6afac;
         }
 
         .slider-container {
-            padding: 60px 40px;
-            background: linear-gradient(rgba(135, 123, 84, 0.6), rgba(0, 0, 0, 0.4)), url('pantai.JPEG') no-repeat center center;
-            background-size: cover;
-            text-align: center;
             position: relative;
-            min-height: 100vh;
-            color:black;
+            overflow: hidden;
+            width: 100%;
+            height: 90vh;
         }
 
-        .slider-header img.judul-gambar {
-            max-width: 350px;
+        .slider-track {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s ease;
+        }
+
+        .slider-track img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            image-rendering: auto;
+            image-rendering: -webkit-optimize-contrast;
+            flex-shrink: 0;
+        }
+
+        .slider-header {
+            position: absolute;
+            top: 30px;
+            left: 40px;
+            z-index: 10;
+        }
+
+        .slider-header img {
+            width: 150px;
             height: auto;
-            margin-bottom: 20px;
-            border-radius: 15px;
-        }
-
-        .slider-header p {
-            max-width: 800px;
-            margin: 0 auto 30px;
-            font-size: 22px;
-            font-weight: 600;
-            color: #fff;
-            line-height: 1.6;
         }
 
         .login-button {
             position: absolute;
             top: 30px;
             right: 40px;
-            background-color:rgb(66, 55, 41);
+            background-color: rgb(50, 49, 48);
             color: white;
             padding: 12px 25px;
             text-decoration: none;
             border-radius: 50px;
             font-weight: bold;
-            transition: 0.3s ease;
             font-size: 16px;
+            z-index: 10;
         }
 
         .login-button:hover {
-            background-color: #e07b00;
-        }
-
-        .slider-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
-        }
-
-        .gallery-item {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .gallery-item:hover {
-            transform: scale(1.05);
+            background-color: rgb(103, 101, 99);
         }
 
         footer {
@@ -108,7 +109,7 @@ $query = mysqli_query($kon, "SELECT gambarBarang FROM varianbarang LIMIT 5");
         }
 
         .social-icons a:hover {
-            color: #ff8c00;
+            color: rgb(200, 200, 200);
             transform: scale(1.1);
         }
     </style>
@@ -117,27 +118,45 @@ $query = mysqli_query($kon, "SELECT gambarBarang FROM varianbarang LIMIT 5");
 
 <div class="slider-container">
     <div class="slider-header">
-        <img src="aplikasi/logo/ADS.png" alt="New Collections" class="judul-gambar">
-        <p>Zamelda Official Store menjadikan anda lebih menarik</p>
-        <a href="login.php" class="login-button">Login</a>
+        <img src="aplikasi/logo/ADS.png" alt="Zamelda Logo" />
     </div>
-    <div class="slider-gallery">
-        <?php while ($data = mysqli_fetch_assoc($query)): ?>
-            <img src="barang/gambar/<?php echo htmlspecialchars($data['gambarBarang']); ?>" alt="koleksi" class="gallery-item">
-        <?php endwhile; ?>
+    <a href="login.php" class="login-button">Login</a>
+
+    <div class="slider-track">
+        <?php foreach ($gambar as $g): ?>
+            <img src="<?php echo $base_url . 'dist/barang/gambar/' . htmlspecialchars($g); ?>" alt="Slider Gambar" />
+        <?php endforeach; ?>
     </div>
 </div>
 
-<!-- Footer dengan ikon sosial media -->
 <footer>
     <p>&copy; 2025 Zamelda Official Store. All rights reserved.</p>
     <div class="social-icons">
-        <a href="https://www.facebook.com/zamelda" target="_blank" class="fab fa-facebook-f"></a>
-        <a href="https://twitter.com/zamelda" target="_blank" class="fab fa-twitter"></a>
-        <a href="https://www.instagram.com/zamelda" target="_blank" class="fab fa-instagram"></a>
-        <a href="https://www.linkedin.com/company/zamelda" target="_blank" class="fab fa-linkedin-in"></a>
+        <a href="https://www.facebook.com/zamelda" target="_blank" aria-label="Facebook">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook" width="24" />
+        </a>
+        <a href="https://twitter.com/zamelda" target="_blank" aria-label="Twitter">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/twitter.svg" alt="Twitter" width="24" />
+        </a>
+        <a href="https://www.instagram.com/zamelda" target="_blank" aria-label="Instagram">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" width="24" />
+        </a>
+        <a href="https://www.linkedin.com/company/zamelda" target="_blank" aria-label="LinkedIn">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn" width="24" />
+        </a>
     </div>
 </footer>
+
+<script>
+    const track = document.querySelector('.slider-track');
+    const totalSlides = <?php echo count($gambar); ?>;
+    let current = 0;
+
+    setInterval(() => {
+        current = (current + 1) % totalSlides;
+        track.style.transform = `translateX(-${current * 100}%)`;
+    }, 4000);
+</script>
 
 </body>
 </html>
