@@ -1,100 +1,71 @@
 <?php
 session_start();
-    if (isset($_POST['simpan_tambah'])) {
-        
-        //Include file koneksi, untuk koneksikan ke database
-        include '../../config/database.php';
-        
-        //Fungsi untuk mencegah inputan karakter yang tidak sesuai
-        function input($data) {
-            $data = trim($data);
-            $data = stripslashes($data);
-            $data = htmlspecialchars($data);
-            return $data;
-        }
+if (isset($_POST['simpan_tambah'])) {
 
-        // Generate kodePelanggan otomatis
-        $query = mysqli_query($kon, "SELECT max(idPelanggan) as kodeTerbesar FROM pelanggan");
-        $data = mysqli_fetch_array($query);
-        $idPelanggan = $data['kodeTerbesar'];
-        $idPelanggan++;
-        $huruf = "A";
-        $kodePelanggan = $huruf . sprintf("%03s", $idPelanggan);
+    include '../../config/database.php';
 
-        //Cek apakah ada kiriman form dari method post
-        if (isset($_POST['simpan_tambah'])) {
-            mysqli_query($kon,"START TRANSACTION");
-
-            $kodePelanggan=input($_POST["kodePelanggan"]);
-            $namaPelanggan=input($_POST["namaPelanggan"]);
-            $email=input($_POST["email"]);
-            $noTelp=input($_POST["noTelp"]);
-            $alamat=input($_POST["alamat"]);
-            $status=input($_POST["status"]);
-
-              // Buat username otomatis dari nama
-    $username = strtolower(str_replace(' ', '_', $namaPelanggan));
-    $cek = mysqli_query($kon, "SELECT * FROM pengguna WHERE username='$username'");
-    if (mysqli_num_rows($cek) > 0) {
-        $username .= rand(100, 999);
+    function input($data) {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
     }
-           // Upload foto
+
+    mysqli_query($kon, "START TRANSACTION");
+
+    // Ambil data dari form
+    $namaPelanggan = input($_POST["namaPelanggan"]);
+    $email = input($_POST["email"]);
+    $noTelp = input($_POST["noTelp"]);
+    $alamat = input($_POST["alamat"]);
+    $status = input($_POST["status"]);
+    $username = input($_POST["username"]);
+    $password_raw = input($_POST["password"]);
+    $password = input($_POST["password"]); 
+    $level = "Pelanggan";
+
+    // Ambil kode pelanggan terbaru
+    $query = mysqli_query($kon, "SELECT MAX(idPelanggan) AS kodeTerbesar FROM pelanggan");
+    $data = mysqli_fetch_array($query);
+    $idPelanggan = $data['kodeTerbesar'] + 1;
+    $kodePelanggan = "plg" . sprintf("%03s", $idPelanggan);
+
+    // Upload foto
     $foto = $_FILES['foto']['name'];
     $x = explode('.', $foto);
     $ekstensi = strtolower(end($x));
     $file_tmp = $_FILES['foto']['tmp_name'];
     $ekstensi_diperbolehkan = array('png', 'jpg', 'jpeg', 'gif');
-
-    class FileHandler {
-        private $file_tmp;
-        private $file_name;
-
-        public function __construct($file_tmp, $file_name) {
-            $this->file_tmp = $file_tmp;
-            $this->file_name = $file_name;
-        }
-
-        public function saveFile($destination) {
-            return move_uploaded_file($this->file_tmp, $destination . $this->file_name);
-        }
-
-        public function getFileName() {
-            return $this->file_name;
-        }
-    }
+    $foto_name = 'foto_default.png';
 
     if (!empty($foto) && in_array($ekstensi, $ekstensi_diperbolehkan)) {
-        $fileHandler = new FileHandler($file_tmp, $foto);
-        $foto_name = $fileHandler->saveFile('foto/') ? $fileHandler->getFileName() : 'foto_default.png';
+        $nama_foto = uniqid() . '.' . $ekstensi;
+        if (move_uploaded_file($file_tmp, 'foto/' . $nama_foto)) {
+            $foto_name = $nama_foto;
+        }
+    }
+
+    // Simpan ke tabel pelanggan
+    $sql_pelanggan = "INSERT INTO pelanggan (kodePelanggan, namaPelanggan, email, foto, alamat, noTelp) 
+                      VALUES ('$kodePelanggan', '$namaPelanggan', '$email', '$foto_name', '$alamat', '$noTelp')";
+    $simpan_pelanggan = mysqli_query($kon, $sql_pelanggan);
+
+    // Simpan ke tabel pengguna
+    $sql_pengguna = "INSERT INTO pengguna (kodepengguna, username, password, status, level) 
+                     VALUES ('$kodePelanggan', '$username', '$password', '$status', '$level')";
+    $simpan_pengguna = mysqli_query($kon, $sql_pengguna);
+
+    // Validasi hasil
+    if ($simpan_pelanggan && $simpan_pengguna) {
+        mysqli_query($kon, "COMMIT");
+        header("Location:../../dist/index.php?page=pelanggan&add=berhasil");
     } else {
-        $foto_name = 'foto_default.png';
+        mysqli_query($kon, "ROLLBACK");
+        header("Location:../../dist/index.php?page=pelanggan&add=gagal");
     }
-// Tambahkan ini sebelum query INSERT pengguna
-$kodePengguna = $kodePelanggan; // gunakan kode yang sama, bisa dibedakan jika perlu
-//$password = password("password", PASSWORD_DEFAULT); // password default, bisa diganti
-
-// Simpan ke pelanggan
-$sql = "INSERT INTO pelanggan (kodePelanggan, namaPelanggan, email,foto, alamat, noTelp) 
-        VALUES ('$kodePelanggan', '$namaPelanggan','$email', '$foto_name', '$alamat', '$noTelp')";
-$simpan_pelanggan = mysqli_query($kon, $sql);
-
-// Simpan ke pengguna
-$level = "Pelanggan";
-$sql1 = "INSERT INTO pengguna (kodepengguna, username, password, status, level) 
-         VALUES ('$kodePengguna', '$username', '$password', '$status', '$level')";
-$simpan_pengguna = mysqli_query($kon, $sql1);
-
-// Cek simpanan
-if ($simpan_pelanggan && $simpan_pengguna) {
-    mysqli_query($kon, "COMMIT");
-    header("Location:../../dist/index.php?page=pelanggan&add=berhasil");
-} else {
-    mysqli_query($kon, "ROLLBACK");
-    header("Location:../../dist/index.php?page=pelanggan&add=gagal");
 }
-     }
-    }
 ?>
+
 
 <?php
     // mengambil data barang dengan kode paling besar
@@ -103,7 +74,7 @@ if ($simpan_pelanggan && $simpan_pengguna) {
     $data = mysqli_fetch_array($query);
     $idPelanggan = $data['kodeTerbesar'];
     $idPelanggan++;
-    $huruf = "A";
+    $huruf = "plg";
     $kodePelanggan = $huruf . sprintf("%03s", $idPelanggan);
 ?>
 <form action="pelanggan/tambah.php" method="post" enctype="multipart/form-data">
@@ -152,6 +123,15 @@ if ($simpan_pelanggan && $simpan_pengguna) {
                 </select>
             </div>
         </div>
+    </div>
+    <div class="form-group">
+        <label>Username:</label>
+        <input name="username" type="text" class="form-control" placeholder="Masukan username" required>
+    </div>
+
+    <div class="form-group">
+        <label>Password:</label>
+        <input name="password" type="password" class="form-control" placeholder="Masukan password" required>
     </div>
 
     <div class="row">
@@ -203,3 +183,4 @@ if ($simpan_pelanggan && $simpan_pengguna) {
 
 
 </script>
+

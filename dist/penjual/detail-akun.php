@@ -1,22 +1,42 @@
-
 <?php
 session_start();
+
+// Batasi hanya untuk penjual yang login
+if (!isset($_SESSION['kodePengguna']) || $_SESSION['level'] !== 'penjual') {
+    header("Location: ../login.php");
+    exit;
+}
+
 include '../../config/database.php';
 
-// Ambil kode penjual dari session login
-$kodePenjual = $_SESSION["kodePengguna"];
+// Ambil kode penjual dari POST atau GET
+$kodePenjual = $_POST['kodePenjual'] ?? $_GET['kodePenjual'] ?? null;
 
-// Ambil data profil
-$sql = "SELECT * FROM pengguna p
-        INNER JOIN penjual k ON k.kodePenjual = p.kodePengguna
-        WHERE k.kodePenjual = '$kodePenjual' LIMIT 1";
+if (!$kodePenjual) {
+    echo "<script>console.log('Kode Penjual: $kodePenjual');</script>";
+    exit;
+}
+
+$kodePenjual = mysqli_real_escape_string($kon, $kodePenjual);
+
+// Ambil data penjual berdasarkan kode
+$sql = "SELECT * FROM penjual p
+        INNER JOIN pengguna u ON u.kodePengguna = p.kodePenjual
+        WHERE p.kodePenjual = '$kodePenjual'";
 $hasil = mysqli_query($kon, $sql);
+
+if (mysqli_num_rows($hasil) == 0) {
+    echo "Penjual tidak ditemukan.";
+    exit;
+}
+
 $data = mysqli_fetch_array($hasil);
 
-// Proses update jika form disubmit
+// Proses update profil
 if (isset($_POST['simpan_profil'])) {
     $idPenjual = $_POST['idPenjual'];
     $idPengguna = $_POST['idPengguna'];
+    $kodePenjual = $_POST['kodePenjual'];
     $namaPenjual = $_POST['namaPenjual'];
     $noTelp = $_POST['noTelp'];
     $alamat = $_POST['alamat'];
@@ -24,17 +44,15 @@ if (isset($_POST['simpan_profil'])) {
     $password = $_POST['password'];
     $fotoLama = $_POST['foto_saat_ini'];
 
-    // Proses foto baru jika ada
+    // Cek foto baru
     if (!empty($_FILES['foto_baru']['name'])) {
         $fotoBaru = $_FILES['foto_baru']['name'];
         $tmp = $_FILES['foto_baru']['tmp_name'];
         $folder = "penjual/foto/";
         $path_foto = $folder . $fotoBaru;
 
-        // Upload foto baru
         move_uploaded_file($tmp, $path_foto);
 
-        // Hapus foto lama jika berbeda
         if ($fotoLama != '' && file_exists($folder . $fotoLama)) {
             unlink($folder . $fotoLama);
         }
@@ -42,7 +60,7 @@ if (isset($_POST['simpan_profil'])) {
         $fotoBaru = $fotoLama;
     }
 
-    // Update ke tabel penjual
+    // Update tabel penjual
     $update_penjual = mysqli_query($kon, "UPDATE penjual SET
         namaPenjual='$namaPenjual',
         noTelp='$noTelp',
@@ -50,14 +68,13 @@ if (isset($_POST['simpan_profil'])) {
         foto='$fotoBaru'
         WHERE idPenjual='$idPenjual'");
 
-    // Update ke tabel pengguna
+    // Update tabel pengguna
     $update_pengguna = mysqli_query($kon, "UPDATE pengguna SET
         username='$username',
         password='$password'
         WHERE idPengguna='$idPengguna'");
 
-    // Redirect dengan pesan
-    echo "<script>alert('Profil berhasil diperbarui.'); window.location='profil_penjual.php';</script>";
+    echo "<script>alert('Profil berhasil diperbarui.'); window.location='detail-akun.php?kodePenjual=$kodePenjual';</script>";
     exit;
 }
 ?>
@@ -66,7 +83,7 @@ if (isset($_POST['simpan_profil'])) {
 <html>
 <head>
     <title>Profil Penjual</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css    ">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container mt-4">
@@ -150,9 +167,8 @@ if (isset($_POST['simpan_profil'])) {
 
 </div>
 
-<!-- Script -->
-<script src="https://code.jquery.com/jquery-3.5.1.min.js    "></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js    "></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
 $(document).on("click", "#pilih_foto", function () {
     $(this).closest(".form-group").find("input[type='file']").trigger("click");

@@ -73,8 +73,9 @@
                         <?php
                             // include database
                             include '../config/database.php';
-                        
-                            $sql="select * from penjual";
+                            
+                            $sql="SELECT * FROM penjual ORDER BY  idpenjual DESC";
+                            //$sql=" SELECT * FROM  penjual";
                             $hasil=mysqli_query($kon,$sql);
                             $no=0;
                             //Menampilkan data dengan perulangan while
@@ -155,29 +156,29 @@
     // fungsi edit penjual
     $('.btn-edit').on('click',function(){
 
-        var id_penjual = $(this).attr("id_penjual");
-        var kode_penjual = $(this).attr("kode_penjual");
+        var idPenjual = $(this).attr("idPenjual");
+        var kodePenjual = $(this).attr("kodePenjual");
         $.ajax({
             url: 'penjual/edit.php',
             method: 'post',
-            data: {id_penjual:id_penjual},
+            data: {idPenjual:idPenjual},
             success:function(data){
                 $('#tampil_data').html(data);  
-                document.getElementById("judul").innerHTML='Edit penjual #'+kode_penjual;
+                document.getElementById("judul").innerHTML='Edit penjual #'+kodePenjual;
             }
         });
             // Membuka modal
         $('#modal').modal('show');
     });
 
-    // fungsi setting akun penjual
+    // fungsi detail akun penjual
     $('.detail-akun').on('click',function(){
 
-        var kode_penjual = $(this).attr("kode_penjual");
+        var kodePenjual = $(this).attr("kodePenjual");
         $.ajax({
             url: 'penjual/detail-akun.php',
             method: 'post',
-            data: {kode_penjual:kode_penjual},
+            data: {kodePenjual:kodePenjual},
             success:function(data){
                 $('#tampil_data').html(data);  
                 document.getElementById("judul").innerHTML='Detail Akun';

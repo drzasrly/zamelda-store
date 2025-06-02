@@ -1,43 +1,38 @@
 <?php
+
+session_start();
+
+if (!isset($_SESSION['kodePengguna']) || $_SESSION['level'] !== 'penjual') {
+    header("Location: ../login.php");
+    exit;
+}
+
 include '../../config/database.php';
 
-if (!isset($_GET['idPelanggan'])) {
-    die("ID Pelanggan tidak ditemukan.");
+$kodePelanggan = $_POST['kodePelanggan'] ?? $_GET['kodePelanggan'] ?? null;
+
+if (!$kodePelanggan) {
+    echo "Kode pelanggan tidak ditemukan.";
+    exit;
 }
-
-$idPelanggan = mysqli_real_escape_string($kon, $_GET['idPelanggan']);
-
-$sql = "SELECT p.idPengguna, k.* 
-        FROM pengguna p
-        INNER JOIN pelanggan k ON p.idPengguna = k.idPengguna
-        WHERE k.idPelanggan = '$idPelanggan'
-        LIMIT 1";
-
-$hasil = mysqli_query($kon, $sql);
-$data = mysqli_fetch_array($hasil);
-
-if (!$data) {
-    die("Data pelanggan tidak ditemukan.");
-}
-
-// Proses update jika form disubmit
 if (isset($_POST['simpan_profil'])) {
-    $idPelanggan = $data['idPelanggan'];
-    $idPengguna = $data['idPengguna'];
-    $namaPelanggan = mysqli_real_escape_string($kon, $_POST['namaPelanggan']);
-    $noTelp = mysqli_real_escape_string($kon, $_POST['noTelp']);
-    $alamat = mysqli_real_escape_string($kon, $_POST['alamat']);
-    $username = mysqli_real_escape_string($kon, $_POST['username']);
-    $password = md5($_POST['password']); // Gunakan password_hash() di produksi
-    $fotoLama = $data['foto'];
+    $idPelanggan = $_POST['idPelanggan'];
+    $idPengguna = $_POST['idPengguna'];
+    $namaPelanggan = $_POST['namaPelanggan'];
+    $noTelp = $_POST['noTelp'];
+    $alamat = $_POST['alamat'];
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $fotoLama = $_POST['foto_saat_ini'];
 
-    // Upload foto baru jika ada
+    // Cek apakah ada foto baru
     if (!empty($_FILES['foto_baru']['name'])) {
         $fotoBaru = $_FILES['foto_baru']['name'];
         $tmp = $_FILES['foto_baru']['tmp_name'];
-        $folder = "../pelanggan/foto/";
+        $folder = "pelanggan/foto/";
+        $path_foto = $folder . $fotoBaru;
 
-        move_uploaded_file($tmp, $folder . $fotoBaru);
+        move_uploaded_file($tmp, $path_foto);
 
         // Hapus foto lama jika bukan default
         if ($fotoLama != 'foto_default.png' && file_exists($folder . $fotoLama)) {
@@ -47,44 +42,71 @@ if (isset($_POST['simpan_profil'])) {
         $fotoBaru = $fotoLama;
     }
 
-    // Update tabel pelanggan
-    $update_pelanggan = mysqli_query($kon, "UPDATE pelanggan SET
+    // Update data pelanggan
+    $update_Pelanggan = mysqli_query($kon, "UPDATE pelanggan SET
         namaPelanggan='$namaPelanggan',
         noTelp='$noTelp',
         alamat='$alamat',
         foto='$fotoBaru'
         WHERE idPelanggan='$idPelanggan'");
 
-    // Update tabel pengguna
+    // Ambil password lama dan bandingkan
+    $cek_password = mysqli_query($kon, "SELECT password FROM pengguna WHERE idPengguna='$idPengguna' LIMIT 1");
+    $data_password = mysqli_fetch_array($cek_password);
+
+    if ($data_password['password'] !== $password) {
+        $password = md5($password); // Atau password_hash()
+    }
+
+    // Update data pengguna
     $update_pengguna = mysqli_query($kon, "UPDATE pengguna SET
         username='$username',
         password='$password'
         WHERE idPengguna='$idPengguna'");
 
-    if ($update_pelanggan && $update_pengguna) {
-        echo "<script>alert('Profil berhasil diperbarui.'); window.location='detail_pelanggan.php?idPelanggan=$idPelanggan';</script>";
-        exit;
-    } else {
-        echo "<script>alert('Gagal memperbarui profil.');</script>";
-    }
+    $_SESSION['pesan'] = "Profil berhasil diperbarui.";
+     header("Location:detail-akun.php?kodePelanggan=$kodePelanggan");
+     
+    exit;
 }
+
+
+// Ambil data pelanggan setelah update
+$sql = "SELECT * FROM pelanggan p
+        INNER JOIN pengguna u ON u.kodePengguna = p.kodePelanggan
+        WHERE p.kodePelanggan = '$kodePelanggan'";
+$hasil = mysqli_query($kon, $sql);
+
+if (mysqli_num_rows($hasil) == 0) {
+    echo "Pelanggan tidak ditemukan.";
+    exit;
+}
+
+$data = mysqli_fetch_array($hasil);
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Detail Pelanggan</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css ">
+    <title>Profil Pelanggan</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container mt-4">
 
+    <?php if (isset($_SESSION['pesan'])): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?= $_SESSION['pesan']; unset($_SESSION['pesan']); ?>
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+    <?php endif; ?>
+
     <div class="card mb-4">
-        <div class="card-header">Detail Profil Pelanggan</div>
+        <div class="card-header">Profil Pelanggan</div>
         <div class="card-body">
             <div class="row">
                 <div class="col-sm-3">
-                    <img src="../pelanggan/foto/<?= htmlspecialchars($data['foto']) ?>" alt="Foto Profil" class="img-thumbnail">
+                    <img src="pelanggan/foto/<?= htmlspecialchars($data['foto']) ?>" alt="Foto Profil" class="img-thumbnail">
                 </div>
                 <div class="col-sm-9">
                     <table class="table">
@@ -93,6 +115,7 @@ if (isset($_POST['simpan_profil'])) {
                         <tr><td>No Telp</td><td>: <?= $data['noTelp'] ?></td></tr>
                         <tr><td>Alamat</td><td>: <?= $data['alamat'] ?></td></tr>
                         <tr><td>Username</td><td>: <?= $data['username'] ?></td></tr>
+                        <tr><td>Status</td><td>: <?= $data['status'] == 1 ? 'Aktif' : 'Tidak Aktif' ?></td></tr>
                     </table>
                     <button class="btn btn-dark" data-toggle="modal" data-target="#modalEditProfil">Edit Profil</button>
                 </div>
@@ -111,6 +134,7 @@ if (isset($_POST['simpan_profil'])) {
                 <div class="modal-body">
                     <input type="hidden" name="idPelanggan" value="<?= $data['idPelanggan'] ?>">
                     <input type="hidden" name="idPengguna" value="<?= $data['idPengguna'] ?>">
+                    <input type="hidden" name="kodePelanggan" value="<?= $data['kodePelanggan'] ?>">
 
                     <div class="form-group">
                         <label>Nama</label>
@@ -130,7 +154,7 @@ if (isset($_POST['simpan_profil'])) {
                     </div>
                     <div class="form-group">
                         <label>Password</label>
-                        <input name="password" type="password" class="form-control" placeholder="Masukkan password baru atau ketik ulang yang lama" required>
+                        <input name="password" value="<?= $data['password'] ?>" type="password" class="form-control" required>
                     </div>
                     <div class="form-group">
                         <label>Foto</label><br>
@@ -143,7 +167,7 @@ if (isset($_POST['simpan_profil'])) {
                             </div>
                         </div>
                         <br>
-                        <img src="../pelanggan/foto/<?= $data['foto'] ?>" width="50%" id="preview" class="img-thumbnail">
+                        <img src="pelanggan/foto/<?= htmlspecialchars($data['foto']) ?>" width="50%" id="preview" class="img-thumbnail">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -156,9 +180,8 @@ if (isset($_POST['simpan_profil'])) {
 
 </div>
 
-<!-- Script -->
-<script src="https://code.jquery.com/jquery-3.5.1.min.js "></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js "></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
 $(document).on("click", "#pilih_foto", function () {
     $(this).closest(".form-group").find("input[type='file']").trigger("click");

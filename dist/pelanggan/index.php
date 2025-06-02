@@ -86,7 +86,7 @@ class DashboardBase {
                       <tbody>
                           <?php
                               include '../config/database.php';
-                              $sql="select * from pelanggan order by idpelanggan desc";
+                              $sql="SELECT * FROM pelanggan ORDER BY  idpelanggan DESC";
                               $hasil=mysqli_query($kon,$sql);
                               $no=0;
                             
@@ -101,7 +101,7 @@ class DashboardBase {
                               <td><?php echo $data['noTelp']; ?></td>
                               <td><?php echo $data['alamat']; ?></td>
                               <td>
-                                    <button class="detail-akun btn btn-primary btn-circle" kodePelanggan="<?php echo $data['kodePelanggan']; ?>" ><i class="fas fa-user"></i></button>
+                                    <button class="detail-akun btn btn-primary btn-circle" data-kode-pelanggan="<?php echo $data['kodePelanggan']; ?>" ><i class="fas fa-user"></i></button>
                                     <button class="btn-edit btn btn-warning btn-circle" idPelanggan="<?php echo $data['idPelanggan']; ?>" kodePelanggan="<?php echo $data['kodePelanggan']; ?>" ><i class="fas fa-edit"></i></button>
                                     <a href="pelanggan/hapus.php?idPelanggan=<?php echo $data['idPelanggan']; ?>&kodePelanggan=<?php echo $data['kodePelanggan']; ?>" class="btn-hapus btn btn-danger btn-circle" ><i class="fa fa-trash"></i></a>
                               </td>
@@ -167,15 +167,15 @@ class DashboardBase {
     // fungsi edit pelanggan
     $('.btn-edit').on('click',function(){
 
-        var id_pelanggan = $(this).attr("id_pelanggan");
-        var kode_pelanggan = $(this).attr("kode_pelanggan");
+        var idPelanggan = $(this).attr("idPelanggan");
+        var kodePelanggan = $(this).attr("kodePelanggan");
         $.ajax({
             url: 'pelanggan/edit.php',
             method: 'post',
-            data: {id_pelanggan:id_pelanggan},
+            data: {idPelanggan:idPelanggan, kodePelanggan:kodePelanggan},
             success:function(data){
                 $('#tampil_data').html(data);  
-                document.getElementById("judul").innerHTML='Edit pelanggan #'+kode_pelanggan;
+                document.getElementById("judul").innerHTML='Edit pelanggan #'+kodePelanggan;
             }
         });
             // Membuka modal
@@ -183,21 +183,22 @@ class DashboardBase {
     });
 
     // Untuk detail username dan password
-    $('.detail-akun').on('click',function(){
-
-        var kode_pelanggan = $(this).attr("kode_pelanggan");
-        $.ajax({
-            url: 'pelanggan/detail-akun.php',
-            method: 'post',
-            data: {kode_pelanggan:kode_pelanggan},
-            success:function(data){
-                $('#tampil_data').html(data);  
-                document.getElementById("judul").innerHTML='Detail Akun';
-            }
-        });
-            // Membuka modal
-        $('#modal').modal('show');
+$('.detail-akun').on('click', function () {
+    var kodePelanggan = $(this).data("kodePelanggan");
+    console.log("Kode pelanggan:", kodePelanggan);  // Debug: pastikan muncul di console
+    $.ajax({
+        url: 'pelanggan/detail-akun.php',
+        method: 'POST',
+        data: { kodePelanggan: kodePelanggan },
+        success: function (data) {
+            $('#tampil_data').html(data);
+            document.getElementById("judul").innerHTML = 'Detail Akun';
+            $('#modal').modal('show');
+        }
     });
+});
+
+
 
    // fungsi hapus pelanggan
    $('.btn-hapus').on('click',function(){
@@ -209,4 +210,3 @@ class DashboardBase {
         }
     });
 </script>
-
