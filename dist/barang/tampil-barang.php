@@ -4,26 +4,37 @@ include '../../config/database.php';
 
 $kategori = "";
 
-if (isset($_POST['kategoriBarang'])) {
+if (isset($_POST['kategoriBarang']) && is_array($_POST['kategoriBarang'])) {
     foreach ($_POST['kategoriBarang'] as $value) {
-        $kategori .= "'$value',";
+        // Escape input untuk keamanan SQL injection
+        $kategori .= "'" . mysqli_real_escape_string($kon, $value) . "',";
     }
     $kategori = rtrim($kategori, ',');
 } else {
-    $kategori = "0";
+    $kategori = "0"; // default supaya query valid
 }
 
-$sql = isset($_POST['kodeKategori']) ?
-    "SELECT b.idBarang, b.kodeBarang, b.namaBarang,
-        (SELECT vv.gambarBarang FROM varianbarang vv WHERE vv.kodeBarang = b.kodeBarang ORDER BY vv.idVarian ASC LIMIT 1) AS gambarBarang
-     FROM barang b
-     WHERE b.kodeKategori IN ($kategori)" :
-    "SELECT b.idBarang, b.kodeBarang, b.namaBarang,
-        (SELECT vv.gambarBarang FROM varianbarang vv WHERE vv.kodeBarang = b.kodeBarang ORDER BY vv.idVarian ASC LIMIT 1) AS gambarBarang
-     FROM barang b";
+// Buat query utama
+$sql = "SELECT b.idBarang, b.kodeBarang, b.namaBarang,
+        (SELECT gv.gambarvarian
+         FROM varianbarang vb
+         JOIN gambarvarian gv ON gv.idGambarVarian = vb.idGambarVarian
+         WHERE vb.kodeBarang = b.kodeBarang
+         ORDER BY vb.idVarian ASC
+         LIMIT 1) AS gambarBarang
+        FROM barang b";
 
+if (isset($_POST['kategoriBarang']) && !empty($kategori)) {
+    $sql .= " WHERE b.kodeKategori IN ($kategori)";
+}
 
 $hasil = mysqli_query($kon, $sql);
+
+if (!$hasil) {
+    echo "<div class='alert alert-danger'>Query error: " . mysqli_error($kon) . "</div>";
+    exit;
+}
+
 $cek = mysqli_num_rows($hasil);
 
 if ($cek <= 0) {
@@ -34,7 +45,8 @@ if ($cek <= 0) {
 $barangs = mysqli_fetch_all($hasil, MYSQLI_ASSOC);
 ?>
 
-<?php if ($_SESSION['level'] === 'Penjual' || $_SESSION['level'] === 'penjual'): ?>
+<!-- Lanjut dengan HTML & PHP seperti sebelumnya -->
+<?php if (strtolower($_SESSION['level']) === 'penjual'): ?>
     <div class="row">
         <div class="col-sm-2">
             <div class="form-group">
@@ -59,12 +71,15 @@ $barangs = mysqli_fetch_all($hasil, MYSQLI_ASSOC);
                 <?php foreach ($barangs as $no => $data): ?>
                     <tr>
                         <td><?= $no + 1 ?></td>
-                        <td><img src="../dist/barang/gambar/<?= htmlspecialchars($data['gambarBarang']) ?>" width="60"></td>
+                        <td>
+                            <img src="../dist/barang/gambar/<?= htmlspecialchars($data['gambarBarang']) ?>" width="60" alt="<?= htmlspecialchars($data['namaBarang']) ?>">
+                        </td>
                         <td><?= htmlspecialchars($data['namaBarang']) ?></td>
                         <td>
                             <button type="button" class="btn-detail-barang btn btn-sm btn-info" idBarang="<?= $data['idBarang'] ?>" kodeBarang="<?= $data['kodeBarang'] ?>"><i class="fas fa-eye"></i></button>
                             <button type="button" class="btn-edit-barang btn btn-sm btn-warning" idBarang="<?= $data['idBarang'] ?>" kodeBarang="<?= $data['kodeBarang'] ?>"><i class="fas fa-edit"></i></button>
-                            <a href="barang/hapus.php?idBarang=<?= $data['idBarang'] ?>&gambarBarang=<?= $data['gambarBarang'] ?>" class="btn-hapus btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
+
+                            <a href="barang/hapus.php?idBarang=<?= $data['idBarang'] ?>&gambarBarang=<?= urlencode($data['gambarBarang']) ?>" class="btn-hapus btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -90,7 +105,6 @@ $barangs = mysqli_fetch_all($hasil, MYSQLI_ASSOC);
         <?php endforeach; ?>
     </div>
 <?php endif; ?>
-
 
 <!-- Modal -->
 <div class="modal fade" id="modal">
@@ -146,20 +160,27 @@ $barangs = mysqli_fetch_all($hasil, MYSQLI_ASSOC);
         $('#modal').modal('show');
     });
 
-    $('.btn-edit-barang').on('click',function(){
-		var idBarang = $(this).attr("idBarang");
-        var kodeBarang = $(this).attr("kodeBarang");
-        $.ajax({
-            url: 'barang/edit.php',
-            method: 'post',
-			data: {idBarang:idBarang},
-            success:function(data){
-                $('#tampil_data').html(data);  
-                document.getElementById("namaBarang").innerHTML='Edit barang #'+kodeBarang;
-            }
-        });
+
+$(document).ready(function () {
+  $(document).on('click', '.btn-edit-barang', function () {
+    var idBarang = $(this).attr("idBarang");
+    var kodeBarang = $(this).attr("kodeBarang");
+
+    $.ajax({
+      url: 'barang/edit.php',
+      method: 'POST',
+      data: { idBarang: idBarang },
+      success: function (data) {
+        $('#tampil_data').html(data);
+        $('#namaBarang').text('Edit barang #' + kodeBarang);
         $('#modal').modal('show');
+      },
+      error: function () {
+        alert('Gagal mengambil data.');
+      }
     });
+  });
+});
 
     $('.btn-hapus').on('click',function(){
         konfirmasi=confirm("Yakin ingin menghapus barang ini?")
