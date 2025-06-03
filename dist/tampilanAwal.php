@@ -2,11 +2,11 @@
 session_start();
 include "../config/database.php";
 
-$base_url = "http://localhost/zamelda-store-copy/";
-$query = mysqli_query($kon, "SELECT gambarBarang FROM varianbarang LIMIT 4");
+$base_url = "http://localhost/zamelda-store/";
+$query = mysqli_query($kon, "SELECT gambarAwal FROM tampilanawal LIMIT 4");
 $gambar = [];
 while ($row = mysqli_fetch_assoc($query)) {
-    $gambar[] = $row['gambarBarang'];
+    $gambar[] = $row['gambarAwal'];
 }
 ?>
 

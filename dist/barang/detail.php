@@ -147,7 +147,7 @@ class BarangDetailCarouselDenganThumbnail {
             echo '<a class="carousel-control-prev no-bg-arrow" href="#carouselDetailBarang" role="button" data-slide="prev"><span>&lt;</span></a>';
             echo '<a class="carousel-control-next no-bg-arrow" href="#carouselDetailBarang" role="button" data-slide="next"><span>&gt;</span></a>';
             echo "</div>";
-
+//
             echo "<div class='col-md-6'>";
 
             if (count($varians) <= 1 && isset($varians[0])) {
