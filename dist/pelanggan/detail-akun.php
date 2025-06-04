@@ -117,8 +117,8 @@ $data = mysqli_fetch_array($hasil);
                         <tr><td>Username</td><td>: <?= $data['username'] ?></td></tr>
                         <tr><td>Status</td><td>: <?= $data['status'] == 1 ? 'Aktif' : 'Tidak Aktif' ?></td></tr>
                     </table>
-                    <button class="btn btn-dark" data-toggle="modal" data-target="#modalEditProfil">Edit Profil</button>
-                </div>
+                    <!-- <button class="btn btn-dark" data-toggle="modal" data-target="#modalEditProfil">Edit Profil</button>
+                </div> -->
             </div>
         </div>
     </div>

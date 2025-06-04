@@ -104,13 +104,13 @@ if (isset($_POST['simpan_profil'])) {
                         <tr><td>Username</td><td>: <?= $data['username'] ?></td></tr>
                         <tr><td>Status</td><td>: <?= $data['status'] == 1 ? 'Aktif' : 'Tidak Aktif' ?></td></tr>
                     </table>
-                    <button class="btn btn-dark" data-toggle="modal" data-target="#modalEditProfil">Edit Profil</button>
-                </div>
+                    <!-- <button class="btn btn-dark" data-toggle="modal" data-target="#modalEditProfil">Edit Profil</button>
+                </div> -->
             </div>
         </div>
     </div>
 
-    <!-- Modal Edit -->
+    <!-- Modal Edit
     <div class="modal fade" id="modalEditProfil">
         <div class="modal-dialog modal-lg">
             <form action="" method="POST" enctype="multipart/form-data" class="modal-content">
@@ -163,7 +163,7 @@ if (isset($_POST['simpan_profil'])) {
                 </div>
             </form>
         </div>
-    </div>
+    </div> -->
 
 </div>
 
