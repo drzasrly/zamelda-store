@@ -74,12 +74,12 @@ class DashboardBase {
                   <table class="table table-bordered" id="tabel_pelanggan" width="100%" cellspacing="0">
                       <thead>
                         <tr>
-                          <th>No</th>
+                          <!-- <th>No</th> -->
                           <th>Kode</th>
-                          <th>Nama</th>
+                          <!-- <th>Nama</th>
                           <th>Email</th>
                           <th>No Telp</th>
-                          <th>Alamat</th>
+                          <th>Alamat</th> -->
                           <th width="15%">Aksi</th>
                         </tr>
                       </thead>
@@ -94,15 +94,15 @@ class DashboardBase {
                               $no++;
                           ?>
                           <tr>
-                              <td><?php echo $no; ?></td>
+                              <!-- <td><?php echo $no; ?></td> -->
                               <td><?php echo $data['kodePelanggan']; ?></td>
-                              <td><?php echo $data['namaPelanggan']; ?></td>
+                              <!-- <td><?php echo $data['namaPelanggan']; ?></td>
                               <td><?php echo $data['email']; ?></td>
                               <td><?php echo $data['noTelp']; ?></td>
-                              <td><?php echo $data['alamat']; ?></td>
+                              <td><?php echo $data['alamat']; ?></td> -->
                               <td>
                                     <button class="detail-akun btn btn-primary btn-circle" data-kode-pelanggan="<?php echo $data['kodePelanggan']; ?>" ><i class="fas fa-user"></i></button>
-                                    <button class="btn-edit btn btn-warning btn-circle" idPelanggan="<?php echo $data['idPelanggan']; ?>" kodePelanggan="<?php echo $data['kodePelanggan']; ?>" ><i class="fas fa-edit"></i></button>
+                                    <!-- <button class="btn-edit btn btn-warning btn-circle" idPelanggan="<?php echo $data['idPelanggan']; ?>" kodePelanggan="<?php echo $data['kodePelanggan']; ?>" ><i class="fas fa-edit"></i></button> -->
                                     <a href="pelanggan/hapus.php?idPelanggan=<?php echo $data['idPelanggan']; ?>&kodePelanggan=<?php echo $data['kodePelanggan']; ?>" class="btn-hapus btn btn-danger btn-circle" ><i class="fa fa-trash"></i></a>
                               </td>
                           </tr>

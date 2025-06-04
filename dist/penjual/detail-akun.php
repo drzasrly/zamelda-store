@@ -110,7 +110,7 @@ if (isset($_POST['simpan_profil'])) {
         </div>
     </div>
 
-    <!-- Modal Edit
+ 
     <div class="modal fade" id="modalEditProfil">
         <div class="modal-dialog modal-lg">
             <form action="" method="POST" enctype="multipart/form-data" class="modal-content">
@@ -163,7 +163,7 @@ if (isset($_POST['simpan_profil'])) {
                 </div>
             </form>
         </div>
-    </div> -->
+    </div>
 
 </div>
 

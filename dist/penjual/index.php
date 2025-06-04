@@ -61,11 +61,11 @@
                     <table class="table table-bordered" id="tabel_penjual" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>No</th>
+                                <!-- <th>No</th> -->
                                 <th>Kode Penjual</th>
-                                <th>Nama</th>
+                                <!-- <th>Nama</th>
                                 <th>Alamat</th>
-                                <th>No Telp</th>
+                                <th>No Telp</th> -->
                                 <th width="15%">Aksi</th>
                             </tr>
                         </thead>
@@ -83,14 +83,14 @@
                             $no++;
                         ?>
                         <tr>
-                            <td><?php echo $no; ?></td>
+                            <!-- <td><?php echo $no; ?></td> -->
                             <td><?php echo $data['kodePenjual']; ?></td>
-                            <td><?php echo $data['namaPenjual']; ?></td>
+                            <!-- <td><?php echo $data['namaPenjual']; ?></td>
                             <td><?php echo $data['alamat']; ?></td>
-                            <td><?php echo $data['noTelp']; ?></td>
+                            <td><?php echo $data['noTelp']; ?></td> -->
                             <td>
                                 <button class="detail-akun btn btn-primary btn-circle" kodePenjual="<?php echo $data['kodePenjual']; ?>" ><i class="fas fa-user"></i></button>
-                                <button class="btn-edit btn btn-warning btn-circle" idPenjual="<?php echo $data['idPenjual']; ?>" kodePenjual="<?php echo $data['kodePenjual']; ?>" ><i class="fas fa-edit"></i></button>
+                                <!-- <button class="btn-edit btn btn-warning btn-circle" idPenjual="<?php echo $data['idPenjual']; ?>" kodePenjual="<?php echo $data['kodePenjual']; ?>" ><i class="fas fa-edit"></i></button> -->
                                 <a href="penjual/hapus.php?idPenjual=<?php echo $data['idPenjual']; ?>&kodePenjual=<?php echo $data['kodePenjual']; ?>" class="btn-hapus btn btn-danger btn-circle" ><i class="fa fa-trash"></i></a>
                             </td>
                         </tr>
