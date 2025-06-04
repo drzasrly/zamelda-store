@@ -88,40 +88,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-4 col-lg-5">
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                <h6 class="m-0 font-weight-bold text-primary">Aturan Perpustakaan</h6>
-                            </div>
-                            <?php 
-                                include '../config/database.php';
-                            
-                                $hasil=mysqli_query($kon,"select * from aturan_perpustakaan limit 1");
-                                $data = mysqli_fetch_array($hasil); 
-                            ?>
-                            <div class="card-body">
-                                <form action="aplikasi/edit.php" method="post" enctype="multipart/form-data">
-                                
-
-                                    <div class="form-group">
-                                        <label>Estimasi waktu Peminjaman: <span id="info_waktu_pinjam"><?php if (isset( $data['waktu_peminjaman'])) echo $data['waktu_peminjaman'];?> hari</span> </label>
-                                        <input type="text" class="form-control" id="waktu_peminjaman" value="<?php if (isset( $data['waktu_peminjaman'])) echo $data['waktu_peminjaman'];?>" name="waktu_peminjaman" required>  
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Maksimal Peminjaman: <span id="info_maksimal_pinjam"><?php if (isset( $data['maksimal_peminjaman'])) echo $data['maksimal_peminjaman'];?> Pustaka</span> </label>
-                                        <input type="text" class="form-control" id="maksimal_pinjam" value="<?php if (isset( $data['maksimal_peminjaman'])) echo $data['maksimal_peminjaman'];?>" name="maksimal_peminjaman" required>  
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Besaran Denda Keterlambatan: <span id="info_denda_terlambat">Rp. <?php if (isset( $data['denda_keterlambatan'])) echo number_format($data['denda_keterlambatan'],0,',','.'); ?>/hari</span> </label>
-                                        <input type="text" class="form-control" id="denda_terlambat" value="<?php if (isset( $data['denda_keterlambatan'])) echo $data['denda_keterlambatan'];?>" name="denda_keterlambatan" required>  
-                                    </div>
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn-primary"name="ubah_aturan_perpustakaan" >Simpan Perubahan</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

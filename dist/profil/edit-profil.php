@@ -17,7 +17,6 @@ session_start();
             $idPelanggan=$_POST["idPelanggan"];
             $namaPelanggan = isset($_POST["namaPelanggan"]) ? input($_POST["namaPelanggan"]) : '';
             $noTelp=input($_POST["noTelp"]);
-            $email=input($_POST["email"]);
             $alamat=input($_POST["alamat"]);
             
           

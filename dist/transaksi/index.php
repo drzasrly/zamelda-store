@@ -1,36 +1,36 @@
 <script>
-    $('title').text('Data Peminjaman');
+    $('title').text('Data transaksi');
 </script>
 <main>
     <div class="container-fluid">
-        <h2 class="mt-4">Data Peminjaman</h2>
+        <h2 class="mt-4">Data transaksi</h2>
         <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item active">Daftar Peminjaman</li>
+            <li class="breadcrumb-item active">Daftar transaksi</li>
         </ol>
         <?php
-            //Validasi untuk menampilkan pesan pemberitahuan saat user menambah Peminjaman
+            //Validasi untuk menampilkan pesan pemberitahuan saat user menambah transaksi
             if (isset($_GET['add'])) {
                 if ($_GET['add']=='berhasil'){
-                    echo"<div class='alert alert-success'><strong>Berhasil!</strong> Data Peminjaman telah disimpan</div>";
+                    echo"<div class='alert alert-success'><strong>Berhasil!</strong> Data transaksi telah disimpan</div>";
                 }else if ($_GET['add']=='gagal'){
-                    echo"<div class='alert alert-danger'><strong>Gagal!</strong> Data Peminjaman gagal disimpan</div>";
+                    echo"<div class='alert alert-danger'><strong>Gagal!</strong> Data transaksi gagal disimpan</div>";
                 }    
             }
 
-            //Validasi untuk menampilkan pesan pemberitahuan saat user menghapus Peminjaman
+            //Validasi untuk menampilkan pesan pemberitahuan saat user menghapus transaksi
             if (isset($_GET['hapus'])) {
                 if ($_GET['hapus']=='berhasil'){
-                    echo"<div class='alert alert-success'><strong>Berhasil!</strong> Data Peminjaman telah dihapus</div>";
+                    echo"<div class='alert alert-success'><strong>Berhasil!</strong> Data transaksi telah dihapus</div>";
                 }else if ($_GET['hapus']=='gagal'){
-                    echo"<div class='alert alert-danger'><strong>Gagal!</strong> Data Peminjaman gagal dihapus</div>";
+                    echo"<div class='alert alert-danger'><strong>Gagal!</strong> Data transaksi gagal dihapus</div>";
                 }    
             }
 
-            if (isset($_GET['hapus-peminjaman'])) {
-                if ($_GET['hapus-peminjaman']=='berhasil'){
-                    echo"<div class='alert alert-success'><strong>Berhasil!</strong> Data Peminjaman telah dihapus</div>";
-                }else if ($_GET['hapus-peminjaman']=='gagal'){
-                    echo"<div class='alert alert-danger'><strong>Gagal!</strong> Data Peminjaman gagal dihapus</div>";
+            if (isset($_GET['hapus-transaksi'])) {
+                if ($_GET['hapus-transaksi']=='berhasil'){
+                    echo"<div class='alert alert-success'><strong>Berhasil!</strong> Data transaksi telah dihapus</div>";
+                }else if ($_GET['hapus-transaksi']=='gagal'){
+                    echo"<div class='alert alert-danger'><strong>Gagal!</strong> Data transaksi gagal dihapus</div>";
                 }    
             }
         ?>
@@ -38,16 +38,16 @@
         <div class="card mb-4">
             <div class="card-header">
             <?php if ($_SESSION["level"]!="Manajer"): ?>
-            <a href="index.php?page=input-peminjaman" class="btn btn-primary" role="button">Input Peminjaman</a>
+            <a href="index.php?page=input-transaksi" class="btn btn-primary" role="button">Input transaksi</a>
             <?php endif; ?>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped" id="tabel_peminjaman" width="100%" cellspacing="0">
+                    <table class="table table-bordered table-striped" id="tabel_transaksi" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Kode Peminjaman</th>
+                                <th>Kode transaksi</th>
                                 <th>Tanggal </th>
                                 <th>Nama Anggota</th>
                                 <th>Jumlah</th>
@@ -59,13 +59,13 @@
                         <?php
                             // include database
                             include '../config/database.php';
-                            $sql="select p.kode_peminjaman,an.nama_anggota,count(*) as jumlah_pustaka, p                   .tanggal
-                            from peminjaman p
+                            $sql="select p.kode_transaksi,an.nama_anggota,count(*) as jumlah_pustaka, p                   .tanggal
+                            from transaksi p
                             inner join anggota an on an.kode_anggota=p.kode_anggota
-                            inner join detail_peminjaman dp on dp.kode_peminjaman=p.kode_peminjaman
+                            inner join detail_transaksi dp on dp.kode_transaksi=p.kode_transaksi
                             inner join pustaka pk on pk.kode_pustaka=dp.kode_pustaka
-                            group by an.nama_anggota,p.kode_peminjaman
-                            order by p.kode_peminjaman desc";
+                            group by an.nama_anggota,p.kode_transaksi
+                            order by p.kode_transaksi desc";
 
                             $hasil=mysqli_query($kon,$sql);
                             $no=0;
@@ -75,7 +75,7 @@
                         ?>
                         <tr>
                             <td><?php echo $no; ?></td>
-                            <td><?php echo $data['kode_peminjaman']; ?></td>
+                            <td><?php echo $data['kode_transaksi']; ?></td>
                             <td>
                                 <?php
                                     
@@ -86,8 +86,8 @@
                             <td><?php echo $data['nama_anggota']; ?></td>
                             <td><?php echo $data['jumlah_pustaka']; ?> Pustaka</td>
                             <td>
-                                <a href="index.php?page=detail-peminjaman&kode_peminjaman=<?php echo $data['kode_peminjaman']; ?>" class="btn btn-success btn-circle"><i class="fas fa-mouse-pointer"></i></a>
-                                <a href="peminjaman/hapus-peminjaman.php?kode_peminjaman=<?php echo $data['kode_peminjaman']; ?>" class="btn-hapus-Peminjaman btn btn-danger btn-circle" ><i class="fas fa-trash"></i></a>
+                                <a href="index.php?page=detail-transaksi&kode_transaksi=<?php echo $data['kode_transaksi']; ?>" class="btn btn-success btn-circle"><i class="fas fa-mouse-pointer"></i></a>
+                                <a href="transaksi/hapus-transaksi.php?kode_transaksi=<?php echo $data['kode_transaksi']; ?>" class="btn-hapus-transaksi btn btn-danger btn-circle" ><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                         <!-- bagian akhir (penutup) while -->
@@ -132,15 +132,15 @@
 
 <script>
     $(document).ready(function(){
-        $('#tabel_peminjaman').DataTable();
+        $('#tabel_transaksi').DataTable();
     });
 </script>
 
 <script>
 
-   // fungsi hapus Peminjaman
-   $('.btn-hapus-Peminjaman').on('click',function(){
-        konfirmasi=confirm("Yakin ingin menghapus data Peminjaman ini?")
+   // fungsi hapus transaksi
+   $('.btn-hapus-transaksi').on('click',function(){
+        konfirmasi=confirm("Yakin ingin menghapus data transaksi ini?")
         if (konfirmasi){
             return true;
         }else {
