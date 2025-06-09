@@ -58,15 +58,16 @@ $barangs = mysqli_fetch_all($hasil, MYSQLI_ASSOC);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <style>
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: #f4f4f4;
         }
 
         .slider-container {
             position: relative;
             width: 100%;
-            height: 90vh;
+            height: 100vh;
             overflow: hidden;
+            box-shadow: 0 8px 12px -6px rgba(0, 0, 0, 0.1);
         }
 
         .slider-track {
