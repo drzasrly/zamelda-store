@@ -15,21 +15,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = input($_POST["username"]);
     $password = input($_POST["password"]);
 
-    $tabel_penjual = "select * from pengguna p
-        inner join penjual k on k.kodePenjual=p.kodePengguna
-        where username='".$username."' and password='".$password."' limit 1";
+    // Cek admin dulu
+    $tabel_admin = "SELECT * FROM pengguna WHERE username='$username' AND password='$password' AND level='admin' LIMIT 1";
+    $cek_tabel_admin = mysqli_query($kon, $tabel_admin);
+    $admin = mysqli_num_rows($cek_tabel_admin);
 
+    // Cek penjual
+    $tabel_penjual = "SELECT * FROM pengguna p
+        INNER JOIN penjual k ON k.kodePenjual=p.kodePengguna
+        WHERE username='$username' AND password='$password' LIMIT 1";
     $cek_tabel_penjual = mysqli_query($kon, $tabel_penjual);
     $penjual = mysqli_num_rows($cek_tabel_penjual);
 
-    $tabel_pelanggan = "select * from pengguna p
-        inner join pelanggan m on m.kodePelanggan=p.kodePengguna
-        where username='".$username."' and password='".$password."' limit 1";
-
+    // Cek pelanggan
+    $tabel_pelanggan = "SELECT * FROM pengguna p
+        INNER JOIN pelanggan m ON m.kodePelanggan=p.kodePengguna
+        WHERE username='$username' AND password='$password' LIMIT 1";
     $cek_tabel_pelanggan = mysqli_query($kon, $tabel_pelanggan);
     $pelanggan = mysqli_num_rows($cek_tabel_pelanggan);
 
-    if ($penjual > 0) {
+    if ($admin > 0) {
+        $row = mysqli_fetch_assoc($cek_tabel_admin);
+        if ($row["status"] == 1) {
+            $_SESSION["idPengguna"] = $row["idPengguna"];
+            $_SESSION["kodePengguna"] = $row["kodePengguna"];
+            $_SESSION["namaAdmin"] = $row["namaAdmin"]; 
+            $_SESSION["username"] = $row["username"];
+            $_SESSION["level"] = $row["level"];
+            $_SESSION["foto"] = $row["foto"];
+            header("Location:index.php?page=dashboard");
+            exit();
+        } else {
+            $pesan = "<div class='alert alert-warning'><strong>Gagal!</strong> Status pengguna tidak aktif.</div>";
+        }
+    } elseif ($penjual > 0) {
         $row = mysqli_fetch_assoc($cek_tabel_penjual);
         if ($row["status"] == 1) {
             $_SESSION["idPengguna"] = $row["idPengguna"];
@@ -39,6 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION["level"] = $row["level"];
             $_SESSION["foto"] = $row["foto"];
             header("Location:index.php?page=dashboard");
+            exit();
         } else {
             $pesan = "<div class='alert alert-warning'><strong>Gagal!</strong> Status pengguna tidak aktif.</div>";
         }
@@ -52,6 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION["level"] = $row["level"];
             $_SESSION["foto"] = $row["foto"];
             header("Location:index.php?page=dashboard");
+            exit();
         } else {
             $pesan = "<div class='alert alert-warning'><strong>Gagal!</strong> Status pengguna tidak aktif.</div>";
         }
@@ -60,6 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <?php 
 include '../config/database.php';

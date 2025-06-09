@@ -2,7 +2,7 @@
 session_start();
 
 // Batasi hanya untuk penjual yang login
-if (!isset($_SESSION['kodePengguna']) || $_SESSION['level'] !== 'penjual') {
+if (!isset($_SESSION['kodePengguna']) || $_SESSION['level'] !== 'penjual' and $_SESSION['level'] !== 'admin') {
     header("Location: ../login.php");
     exit;
 }

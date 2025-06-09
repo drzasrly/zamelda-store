@@ -5,7 +5,7 @@
 <?php
    // $idPenjual= $_SESSION["idPenjual"];
 
-    if ($_SESSION["level"]!='penjual' and $_SESSION["level"]!='penjual'):
+    if ($_SESSION["level"]!='penjual' and $_SESSION["level"]!='admin'):
         echo"<div class='alert alert-danger'>Anda tidak punya hak akses</div>";
         exit;
     endif;

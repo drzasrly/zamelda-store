@@ -72,7 +72,7 @@
                 <nav class="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
                     <?php 
-                        if ($_SESSION['level']=='Penjual' or $_SESSION['level']=='penjual'):
+                        if ($_SESSION['level']=='Admin' or $_SESSION['level']=='admin'):
                     ?>
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">Menu</div>
@@ -132,6 +132,65 @@
                         </div>
                         <?php endif; ?>
                         <?php 
+                        if ($_SESSION['level']=='Penjual' or $_SESSION['level']=='penjual'):?>
+                        <div class="nav">
+                            <div class="sb-sidenav-menu-heading">Menu</div>
+                            <a class="nav-link" href="index.php?page=dashboard">
+                                <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
+                                Dashboard
+                            </a>
+                            <a class="nav-link" href="index.php?page=daftar-transaksi">
+                                <div class="sb-nav-link-icon"><i class="fas fa-list-ol"></i></div>
+                                Transaksi
+                            </a>
+                            <!-- <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
+                                Laporan
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapseLaporan" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="index.php?page=laporan-transaksi"><i class="fas fa-book"></i>  &nbsp; Transaksi</a>
+                                    <a class="nav-link" href="index.php?page=laporan-barang"><i class="fas fa-grip-horizontal"></i> &nbsp; Barang</a>
+                                    <a class="nav-link" href="index.php?page=laporan-pelanggan"><i class="fas fa-user-tag"></i> &nbsp; Pelanggan</a>
+                                </nav>
+                            </div> -->
+
+                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePustaka" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
+                                Barang
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapsePustaka" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="index.php?page=barang"><i class="fas fa-book"></i>  &nbsp; Barang</a>
+                                    <a class="nav-link" href="index.php?page=kategori"><i class="fas fa-grip-horizontal"></i> &nbsp; Kategori</a>
+                                </nav>
+                            </div>
+                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePengguna" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                Pengguna
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapsePengguna" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="index.php?page=pelanggan"><i class="fas fa-user"></i>  &nbsp; Pelanggan</a>
+                                    <!-- <a class="nav-link" href="index.php?page=penjual"><i class="fas fa-user-tie"></i> &nbsp; Penjual</a> -->
+                                </nav>
+                            </div>
+                            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePengaturan" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-cog"></i></div>
+                                Pengaturan
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse" id="collapsePengaturan" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="index.php?page=aplikasi"><i class="fas fa-desktop"></i>  &nbsp; Aplikasi</a>
+                                </nav>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                        <?php 
                         if ($_SESSION['level']=='Pelanggan' or $_SESSION['level']=='pelanggan'):
                         ?>
                         <div class="nav">
@@ -158,6 +217,9 @@
                     <div class="sb-sidenav-footer">
                         <div class="small">Login Sebagai:</div>
                         <?php 
+                            if ($_SESSION['level']=='admin' or $_SESSION['level']=='Admin'):
+                                echo $_SESSION["username"];
+                            endif;
                             if ($_SESSION['level']=='Penjual' or $_SESSION['level']=='penjual'):
                                 echo $_SESSION["namaPenjual"];
                             endif; 

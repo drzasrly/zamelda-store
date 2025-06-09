@@ -5,7 +5,7 @@
 <?php
     //$kodePelanggan= $_SESSION["kodepelanggan"];
 
-    if ($_SESSION["level"]!='penjual' and $_SESSION["level"]!='penjual'):
+    if ($_SESSION["level"]!='penjual' and $_SESSION["level"]!='Penjual' and $_SESSION["level"]!='admin' and $_SESSION["level"]!='Admin'):
         echo"<div class='alert alert-danger'>Anda tidak punya hak akses</div>";
         exit;
     endif;

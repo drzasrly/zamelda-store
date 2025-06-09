@@ -6,15 +6,13 @@ $kategori = "";
 
 if (isset($_POST['kategoriBarang']) && is_array($_POST['kategoriBarang'])) {
     foreach ($_POST['kategoriBarang'] as $value) {
-        // Escape input untuk keamanan SQL injection
         $kategori .= "'" . mysqli_real_escape_string($kon, $value) . "',";
     }
     $kategori = rtrim($kategori, ',');
 } else {
-    $kategori = "0"; // default supaya query valid
+    $kategori = "0"; 
 }
 
-// Buat query utama
 $sql = "SELECT b.idBarang, b.kodeBarang, b.namaBarang,
         (SELECT gv.gambarvarian
          FROM varianbarang vb
@@ -45,8 +43,7 @@ if ($cek <= 0) {
 $barangs = mysqli_fetch_all($hasil, MYSQLI_ASSOC);
 ?>
 
-<!-- Lanjut dengan HTML & PHP seperti sebelumnya -->
-<?php if (strtolower($_SESSION['level']) === 'penjual'): ?>
+<?php if (strtolower($_SESSION['level']) === 'penjual' or strtolower($_SESSION['level']) === 'admin'): ?>
     <div class="row">
         <div class="col-sm-2">
             <div class="form-group">

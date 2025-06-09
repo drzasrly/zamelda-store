@@ -40,7 +40,12 @@
                                     inner join pelanggan a on a.kodePelanggan=p.kodePengguna
                                     where p.idPengguna=$idPengguna limit 1";
                                 }
-                       
+                                
+                                if ($_SESSION["level"]=='Admin' or $_SESSION["level"]=='admin'){
+                                    $sql="select * from pengguna p
+                                    inner join admin a on a.kodeAdmin=p.kodePengguna
+                                    where p.idPengguna=$idPengguna limit 1";
+                                }
                        
                                 $hasil=mysqli_query($kon,$sql);
                                 $data = mysqli_fetch_array($hasil); 
@@ -54,7 +59,11 @@
                                     <img class="card-img-top img-fluid" src="penjual/foto/<?= htmlspecialchars($data['foto']) ?>" alt="<?= htmlspecialchars($data['namaPenjual']) ?>">
                                     <!-- <img class="card-img-top" src="penjual/foto/<?php echo $data['foto'];?>" width="54px" alt="Card image"> -->
                                     <?php endif; ?>
-
+                                    <?php 
+                                        if ($_SESSION["level"]=='Admin' or $_SESSION["level"]=='admin'):
+                                    ?>
+                                    <img class="card-img-top img-fluid" src="penjual/foto/<?= htmlspecialchars($data['foto']) ?>" alt="<?= htmlspecialchars($data['namaAdmin']) ?>">
+                                    <?php endif; ?>
                                     <?php 
                                         if ($_SESSION["level"]=='Pelanggan' or $_SESSION["level"]=='pelanggan'):
                                     ?>
@@ -77,6 +86,10 @@
                                                     <?php if ($_SESSION["level"]=='Penjual' or $_SESSION["level"]=='penjual'):?>
                                                     <td width="80%">: <?php echo $data['namaPenjual'];?></td>
                                                     <?php endif; ?>
+                                                    
+                                                    <?php if ($_SESSION["level"]=='Admin' or $_SESSION["level"]=='admin'):?>
+                                                    <td width="80%">: <?php echo $data['namaAdmin'];?></td>
+                                                    <?php endif; ?>    
 
                                                     <?php if ($_SESSION["level"]=='Pelanggan' or $_SESSION["level"]=='pelanggan'):?>
                                                     <td width="80%">: <?php echo $data['namaPelanggan'];?></td>
@@ -184,6 +197,55 @@
                                 </div>
                                 <?php endif; ?>
 
+                                <?php 
+                                if ($_SESSION["level"]=='Admin' or $_SESSION["level"]=='admin'):
+                            ?>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Kode:</label>
+                                            <input name="kode" value="<?php echo $data['kodePengguna']?>" type="text" class="form-control" placeholder="Masukan kode" disabled>
+                                            <input name="idPengguna" value="<?php echo $data['idPengguna'];?>" type="hidden" class="form-control">
+                                            <input name="idAdmin" value="<?php echo $data['idAdmin'];?>" type="hidden" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Nama:</label>
+                                             <input name="namaAdmin" value="<?php echo $data['namaAdmin']?>" type="text" class="form-control" placeholder="Masukan nama" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>No Telp:</label>
+                                            <input name="noTelp" value="<?php echo $data['noTelp']?>" type="text" class="form-control" placeholder="Masukan no telp" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Alamat:</label>
+                                            <textarea class="form-control" name="alamat" rows="5" ><?php echo $data['alamat'];?></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div id="msg"></div>
+                                        <label>Foto:</label>
+                                        <input type="hidden" name="foto_saat_ini" value="<?php echo $data['foto'];?>" class="form-control" />
+                                        <input type="file" name="foto_baru" class="file" >
+                                            <div class="input-group my-3">
+                                                <input type="text" class="form-control" disabled placeholder="Upload File" id="file">
+                                                <div class="input-group-append">
+                                                    <button type="button" id="pilih_foto" class="browse btn btn-dark">Pilih Foto</button>
+                                                </div>
+                                            </div>
+                                        <img src="penjual/foto/<?php echo $data['foto'];?>" width="50%" id="preview" class="img-thumbnail">
+                                    </div>
+                                </div>
+                                <?php endif; ?>
 
                                 <?php 
                                 if ($_SESSION["level"]=='Pelanggan' or $_SESSION["level"]=='pelanggan'):

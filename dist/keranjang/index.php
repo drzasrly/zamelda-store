@@ -1,5 +1,7 @@
 <?php
 include '../config/database.php';
+//session_start(); 
+
 ?>
 
 <script>
@@ -14,6 +16,35 @@ include '../config/database.php';
         </ol>
 
         <?php
+        $idPengguna = $_SESSION['idPengguna'];
+
+        if (!isset($_SESSION['cart_barang']) || empty($_SESSION['cart_barang'])) {
+            $_SESSION['cart_barang'] = [];
+
+            $result = mysqli_query($kon, "
+                SELECT b.kodeBarang, b.namaBarang, v.idVarian, v.typeVarian, v.size, v.harga, v.stok, g.gambarvarian, k.jumlah
+                FROM keranjang k
+                INNER JOIN varianbarang v ON k.idVarian = v.idVarian
+                INNER JOIN barang b ON v.kodeBarang = b.kodeBarang
+                LEFT JOIN gambarvarian g ON v.idGambarVarian = g.idGambarVarian
+                WHERE k.idPengguna = '$idPengguna'
+            ");
+
+            while ($row = mysqli_fetch_assoc($result)) {
+                $idVarian = $row['idVarian'];
+                $_SESSION['cart_barang'][$idVarian] = [
+                    'kodeBarang' => $row['kodeBarang'],
+                    'idVarian' => $idVarian,
+                    'namaBarang' => $row['namaBarang'],
+                    'typeVarian' => $row['typeVarian'],
+                    'size' => $row['size'],
+                    'harga' => $row['harga'],
+                    'gambar' => $row['gambarvarian'],
+                    'jumlah' => $row['jumlah']
+                ];
+            }
+        }
+
         if (isset($_GET['idVarian'])) {
             $idVarian = $_GET['idVarian'];
             $jumlahBaru = isset($_GET['jumlah']) ? intval($_GET['jumlah']) : 1;
@@ -44,17 +75,31 @@ include '../config/database.php';
                         'jumlah' => $jumlahBaru
                     ];
                 }
+
+                $cek = mysqli_query($kon, "SELECT * FROM keranjang WHERE idPengguna='$idPengguna' AND idVarian='$idVarian'");
+                if (mysqli_num_rows($cek) > 0) {
+                    mysqli_query($kon, "UPDATE keranjang SET jumlah = jumlah + $jumlahBaru WHERE idPengguna='$idPengguna' AND idVarian='$idVarian'");
+                } else {
+                    mysqli_query($kon, "INSERT INTO keranjang (idPengguna, idVarian, jumlah) VALUES ('$idPengguna', '$idVarian', '$jumlahBaru')");
+                }
             }
+            $_SESSION['terakhir_ditambahkan'] = $idVarian;
+
         }
 
         if (isset($_GET['aksi']) && $_GET['aksi'] === "hapus_barang" && isset($_GET['idVarian'])) {
-            unset($_SESSION["cart_barang"][$_GET['idVarian']]);
+            $idVarian = $_GET['idVarian'];
+            unset($_SESSION["cart_barang"][$idVarian]);
+            mysqli_query($kon, "DELETE FROM keranjang WHERE idPengguna='$idPengguna' AND idVarian='$idVarian'");
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_jumlah'])) {
             foreach ($_POST['jumlah'] as $idVarian => $jumlah) {
                 if (isset($_SESSION['cart_barang'][$idVarian])) {
-                    $_SESSION['cart_barang'][$idVarian]['jumlah'] = max(1, intval($jumlah));
+                    $jumlah = max(1, intval($jumlah));
+                    $_SESSION['cart_barang'][$idVarian]['jumlah'] = $jumlah;
+
+                    mysqli_query($kon, "UPDATE keranjang SET jumlah = '$jumlah' WHERE idPengguna='$idPengguna' AND idVarian='$idVarian'");
                 }
             }
         }
@@ -92,7 +137,8 @@ include '../config/database.php';
                         ?>
                         <tr>
                             <td>
-                                <input type="checkbox" class="pilih-item" name="pilih[]" value="<?php echo $idVarian; ?>">
+                                <input type="checkbox" class="pilih-item" name="pilih[]" value="<?php echo $idVarian; ?>"
+                                <?php echo (isset($_SESSION['terakhir_ditambahkan']) && $_SESSION['terakhir_ditambahkan'] == $idVarian) ? 'checked' : ''; ?>>
                             </td>
                             <td><?php echo $no; ?></td>
                             <td>
@@ -150,6 +196,14 @@ include '../config/database.php';
         return 'Rp' + angka.toLocaleString('id-ID');
     }
 
+    function updateTotalPerItem(id) {
+        const harga = parseInt(document.querySelector('.total-per-item[data-id="' + id + '"]').getAttribute('data-harga'));
+        const jumlah = parseInt(document.querySelector('input[name="jumlah[' + id + ']"]').value);
+        const totalElem = document.querySelector('.total-per-item[data-id="' + id + '"]');
+        const total = harga * jumlah;
+        totalElem.innerText = formatRupiah(total);
+    }
+
     function hitungTotalDipilih() {
         let total = 0;
         document.querySelectorAll('.pilih-item:checked').forEach(item => {
@@ -166,6 +220,7 @@ include '../config/database.php';
             const id = btn.getAttribute('data-id');
             const input = document.querySelector('input[name="jumlah[' + id + ']"]');
             input.value = parseInt(input.value) + 1;
+            updateTotalPerItem(id); 
             hitungTotalDipilih();
         });
     });
@@ -176,14 +231,24 @@ include '../config/database.php';
             const input = document.querySelector('input[name="jumlah[' + id + ']"]');
             if (parseInt(input.value) > 1) {
                 input.value = parseInt(input.value) - 1;
+                updateTotalPerItem(id); 
                 hitungTotalDipilih();
             }
         });
     });
 
     document.querySelectorAll('.pilih-item, .jumlah-input').forEach(elem => {
-        elem.addEventListener('input', hitungTotalDipilih);
-        elem.addEventListener('change', hitungTotalDipilih);
+        elem.addEventListener('input', () => {
+            const id = elem.getAttribute('data-id');
+            updateTotalPerItem(id); 
+            hitungTotalDipilih();
+        });
+
+        elem.addEventListener('change', () => {
+            const id = elem.getAttribute('data-id');
+            updateTotalPerItem(id); 
+            hitungTotalDipilih();
+        });
     });
 
     function konfirmasiCheckout() {

@@ -9,7 +9,7 @@
             <li class="breadcrumb-item active">Dashboard</li>
         </ol>
 
-        <?php if ($_SESSION["level"] == 'Penjual' || $_SESSION["level"] == 'penjual'): ?>
+        <?php if ($_SESSION["level"] == 'Penjual' || $_SESSION["level"] == 'penjual' or $_SESSION["level"] == 'admin' || $_SESSION["level"] == 'Admin'): ?>
         <div class="row">
             <?php
                 include '../config/database.php';

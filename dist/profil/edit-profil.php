@@ -136,6 +136,70 @@ session_start();
 
         }
 
+        if ($_SESSION["level"]=='Admin' or $_SESSION["level"]=='admin'){
+           
+            $idAdmin=$_POST["idAdmin"];
+            $namaAdmin = isset($_POST["namaAdmin"]) ? input($_POST["namaAdmin"]) : '';
+            $noTelp=input($_POST["noTelp"]);
+            $alamat=input($_POST["alamat"]);
+
+            $foto_saat_ini=$_POST['foto_saat_ini'];
+            $foto_baru = $_FILES['foto_baru']['name'];
+            $ekstensi_diperbolehkan	= array('png','jpg','jpeg','gif');
+            $x = explode('.', $foto_baru);
+            $ekstensi = strtolower(end($x));
+            $ukuran	= $_FILES['foto_baru']['size'];
+            $file_tmp = $_FILES['foto_baru']['tmp_name'];
+
+            
+            if (!empty($foto_baru)){
+                if(in_array($ekstensi, $ekstensi_diperbolehkan) === true){
+                    move_uploaded_file($file_tmp,'../penjual/foto/'.$foto_baru);
+
+
+                    if ($foto_saat_ini!='foto_default.png'){
+                        unlink("../penjual/foto/".$foto_saat_ini);
+                    }
+                    
+                    $sql="update admin set
+                    namaAdmin='$namaAdmin',
+                    noTelp='$noTelp',
+                    alamat='$alamat',
+                    foto='$foto_baru'
+                    where idAdmin=$idAdmin";
+                }
+            }else {
+                $sql="update admin set
+                namaAdmin='$namaAdmin',
+                noTelp='$noTelp',
+                alamat='$alamat'
+                where idAdmin=$idAdmin";;
+            }
+
+            
+            $update=mysqli_query($kon,$sql);
+
+       
+            $idPengguna=$_POST["idPengguna"];
+            $username=input($_POST["username_baru"]);
+
+            $ambil_password=mysqli_query($kon,"select password from pengguna where idPengguna=$idPengguna limit 1");
+            $data = mysqli_fetch_array($ambil_password);
+
+            if ($data['password']==$_POST["password"]){
+                $password=input($_POST["password"]);
+            }else {
+                $password=md5(input($_POST["password"]));
+            }
+
+            $sql="update pengguna set
+            username='$username',
+            password='$password'
+            where idPengguna=$idPengguna";
+            $update_pengguna=mysqli_query($kon,$sql);
+
+        }
+
         if ($update and $update_pengguna) {
             mysqli_query($kon,"COMMIT");
             header("Location:../../dist/index.php?page=profil&edit=berhasil");
