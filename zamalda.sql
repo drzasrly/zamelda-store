@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3307
--- Generation Time: Jun 03, 2025 at 02:00 AM
+-- Generation Time: Jun 09, 2025 at 09:39 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -24,6 +24,28 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `admin`
+--
+
+CREATE TABLE `admin` (
+  `idAdmin` int NOT NULL,
+  `kodeAdmin` varchar(10) NOT NULL,
+  `namaAdmin` varchar(50) NOT NULL,
+  `foto` varchar(50) NOT NULL,
+  `alamat` varchar(100) NOT NULL,
+  `noTelp` varchar(15) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `admin`
+--
+
+INSERT INTO `admin` (`idAdmin`, `kodeAdmin`, `namaAdmin`, `foto`, `alamat`, `noTelp`) VALUES
+(1, 'adm001', 'admin zamelda', 'jeno.png', 'Admin dimana alamatnya', '0877616368');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `barang`
 --
 
@@ -40,7 +62,7 @@ CREATE TABLE `barang` (
 --
 
 INSERT INTO `barang` (`idBarang`, `kodeBarang`, `kodeKategori`, `namaBarang`, `deskripsi`) VALUES
-(1, 'br001', 'kat001', 'korean ', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \r\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \r\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. \r\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\r\n'),
+(1, 'br001', 'kat001', 'korean', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'),
 (2, ' br002', 'kat002', 'Jeans lucu gemoy', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \r\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \r\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. \r\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\r\n'),
 (3, 'br003', 'kat003', 'Hoodie Hitam ', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \r\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \r\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. \r\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\r\n'),
 (4, 'br004', 'kat003', 'Kemeja Kotak Lengan Panjang', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \r\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \r\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. \r\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\r\n'),
@@ -151,6 +173,30 @@ INSERT INTO `kategoribarang` (`idKategori`, `kodeKategori`, `namaKategori`) VALU
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `keranjang`
+--
+
+CREATE TABLE `keranjang` (
+  `idKeranjang` int NOT NULL,
+  `idPengguna` int DEFAULT NULL,
+  `idVarian` int DEFAULT NULL,
+  `jumlah` int DEFAULT NULL,
+  `tanggalDitambahkan` datetime DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `keranjang`
+--
+
+INSERT INTO `keranjang` (`idKeranjang`, `idPengguna`, `idVarian`, `jumlah`, `tanggalDitambahkan`) VALUES
+(1, 2, 80, 1, '2025-06-09 11:13:24'),
+(2, 2, 123, 7, '2025-06-09 11:18:26'),
+(3, 2, 4, 1, '2025-06-09 11:24:40'),
+(4, 5, 4, 1, '2025-06-09 12:59:54');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `pelanggan`
 --
 
@@ -169,7 +215,7 @@ CREATE TABLE `pelanggan` (
 --
 
 INSERT INTO `pelanggan` (`idPelanggan`, `kodePelanggan`, `namaPelanggan`, `foto`, `noTelp`, `email`, `alamat`) VALUES
-(1, 'plg001', 'Mark', 'mark.JPEG', '098765312456', 'mark@gmail.com', 'Jl. Kwangya 1000'),
+(1, 'plg001', 'Mark', 'mark.JPEG', '098765', 'mark@gmail.com', 'Jl. Kwangya 1000'),
 (2, 'plg002', 'Haechan', 'foto_default.PNG', '081234567890', 'haechan@email.com', 'Seoul 101'),
 (3, 'plg003', 'Johnny', 'foto_default.png', '09876531245667', 'jo@email.com', 'nct nation');
 
@@ -196,7 +242,8 @@ INSERT INTO `pengguna` (`idPengguna`, `kodePengguna`, `username`, `password`, `l
 (1, 'pnjl001', 'Lee Jeno', '123', 'penjual', '1'),
 (2, 'plg001', 'Mark', '123', 'Pelanggan', '1'),
 (3, 'plg002', 'Haechan', '123', 'Pelanggan', '1'),
-(4, 'plg003', 'Johnny', '123', 'Pelanggan', '1');
+(4, 'plg003', 'Johnny', '123', 'Pelanggan', '1'),
+(5, 'adm001', 'admin', '123', 'admin', '1');
 
 -- --------------------------------------------------------
 
@@ -305,21 +352,29 @@ CREATE TABLE `varianbarang` (
 --
 
 INSERT INTO `varianbarang` (`idVarian`, `kodeBarang`, `idGambarVarian`, `typeVarian`, `size`, `harga`, `stok`) VALUES
-(1, 'br001', 1, 'pink', 'L', '200000', 12),
 (2, ' br002', 2, 'pink', 'XL', '120000', 10),
 (3, 'br003', 3, 'hitam', 'L', '750000', 5),
 (4, 'br004', 4, 'lengan panjang', 'L', '56000', 120),
 (5, 'br005', 5, 'celana hitam', 'L', '299999', 20),
-(26, 'br008', 18, 'Hitam', 'L', '90000', 20),
-(50, 'br007', 16, 'Hitam', 'L', '127000', 20),
-(51, 'br007', 16, 'Hitam', 'M', '127500', 10),
-(52, 'br007', 17, 'Hitam Putih', 'L', '100000', 10),
-(53, 'br009', 21, 'Hitam Putih', 'L', '200000', 10),
-(54, 'br009', 21, 'Hitam Putih', 'M', '30000', 2);
+(80, 'br001', 1, 'pink', 'L', '200000', 12),
+(98, 'br007', 16, 'Hitam', 'L', '127000', 20),
+(99, 'br007', 16, 'Hitam', 'M', '127500', 10),
+(100, 'br007', 17, 'Hitam Putih', 'L', '100000', 10),
+(122, 'br009', 21, 'Hitam Putih', 'L', '20000', 10),
+(123, 'br009', 21, 'Hitam Putih', 'M', '29999', 2),
+(124, 'br009', 21, 'Hitam Putih', 'S', '129000', 1),
+(125, 'br008', 18, 'Hitam', 'L', '90000', 20);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `admin`
+--
+ALTER TABLE `admin`
+  ADD PRIMARY KEY (`idAdmin`),
+  ADD UNIQUE KEY `kodeAdmin` (`kodeAdmin`);
 
 --
 -- Indexes for table `barang`
@@ -357,6 +412,14 @@ ALTER TABLE `gambarvarian`
 ALTER TABLE `kategoribarang`
   ADD PRIMARY KEY (`idKategori`),
   ADD UNIQUE KEY `kodeKategori` (`kodeKategori`);
+
+--
+-- Indexes for table `keranjang`
+--
+ALTER TABLE `keranjang`
+  ADD PRIMARY KEY (`idKeranjang`),
+  ADD KEY `idVarian` (`idVarian`),
+  ADD KEY `idPengguna` (`idPengguna`);
 
 --
 -- Indexes for table `pelanggan`
@@ -412,10 +475,16 @@ ALTER TABLE `varianbarang`
 --
 
 --
+-- AUTO_INCREMENT for table `admin`
+--
+ALTER TABLE `admin`
+  MODIFY `idAdmin` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `barang`
 --
 ALTER TABLE `barang`
-  MODIFY `idBarang` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
+  MODIFY `idBarang` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
 
 --
 -- AUTO_INCREMENT for table `detail_transaksi`
@@ -427,19 +496,25 @@ ALTER TABLE `detail_transaksi`
 -- AUTO_INCREMENT for table `gambarutama`
 --
 ALTER TABLE `gambarutama`
-  MODIFY `idGambar` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=136;
+  MODIFY `idGambar` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=137;
 
 --
 -- AUTO_INCREMENT for table `gambarvarian`
 --
 ALTER TABLE `gambarvarian`
-  MODIFY `idGambarVarian` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `idGambarVarian` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `kategoribarang`
 --
 ALTER TABLE `kategoribarang`
   MODIFY `idKategori` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `keranjang`
+--
+ALTER TABLE `keranjang`
+  MODIFY `idKeranjang` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `pelanggan`
@@ -481,7 +556,7 @@ ALTER TABLE `transaksi`
 -- AUTO_INCREMENT for table `varianbarang`
 --
 ALTER TABLE `varianbarang`
-  MODIFY `idVarian` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `idVarian` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=126;
 
 --
 -- Constraints for dumped tables
@@ -511,6 +586,13 @@ ALTER TABLE `gambarutama`
 --
 ALTER TABLE `gambarvarian`
   ADD CONSTRAINT `gambarvarian_ibfk_2` FOREIGN KEY (`kodeBarang`) REFERENCES `barang` (`kodeBarang`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+--
+-- Constraints for table `keranjang`
+--
+ALTER TABLE `keranjang`
+  ADD CONSTRAINT `keranjang_ibfk_1` FOREIGN KEY (`idVarian`) REFERENCES `varianbarang` (`idVarian`),
+  ADD CONSTRAINT `keranjang_ibfk_2` FOREIGN KEY (`idPengguna`) REFERENCES `pengguna` (`idPengguna`);
 
 --
 -- Constraints for table `transaksi`
