@@ -1,4 +1,5 @@
 <?php
+//session_start();
 include '../config/database.php';
 ?>
 
@@ -64,7 +65,7 @@ include '../config/database.php';
             <a href="index.php?page=barang" class="btn btn-dark">Pilih Barang</a>
         </div>
 
-        <form method="POST">
+        <form method="POST" action="index.php?page=keranjang">
         <div class="card mb-4">
             <div class="card-body">
                 <table class="table table-bordered table-striped">
@@ -150,6 +151,12 @@ include '../config/database.php';
         return 'Rp' + angka.toLocaleString('id-ID');
     }
 
+    function updateTotalPerItem(id) {
+        const harga = parseInt(document.querySelector('.total-per-item[data-id="' + id + '"]').getAttribute('data-harga'));
+        const jumlah = parseInt(document.querySelector('input[name="jumlah[' + id + ']"]').value);
+        document.querySelector('.total-per-item[data-id="' + id + '"]').innerText = formatRupiah(harga * jumlah);
+    }
+
     function hitungTotalDipilih() {
         let total = 0;
         document.querySelectorAll('.pilih-item:checked').forEach(item => {
@@ -166,6 +173,7 @@ include '../config/database.php';
             const id = btn.getAttribute('data-id');
             const input = document.querySelector('input[name="jumlah[' + id + ']"]');
             input.value = parseInt(input.value) + 1;
+            updateTotalPerItem(id);
             hitungTotalDipilih();
         });
     });
@@ -176,14 +184,22 @@ include '../config/database.php';
             const input = document.querySelector('input[name="jumlah[' + id + ']"]');
             if (parseInt(input.value) > 1) {
                 input.value = parseInt(input.value) - 1;
+                updateTotalPerItem(id);
                 hitungTotalDipilih();
             }
         });
     });
 
-    document.querySelectorAll('.pilih-item, .jumlah-input').forEach(elem => {
-        elem.addEventListener('input', hitungTotalDipilih);
-        elem.addEventListener('change', hitungTotalDipilih);
+    document.querySelectorAll('.jumlah-input').forEach(input => {
+        input.addEventListener('input', () => {
+            const id = input.getAttribute('data-id');
+            updateTotalPerItem(id);
+            hitungTotalDipilih();
+        });
+    });
+
+    document.querySelectorAll('.pilih-item').forEach(cb => {
+        cb.addEventListener('change', hitungTotalDipilih);
     });
 
     function konfirmasiCheckout() {

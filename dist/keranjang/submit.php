@@ -20,26 +20,32 @@ $tanggal = date('Y-m-d');
 $kodePelanggan = $_SESSION['kodePengguna'];
 
 // Simpan transaksi utama
-$simpan_transaksi = mysqli_query($kon, "INSERT INTO transaksi (kodeTransaksi, kodePelanggan, tanggal) VALUES ('$kodeTransaksi','$kodePelanggan','$tanggal')");
+$simpan_transaksi = mysqli_query($kon, 
+    "INSERT INTO transaksi (kodeTransaksi, kodePelanggan, tanggal) 
+     VALUES ('$kodeTransaksi','$kodePelanggan','$tanggal')"
+);
 
 $sukses_detail = true;
 
 foreach ($_POST['pilih'] as $idVarian) {
     $jumlah = isset($_POST['jumlah'][$idVarian]) ? intval($_POST['jumlah'][$idVarian]) : 0;
-    $harga = isset($_POST['harga'][$idVarian]) ? floatval($_POST['harga'][$idVarian]) : 0;
 
-    if ($jumlah <= 0 || $harga <= 0) {
+    // Ambil kodeBarang dan harga dari varianBarang
+    $result = mysqli_query($kon, "SELECT kodeBarang, harga FROM varianBarang WHERE idVarian='$idVarian'");
+    $row = mysqli_fetch_assoc($result);
+
+    if (!$row) {
         $sukses_detail = false;
+        echo "<p style='color:red;'>Data varian tidak ditemukan untuk idVarian $idVarian</p>";
         break;
     }
 
-    // Ambil kodeBarang dari varianBarang
-    $result = mysqli_query($kon, "SELECT kodeBarang FROM varianBarang WHERE idVarian='$idVarian'");
-    $row = mysqli_fetch_assoc($result);
-    $kodeBarang = $row ? $row['kodeBarang'] : '';
+    $kodeBarang = $row['kodeBarang'];
+    $harga = $row['harga'];
 
-    if (empty($kodeBarang)) {
+    if ($jumlah <= 0 || $harga <= 0) {
         $sukses_detail = false;
+        echo "<p style='color:red;'>Jumlah atau harga tidak valid untuk idVarian $idVarian. Jumlah: $jumlah, Harga: $harga</p>";
         break;
     }
 
@@ -54,7 +60,7 @@ foreach ($_POST['pilih'] as $idVarian) {
 
     if (!$simpan_detail) {
         $sukses_detail = false;
-        echo "<p style='color:red;'>".mysqli_error($kon)."</p>"; // tampilkan error SQL
+        echo "<p style='color:red;'>".mysqli_error($kon)."</p>";
         break;
     }
 
@@ -67,7 +73,7 @@ if ($simpan_transaksi && $sukses_detail) {
     mysqli_query($kon, "COMMIT");
     echo "<div style='text-align:center; padding:50px;'>
         <h3>Transaksi berhasil disimpan!</h3>
-        <a href='../../transaksi/detail-transaksi/index.php?kodeTransaksi=$kodeTransaksi' class='btn btn-success'>Lihat Detail Transaksi</a>
+        <a href='../../transaksi/detail-peminjaman/index.php?kodeTransaksi=$kodeTransaksi' class='btn btn-success'>Lihat Detail Transaksi</a>
         <a href='../../index.php?page=transaksi' class='btn btn-secondary'>Kembali ke Daftar Transaksi</a>
     </div>";
 } else {
