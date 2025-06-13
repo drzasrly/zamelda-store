@@ -255,6 +255,9 @@
                             case 'input-transaksi':
                                 include "transaksi/input-transaksi.php";
                                 break;
+                            case 'transaksi':
+                                include "transaksi/index.php";
+                                break;
                             case 'daftar-transaksi':
                                 include "transaksi/index.php";
                                 break;
@@ -277,7 +280,7 @@
                                 include "keranjang/booking.php";
                                 break;
                             case 'transaksi-saya':
-                                include "transaksi/pelanggan/index.php";
+                                include "transaksi/index.php";
                                 break;
                             case 'profil':
                                 include "profil/index.php";
