@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
     $('title').text('Checkout');
 </script>
 <?php
@@ -79,4 +79,4 @@
             </div>
         </div>
     </div>
-</main>
+</main> -->

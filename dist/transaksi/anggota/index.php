@@ -1,38 +1,38 @@
 <script>
-    $('title').text('Peminjaman Saya');
+    $('title').text('Transaksi Saya');
 </script>
 <main>
     <div class="container-fluid">
-        <h2 class="mt-4">Peminjaman Saya</h2>
+        <h2 class="mt-4">Transaksi Saya</h2>
         <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item active">Daftar Peminjaman</li>
+            <li class="breadcrumb-item active">Daftar Transaksi</li>
         </ol>
         <div class="card mb-4">
             <div class="card-body">
                 <div class="collapse show">
                     <!-- form -->
                     <form action="<?php echo $_SERVER["PHP_SELF"];?>" method="get">
-                        <input type="hidden" name="page" value="peminjaman-saya"/>
+                        <input type="hidden" name="page" value="Transaksi-saya"/>
                         <div class="form-row">
                             <div class="col-sm-4">
                                 <div class="form-group">
-                                    <select class="form-control" name="kode_peminjaman" id="kode_peminjaman">
+                                    <select class="form-control" name="kodeTransaksi" id="kodeTransaksi">
                                         <option value="">Pilih Kode</option>
                                         <?php
                                             include '../config/database.php';
-                                            $kode_anggota = $_SESSION['kode_pengguna'];
-                                            $sql = "SELECT kode_peminjaman FROM peminjaman WHERE kode_anggota='$kode_anggota'";
+                                            $kodePelanggan = $_SESSION['kodePengguna'];
+                                            $sql = "SELECT kodeTransaksi FROM Transaksi WHERE kodePelanggan='$kodePelanggan'";
                                             $ket = "";
                                             $hasil = mysqli_query($kon, $sql);
                                             $no = 0;
                                             while ($data = mysqli_fetch_array($hasil)):
                                                 $no++;
-                                                if (isset($_GET['kode_peminjaman'])) {
-                                                    $kode_peminjaman = trim($_GET['kode_peminjaman']);
-                                                    $ket = ($kode_peminjaman == $data['kode_peminjaman']) ? "selected" : "";
+                                                if (isset($_GET['kodeTransaksi'])) {
+                                                    $kodeTransaksi = trim($_GET['kodeTransaksi']);
+                                                    $ket = ($kodeTransaksi == $data['kodeTransaksi']) ? "selected" : "";
                                                 }
                                         ?>
-                                            <option <?php echo $ket; ?> value="<?php echo $data['kode_peminjaman'];?>"><?php echo $data['kode_peminjaman'];?></option>
+                                            <option <?php echo $ket; ?> value="<?php echo $data['kodeTransaksi'];?>"><?php echo $data['kodeTransaksi'];?></option>
                                         <?php endwhile; ?>
                                     </select>
                                 </div>
@@ -52,8 +52,8 @@
                             <tr>
                                 <th rowspan="2">No</th>
                                 <th rowspan="2">Kode</th>
-                                <th rowspan="2">Pustaka</th>
-                                <th colspan="2">Waktu Peminjaman</th>
+                                <th rowspan="2">barang</th>
+                                <th colspan="2">Waktu Transaksi</th>
                                 <th rowspan="2">Status</th>
                                 <th rowspan="2">Aksi</th>
                             </tr>
@@ -66,23 +66,23 @@
                         <tbody>
                             <?php
                                 include '../config/database.php';
-                                $kode_anggota = $_SESSION["kode_pengguna"];
+                                $kodePelanggan = $_SESSION["kodePengguna"];
                                 
-                                if (isset($_GET['kode_peminjaman']) && $_GET['kode_peminjaman'] != '') {
-                                    $kode_peminjaman = $_GET['kode_peminjaman'];
+                                if (isset($_GET['kodeTransaksi']) && $_GET['kodeTransaksi'] != '') {
+                                    $kodeTransaksi = $_GET['kodeTransaksi'];
                                     $sql = "SELECT *
-                                            FROM peminjaman p
-                                            INNER JOIN detail_peminjaman d ON d.kode_peminjaman = p.kode_peminjaman
-                                            INNER JOIN pustaka k ON k.kode_pustaka = d.kode_pustaka
-                                            WHERE p.kode_anggota = '$kode_anggota' AND p.kode_peminjaman = '$kode_peminjaman'
-                                            ORDER BY p.kode_peminjaman DESC";
+                                            FROM Transaksi p
+                                            INNER JOIN detail_Transaksi d ON d.kodeTransaksi = p.kodeTransaksi
+                                            INNER JOIN barang k ON k.kodeBarang = d.kodeBarang
+                                            WHERE p.kodePelanggan = '$kodePelanggan' AND p.kodeTransaksi = '$kodeTransaksi'
+                                            ORDER BY p.kodeTransaksi DESC";
                                 } else {
                                     $sql = "SELECT *
-                                            FROM peminjaman p
-                                            INNER JOIN detail_peminjaman d ON d.kode_peminjaman = p.kode_peminjaman
-                                            INNER JOIN pustaka k ON k.kode_pustaka = d.kode_pustaka
-                                            WHERE p.kode_anggota = '$kode_anggota'
-                                            ORDER BY p.kode_peminjaman DESC";
+                                            FROM Transaksi p
+                                            INNER JOIN detail_Transaksi d ON d.kodeTransaksi = p.kodeTransaksi
+                                            INNER JOIN barang k ON k.kodeBarang = d.kodeBarang
+                                            WHERE p.kodePelanggan = '$kodePelanggan'
+                                            ORDER BY p.kodeTransaksi DESC";
                                 }
 
                                 $hasil = mysqli_query($kon, $sql);
@@ -102,10 +102,10 @@
                                         $status = "<span class='badge badge-danger'>Batal</span>";
                                     }
 
-                                    if ($data['tanggal_pinjam'] == '0000-00-00') {
-                                        $tanggal_pinjam = "";
+                                    if ($data['tanggal'] == '0000-00-00') {
+                                        $tanggal = "";
                                     } else {
-                                        $tanggal_pinjam = tanggal(date("Y-m-d", strtotime($data['tanggal_pinjam'])));
+                                        $tanggal = tanggal(date("Y-m-d", strtotime($data['tanggal'])));
                                     }
                                     if ($data['tanggal_kembali'] == '0000-00-00') {
                                         $tanggal_kembali = "";
@@ -115,17 +115,17 @@
                             ?>
                                 <tr>
                                     <td><?php echo $no; ?></td>
-                                    <td><?php echo $data['kode_peminjaman']; ?></td>
-                                    <td><?php echo $data['judul_pustaka']; ?></td>
-                                    <td><?php echo $tanggal_pinjam; ?></td>
+                                    <td><?php echo $data['kodeTransaksi']; ?></td>
+                                    <td><?php echo $data['namaBarang']; ?></td>
+                                    <td><?php echo $tanggal; ?></td>
                                     <td><?php echo $tanggal_kembali; ?></td>
                                     <td><?php echo $status; ?></td>
 
                                     <td>
                                         <?php if ($data['status'] == 1): ?>
-                                            <form action="peminjaman/detail-peminjaman/konfirmasi.php" method="post">
-                                                <input type="hidden" name="kode_peminjaman" value="<?php echo $data['kode_peminjaman']; ?>"/>
-                                                <input type="hidden" name="kode_anggota" value="<?php echo $kode_anggota; ?>"/>
+                                            <form action="Transaksi/detail-Transaksi/konfirmasi.php" method="post">
+                                                <input type="hidden" name="kodeTransaksi" value="<?php echo $data['kodeTransaksi']; ?>"/>
+                                                <input type="hidden" name="kodePelanggan" value="<?php echo $kodePelanggan; ?>"/>
                                                 <input type="submit" class="btn btn-warning" name="ajukan_pengembalian" value="Ajukan Pengembalian">
                                             </form>
                                         <?php endif; ?>
@@ -136,7 +136,7 @@
                     </table>
                 </div>
                 <?php if ($jum != 0): ?>
-                    <a href="peminjaman/detail-peminjaman/invoice.php?kode_peminjaman=<?php if (isset($_GET['kode_peminjaman']) && $_GET['kode_peminjaman'] != '') echo $_GET['kode_peminjaman']; ?>&kode_anggota=<?php echo $kode_anggota; ?>" target="_blank" class="btn btn-dark btn-icon-pdf">
+                    <a href="Transaksi/detail-Transaksi/invoice.php?kodeTransaksi=<?php if (isset($_GET['kodeTransaksi']) && $_GET['kodeTransaksi'] != '') echo $_GET['kodeTransaksi']; ?>&kodePelanggan=<?php echo $kodePelanggan; ?>" target="_blank" class="btn btn-dark btn-icon-pdf">
                         <span class="text"><i class="fas fa-print fa-sm"></i> Cetak</span>
                     </a>
                 <?php endif; ?>
