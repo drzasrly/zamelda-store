@@ -1,38 +1,58 @@
 <?php 
-    session_start();
-    include '../../config/database.php';
+session_start();
+include '../../config/database.php';
 
-    mysqli_query($kon,"START TRANSACTION");
+// Cek apakah ada item yang dipilih
+if (!isset($_POST['pilih']) || empty($_POST['pilih'])) {
+    header("Location:../index.php?page=keranjang&error=tidak_ada_pilihan");
+    exit;
+}
 
-    $query = mysqli_query($kon, "SELECT max(idTransaksi) as idTransaksi_terbesar FROM peminjaman");
-    $data = mysqli_fetch_array($query);
-    $idTransaksi = $data['idTransaksi_terbesar'];
-    $idTransaksi++;
-    $kodePeminjaman = sprintf("%03s", $idTransaksi);
-    $tanggal=date('Y-m-d');
-    $kodeAnggota=$_SESSION['kodePengguna'];
+mysqli_query($kon, "START TRANSACTION");
 
-    $simpan_tabel_peminjaman=mysqli_query($kon,"insert into peminjaman (kodePeminjaman,kodeAnggota,tanggal) values ('$kodePeminjaman','$kodeAnggota','$tanggal')");
+// Buat kode transaksi baru
+$query = mysqli_query($kon, "SELECT MAX(idTransaksi) as idTransaksi_terbesar FROM transaksi");
+$data = mysqli_fetch_array($query);
+$idTransaksi = $data['idTransaksi_terbesar'] + 1;
+$kodeTransaksi = sprintf("%03s", $idTransaksi);
 
-    if(!empty($_SESSION["cart_barang"])) {
-        foreach ($_SESSION["cart_barang"] as $item) {
-            $kodeBarang=$item['kodeBarang'];
-            $status = 0; 
-            $denda = 0;   
-            $simpan_tabel_detail=mysqli_query($kon,"insert into detail_peminjaman (kodePeminjaman, kodeBarang, tanggal) values ('$kodePeminjaman', '$kodeBarang', NOW(), CURRENT_DATE + INTERVAL 7 DAY, 0)");
-        }
+$tanggal = date('Y-m-d');
+$kodePelanggan = $_SESSION['kodePengguna'];
+
+$simpan_transaksi = mysqli_query($kon, "INSERT INTO transaksi (kodeTransaksi, kodePelanggan, tanggal) VALUES ('$kodeTransaksi','$kodePelanggan','$tanggal')");
+
+// Flag untuk pengecekan detail simpan
+$sukses_detail = true;
+
+foreach ($_POST['pilih'] as $idVarian) {
+    // Ambil jumlah dan harga dari POST
+    $jumlah = isset($_POST['jumlah'][$idVarian]) ? intval($_POST['jumlah'][$idVarian]) : 0;
+    $harga = isset($_POST['harga'][$idVarian]) ? floatval($_POST['harga'][$idVarian]) : 0;
+
+    if ($jumlah <= 0 || $harga <= 0) {
+        $sukses_detail = false;
+        break; // Jika data tidak valid, keluar dari loop
     }
 
-    if ($simpan_tabel_peminjaman and $simpan_tabel_detail) {
-        mysqli_query($kon,"COMMIT");
+    $simpan_detail = mysqli_query($kon, "
+        INSERT INTO detail_transaksi (kodeTransaksi, idVarian, jumlah, harga)
+        VALUES ('$kodeTransaksi', '$idVarian', '$jumlah', '$harga')
+    ");
 
-        unset($_SESSION["cart_barang"]);
-        header("Location:../index.php?page=booking&kodePeminjaman=$kodePeminjaman");
-    }
-    else {
-        mysqli_query($kon,"ROLLBACK");
+    if (!$simpan_detail) $sukses_detail = false;
 
-        unset($_SESSION["cart_barang"]);
-        header("Location:../index.php?page=booking&add=gagal");
-    }
+    // Hapus dari keranjang
+    mysqli_query($kon, "DELETE FROM keranjang WHERE idPengguna='{$_SESSION['idPengguna']}' AND idVarian='$idVarian'");
+
+    // Hapus dari session
+    unset($_SESSION['cart_barang'][$idVarian]);
+}
+
+if ($simpan_transaksi && $sukses_detail) {
+    mysqli_query($kon, "COMMIT");
+    header("Location:../index.php?page=booking&kodetransaksi=$kodeTransaksi");
+} else {
+    mysqli_query($kon, "ROLLBACK");
+    header("Location:../index.php?page=booking&add=gagal");
+}
 ?>

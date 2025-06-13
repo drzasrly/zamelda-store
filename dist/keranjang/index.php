@@ -113,6 +113,10 @@ include '../config/database.php';
         <div class="card mb-4">
             <div class="card-body">
                 <table class="table table-bordered table-striped">
+                    <input type="hidden" name="idVarian[]" value="<?= $varian['idVarian'] ?>">
+                    <input type="number" name="jumlah[]" value="<?= $varian['jumlah'] ?>">
+                    <input type="hidden" name="harga[]" value="<?= $varian['harga'] ?>">
+
                     <thead>
                         <tr>
                             <th>Pilih</th>
