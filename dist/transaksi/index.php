@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <script>
     $('title').text('Data transaksi');
 </script>
@@ -37,7 +40,7 @@
 
         <div class="card mb-4">
             <div class="card-header">
-            <?php if ($_SESSION["level"]!="Manajer"): ?>
+            <?php if ($_SESSION["level"]!="Pelanggan"): ?>
             <a href="index.php?page=input-transaksi" class="btn btn-primary" role="button">Input transaksi</a>
             <?php endif; ?>
             </div>
@@ -58,14 +61,14 @@
                         <tbody>
                         <?php
                             // include database
-                            include '../config/database.php';
-                            $sql="select p.kode_transaksi,an.nama_anggota,count(*) as jumlah_pustaka, p                   .tanggal
+                            include '../../config/database.php';
+                            $sql="select p.kodeTransaksi,an.namaPelanggan,count(*) as jumlah, p                   .tanggal
                             from transaksi p
-                            inner join anggota an on an.kode_anggota=p.kode_anggota
-                            inner join detail_transaksi dp on dp.kode_transaksi=p.kode_transaksi
-                            inner join pustaka pk on pk.kode_pustaka=dp.kode_pustaka
-                            group by an.nama_anggota,p.kode_transaksi
-                            order by p.kode_transaksi desc";
+                            inner join pelanggan an on an.kodePelanggan=p.kodePelanggan
+                            inner join detail_transaksi dp on dp.kodeTransaksi=p.kodeTransaksi
+                            inner join barang pk on pk.kodeBarang=dp.kodeBarang
+                            group by an.namaPelanggan,p.kodeTransaksi
+                            order by p.kodeTransaksi desc";
 
                             $hasil=mysqli_query($kon,$sql);
                             $no=0;
@@ -75,7 +78,7 @@
                         ?>
                         <tr>
                             <td><?php echo $no; ?></td>
-                            <td><?php echo $data['kode_transaksi']; ?></td>
+                            <td><?php echo $data['kodeTransaksi']; ?></td>
                             <td>
                                 <?php
                                     
@@ -83,11 +86,11 @@
                                    
                                 ?>
                             </td>
-                            <td><?php echo $data['nama_anggota']; ?></td>
-                            <td><?php echo $data['jumlah_pustaka']; ?> Pustaka</td>
+                            <td><?php echo $data['namaPelanggan']; ?></td>
+                            <td><?php echo $data['jumlah']; ?> Pustaka</td>
                             <td>
-                                <a href="index.php?page=detail-transaksi&kode_transaksi=<?php echo $data['kode_transaksi']; ?>" class="btn btn-success btn-circle"><i class="fas fa-mouse-pointer"></i></a>
-                                <a href="transaksi/hapus-transaksi.php?kode_transaksi=<?php echo $data['kode_transaksi']; ?>" class="btn-hapus-transaksi btn btn-danger btn-circle" ><i class="fas fa-trash"></i></a>
+                                <a href="index.php?page=detail-transaksi&kodeTransaksi=<?php echo $data['kodeTransaksi']; ?>" class="btn btn-success btn-circle"><i class="fas fa-mouse-pointer"></i></a>
+                                <a href="transaksi/hapus-transaksi.php?kodeTransaksi=<?php echo $data['kodeTransaksi']; ?>" class="btn-hapus-transaksi btn btn-danger btn-circle" ><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                         <!-- bagian akhir (penutup) while -->

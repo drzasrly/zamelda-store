@@ -73,7 +73,7 @@ if ($simpan_transaksi && $sukses_detail) {
     mysqli_query($kon, "COMMIT");
     echo "<div style='text-align:center; padding:50px;'>
         <h3>Transaksi berhasil disimpan!</h3>
-        <a href='../../transaksi/detail-peminjaman/index.php?kodeTransaksi=$kodeTransaksi' class='btn btn-success'>Lihat Detail Transaksi</a>
+        <a href='../transaksi/index.php?kodeTransaksi=$kodeTransaksi' class='btn btn-success'>Lihat Detail Transaksi</a>
         <a href='../../index.php?page=transaksi' class='btn btn-secondary'>Kembali ke Daftar Transaksi</a>
     </div>";
 } else {
