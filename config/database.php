@@ -1,7 +1,7 @@
 <?php
-    $host="localhost:3306";
+    $host="localhost:3307";
     $user="root";
-    $password="140704";
+    $password="";
     $db="zamalda";
     
     $kon = mysqli_connect($host,$user,$password,$db);
