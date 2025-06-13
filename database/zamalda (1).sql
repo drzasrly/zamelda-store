@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3307
--- Generation Time: Jun 09, 2025 at 09:39 AM
+-- Generation Time: Jun 10, 2025 at 03:19 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -363,7 +363,8 @@ INSERT INTO `varianbarang` (`idVarian`, `kodeBarang`, `idGambarVarian`, `typeVar
 (122, 'br009', 21, 'Hitam Putih', 'L', '20000', 10),
 (123, 'br009', 21, 'Hitam Putih', 'M', '29999', 2),
 (124, 'br009', 21, 'Hitam Putih', 'S', '129000', 1),
-(125, 'br008', 18, 'Hitam', 'L', '90000', 20);
+(128, 'br008', 18, 'Hitam', 'L', '90000', 20),
+(129, 'br008', 18, 'Hitam', 'M', '100000', 10);
 
 --
 -- Indexes for dumped tables
@@ -556,7 +557,7 @@ ALTER TABLE `transaksi`
 -- AUTO_INCREMENT for table `varianbarang`
 --
 ALTER TABLE `varianbarang`
-  MODIFY `idVarian` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=126;
+  MODIFY `idVarian` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=130;
 
 --
 -- Constraints for dumped tables
