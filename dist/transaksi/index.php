@@ -6,9 +6,9 @@ session_start();
 </script>
 <main>
     <div class="container-fluid">
-        <h2 class="mt-4">Data transaksi</h2>
+        <h2 class="mt-4">Data transaksi exacta</h2>
         <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item active">Daftar transaksi</li>
+            <!-- <li class="breadcrumb-item active">Daftar Transaksi</li> -->
         </ol>
         <?php
             //Validasi untuk menampilkan pesan pemberitahuan saat user menambah transaksi
@@ -87,7 +87,7 @@ session_start();
                                 ?>
                             </td>
                             <td><?php echo $data['namaPelanggan']; ?></td>
-                            <td><?php echo $data['jumlah']; ?> Pustaka</td>
+                            <td><?php echo $data['jumlah']; ?> Barang</td>
                             <td>
                                 <a href="index.php?page=detail-transaksi&kodeTransaksi=<?php echo $data['kodeTransaksi']; ?>" class="btn btn-success btn-circle"><i class="fas fa-mouse-pointer"></i></a>
                                 <a href="transaksi/hapus-transaksi.php?kodeTransaksi=<?php echo $data['kodeTransaksi']; ?>" class="btn-hapus-transaksi btn btn-danger btn-circle" ><i class="fas fa-trash"></i></a>
