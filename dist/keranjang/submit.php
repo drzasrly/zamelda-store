@@ -14,7 +14,8 @@ mysqli_query($kon, "START TRANSACTION");
 $query = mysqli_query($kon, "SELECT MAX(idTransaksi) as idTerbesar FROM transaksi");
 $data = mysqli_fetch_array($query);
 $idBaru = $data['idTerbesar'] + 1;
-$kodeTransaksi = sprintf("%03s", $idBaru);
+$kodeTransaksi = "tr". sprintf("%03s", $idBaru);
+
 
 $tanggal = date('Y-m-d');
 $kodePelanggan = $_SESSION['kodePengguna'];
@@ -53,9 +54,9 @@ foreach ($_POST['pilih'] as $idVarian) {
 
     $simpan_detail = mysqli_query($kon, "
         INSERT INTO detail_transaksi 
-        (kodeTransaksi, kodeBarang, idVarian, jumlah, harga, tglTransaksi, status)
+        (kodeTransaksi, kodeBarang, idVarian, tglTransaksi, status) 
         VALUES 
-        ('$kodeTransaksi', '$kodeBarang', '$idVarian', '$jumlah', '$harga', '$tglTransaksi', 'belum dibayar')
+        ('$kodeTransaksi', '$kodeBarang', '$idVarian', '$tglTransaksi', 'belum dibayar')
     ");
 
     if (!$simpan_detail) {
@@ -71,16 +72,15 @@ foreach ($_POST['pilih'] as $idVarian) {
 
 if ($simpan_transaksi && $sukses_detail) {
     mysqli_query($kon, "COMMIT");
-    echo "<div style='text-align:center; padding:50px;'>
-        <h3>Transaksi berhasil disimpan!</h3>
-        <a href='../transaksi/index.php?kodeTransaksi=$kodeTransaksi' class='btn btn-success'>Lihat Detail Transaksi</a>
-        <a href='../../index.php?page=transaksi' class='btn btn-secondary'>Kembali ke Daftar Transaksi</a>
-    </div>";
-} else {
+    header("Location: http://localhost/zamelda-store/dist/index.php?page=transaksi-saya&status=berhasil&kodeTransaksi=$kodeTransaksi");
+    exit;
+}
+ else {
     mysqli_query($kon, "ROLLBACK");
     echo "<div style='text-align:center; padding:50px;'>
         <h3>Transaksi gagal disimpan.</h3>
         <a href='../index.php?page=keranjang' class='btn btn-danger'>Kembali ke Keranjang</a>
     </div>";
 }
+
 ?>
