@@ -1,10 +1,12 @@
 
 <?php 
+
   session_start();
  
   if (!$_SESSION["idPengguna"]){
         header("Location:tampilanAwal.php");
         header("Location:login.php");
+        
   }else {
 
     include '../config/database.php';
@@ -223,7 +225,7 @@
                             if ($_SESSION['level']=='Penjual' or $_SESSION['level']=='penjual'):
                                 echo $_SESSION["namaPenjual"];
                             endif; 
-                            if ($_SESSION['level']=='Pelanggan' or $_SESSION['level']=='pelaanggan'):
+                            if ($_SESSION['level']=='Pelanggan' or $_SESSION['level']=='pelanggan'):
                                 echo $_SESSION["namaPelanggan"];
                             endif; 
                         ?>

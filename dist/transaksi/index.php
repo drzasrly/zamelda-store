@@ -1,24 +1,39 @@
+<?php
+//session_start(); // Wajib di awal untuk gunakan session
 
+// Cek login
+if (!isset($_SESSION["username"])) {
+    header("Location: ../../login.php");
+    exit();
+}
+
+include '../config/database.php';
+
+// Fungsi ubah format tanggal
+function tanggal($tanggal)
+{
+    $bulan = array(
+        1 => 'Januari', 'Februari', 'Maret', 'April',
+        'Mei', 'Juni', 'Juli', 'Agustus',
+        'September', 'Oktober', 'November', 'Desember'
+    );
+    $split = explode('-', $tanggal);
+    return $split[2] . ' ' . $bulan[(int)$split[1]] . ' ' . $split[0];
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <title>Data transaksi</title>
-
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="../../src/templates/css/styles.css">
-
-    <!-- Font Awesome (untuk ikon tombol) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
 <main>
     <div class="container-fluid">
-        <h2 class="mt-4">Data transaksi exacta</h2>
-        <ol class="breadcrumb mb-4">
-            <!-- <li class="breadcrumb-item active">Daftar Transaksi</li> -->
-        </ol>
+        <h2 class="mt-4">Data transaksi</h2>
 
         <?php
         // Notifikasi
@@ -37,20 +52,12 @@
                 echo "<div class='alert alert-danger'><strong>Gagal!</strong> Data transaksi gagal dihapus</div>";
             }
         }
-
-        if (isset($_GET['hapus-transaksi'])) {
-            if ($_GET['hapus-transaksi'] == 'berhasil') {
-                echo "<div class='alert alert-success'><strong>Berhasil!</strong> Data transaksi telah dihapus</div>";
-            } else if ($_GET['hapus-transaksi'] == 'gagal') {
-                echo "<div class='alert alert-danger'><strong>Gagal!</strong> Data transaksi gagal dihapus</div>";
-            }
-        }
         ?>
 
         <div class="card mb-4">
             <div class="card-header">
                 <?php if ($_SESSION["level"] != "Pelanggan"): ?>
-                    <a href="index.php?page=input-transaksi" class="btn btn-primary" role="button">Input transaksi</a>
+                    <a href="index.php?page=input-transaksi" class="btn btn-primary">Input transaksi</a>
                 <?php endif; ?>
             </div>
             <div class="card-body">
@@ -68,35 +75,6 @@
                         </thead>
                         <tbody>
                             <?php
-                            include '../config/database.php';
-
-<<<<<<< HEAD
-                            $hasil=mysqli_query($kon,$sql);
-                            $no=0;
-                            //Menampilkan data dengan perulangan while
-                            while ($data = mysqli_fetch_array($hasil)):
-                            $no++;
-                        ?>
-                        <tr>
-                            <td><?php echo $no; ?></td>
-                            <td><?php echo $data['kodeTransaksi']; ?></td>
-                            <td>
-                                <?php
-                                    
-                                        echo  tanggal(date('Y-m-d', strtotime($data['tanggal']))); 
-                                   
-                                ?>
-                            </td>
-                            <td><?php echo $data['namaPelanggan']; ?></td>
-                            <td><?php echo $data['jumlah']; ?> Barang</td>
-                            <td>
-                                <a href="index.php?page=detail-transaksi&kodeTransaksi=<?php echo $data['kodeTransaksi']; ?>" class="btn btn-success btn-circle"><i class="fas fa-mouse-pointer"></i></a>
-                                <a href="transaksi/hapus-transaksi.php?kodeTransaksi=<?php echo $data['kodeTransaksi']; ?>" class="btn-hapus-transaksi btn btn-danger btn-circle" ><i class="fas fa-trash"></i></a>
-                            </td>
-                        </tr>
-                        <!-- bagian akhir (penutup) while -->
-                        <?php endwhile; ?>
-=======
                             $sql = "SELECT p.kodeTransaksi, an.namaPelanggan, COUNT(*) AS jumlah, p.tanggal
                                     FROM transaksi p
                                     INNER JOIN pelanggan an ON an.kodePelanggan = p.kodePelanggan
@@ -104,12 +82,11 @@
                                     INNER JOIN barang pk ON pk.kodeBarang = dp.kodeBarang
                                     GROUP BY an.namaPelanggan, p.kodeTransaksi
                                     ORDER BY p.kodeTransaksi DESC";
->>>>>>> c8a69d93b4c0393f55854304a390d3e7a3620f56
 
                             $hasil = mysqli_query($kon, $sql);
                             $no = 0;
 
-                            while ($data = mysqli_fetch_array($hasil)) {
+                            while ($data = mysqli_fetch_array($hasil)):
                                 $no++;
                             ?>
                             <tr>
@@ -119,15 +96,11 @@
                                 <td><?= $data['namaPelanggan']; ?></td>
                                 <td><?= $data['jumlah']; ?> Barang</td>
                                 <td>
-                                    <a href="index.php?page=detail-transaksi&kodeTransaksi=<?= $data['kodeTransaksi']; ?>" class="btn btn-success btn-circle">
-                                        <i class="fas fa-mouse-pointer"></i>
-                                    </a>
-                                    <a href="transaksi/hapus-transaksi.php?kodeTransaksi=<?= $data['kodeTransaksi']; ?>" class="btn-hapus-transaksi btn btn-danger btn-circle">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
+                                    <a href="index.php?page=detail-transaksi&kodeTransaksi=<?= $data['kodeTransaksi']; ?>" class="btn btn-success btn-circle"><i class="fas fa-mouse-pointer"></i></a>
+                                    <a href="transaksi/hapus-transaksi.php?kodeTransaksi=<?= $data['kodeTransaksi']; ?>" class="btn-hapus-transaksi btn btn-danger btn-circle"><i class="fas fa-trash"></i></a>
                                 </td>
                             </tr>
-                            <?php } ?>
+                            <?php endwhile; ?>
                         </tbody>
                     </table>
                 </div>
@@ -136,7 +109,6 @@
     </div>
 </main>
 
-<!-- Modal -->
 <div class="modal fade" id="modal">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -144,11 +116,9 @@
                 <h4 class="modal-title" id="judul"></h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-
             <div class="modal-body">
-                <div id="tampil_data"><!-- Data dari AJAX --></div>
+                <div id="tampil_data"></div>
             </div>
-
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
@@ -156,35 +126,18 @@
     </div>
 </div>
 
-<!-- jQuery & Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-
-<!-- DataTables JS -->
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
 <script>
-    $(document).ready(function () {
-        $('#tabel_transaksi').DataTable();
+$(document).ready(function () {
+    $('#tabel_transaksi').DataTable();
 
-        $('.btn-hapus-transaksi').on('click', function () {
-            return confirm("Yakin ingin menghapus data transaksi ini?");
-        });
+    $('.btn-hapus-transaksi').on('click', function () {
+        return confirm("Yakin ingin menghapus data transaksi ini?");
     });
+});
 </script>
-
-<?php
-// Fungsi ubah format tanggal
-function tanggal($tanggal)
-{
-    $bulan = array(
-        1 => 'Januari', 'Februari', 'Maret', 'April',
-        'Mei', 'Juni', 'Juli', 'Agustus',
-        'September', 'Oktober', 'November', 'Desember'
-    );
-    $split = explode('-', $tanggal);
-    return $split[2] . ' ' . $bulan[(int)$split[1]] . ' ' . $split[0];
-}
-?>
 
 </body>
 </html>
