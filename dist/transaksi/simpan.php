@@ -1,61 +1,82 @@
 <?php
-    //Memulai session dan koneksi database
-    session_start();
-    include '../../config/database.php';
+session_start();
+include '../../config/database.php';
+
+// Mulai transaksi database
+mysqli_query($kon, "START TRANSACTION");
+
+// Generate kode transaksi baru                               nnn                                     b bb v m                              c 
+$query = mysqli_query($kon, "SELECT MAX(idTransaksi) AS idTerbesar FROM transaksi");
+$data = mysqli_fetch_array($query);
+$kodeTransaksi = $data['idTerbesar'] + 1;
+$kodeTransaksi = 'tr'.sprintf("%03s", $kodeTransaksi);
+
+// Ambil data utama
+$kodePelanggan = isset($_GET['kodePelanggan']) ? $_GET['kodePelanggan'] : '';
+$tanggal = date('Y-m-d');
+$status = "1";
+
+// Simpan ke tabel transaksi (dengan tanggal di sini saja)
+$simpan_tabel_transaksi = mysqli_query($kon, "INSERT INTO transaksi (kodeTransaksi, kodePelanggan, tanggal) VALUES ('$kodeTransaksi','$kodePelanggan','$tanggal')");
+
+// Inisialisasi status semua operasi detail
+$semua_detail_berhasil = true;
+
+if (!empty($_SESSION["cart_barang"])) {
+    foreach ($_SESSION["cart_barang"] as $item) {
+    $kodeBarang = $item['kodeBarang'];
+    $status = "1";
+
+    // Ambil idVarian dari tabel varianbarang pakai JOIN
+    $queryVarian = mysqli_query($kon, "
+        SELECT v.idVarian, v.stok 
+        FROM varianbarang v
+        INNER JOIN barang b ON v.kodeBarang = b.kodeBarang
+        WHERE v.kodeBarang = '$kodeBarang' AND v.stok > 0 LIMIT 1
+    ");
+
+    if ($row = mysqli_fetch_array($queryVarian)) {
+        $idVarian = $row['idVarian'];
+        $stok_baru = $row['stok'] - 1;
+
+        // Simpan detail transaksi dengan idVarian
+       $simpan_detail = mysqli_query($kon, "INSERT INTO detail_transaksi 
+    (kodeTransaksi, kodeBarang, status, tglTransaksi) 
+    VALUES 
+    ('$kodeTransaksi', '$kodeBarang', '$status', '$tanggal')");
 
 
-
-        //Memulai transaksi
-        mysqli_query($kon,"START TRANSACTION");
-
-        $query = mysqli_query($kon, "SELECT max(id_peminjaman) as id_peminjaman_terbesar FROM peminjaman");
-        $data = mysqli_fetch_array($query);
-        $id_peminjaman = $data['id_peminjaman_terbesar'];
-        $id_peminjaman++;
-        $kode_peminjaman = sprintf("%05s", $id_peminjaman);
-        
-        $kode_anggota=$_GET['kode_anggota'];
-        $tanggal_pinjam=date('Y-m-d');
-        $status="1";
-    
-        $simpan_tabel_peminjaman=mysqli_query($kon,"insert into peminjaman (kode_peminjaman,kode_anggota,tanggal) values ('$kode_peminjaman','$kode_anggota','$tanggal_pinjam')");
-    
-
-
-        //Simpan detail transaksi
-        if(!empty($_SESSION["cart_pustaka"])):
-            foreach ($_SESSION["cart_pustaka"] as $item):
-                $kode_pustaka=$item['kode_pustaka'];
-                $simpan_detail_peminjaman=mysqli_query($kon,"insert into detail_peminjaman (kode_peminjaman,kode_pustaka,tanggal_pinjam,status) values ('$kode_peminjaman','$kode_pustaka','$tanggal_pinjam','$status')");
-            
-                $ambil_pustaka= mysqli_query($kon, "SELECT stok FROM pustaka where kode_pustaka='$kode_pustaka'");
-                $data = mysqli_fetch_array($ambil_pustaka); 
-                $stok=$data['stok']-1;
-    
-                //Update stok pustaka
-                $update_stok=mysqli_query($kon,"update pustaka set stok=$stok where kode_pustaka='$kode_pustaka'");
-            
-            endforeach;
-        endif;
-
-        //Kondisi apakah berhasil atau tidak dalam mengeksekusi beberapa query diatas
-        if ($simpan_tabel_peminjaman and $simpan_detail_peminjaman and $update_stok) {
-            //and $simpan_detail_peminjaman and $update_stok  and $simpan_aktivitas
-            //Jika semua query berhasil, lakukan commit
-            mysqli_query($kon,"COMMIT");
-
-            //Kosongkan kerangjang belanja
-            unset($_SESSION["cart_pustaka"]);
-            header("Location:../index.php?page=daftar-peminjaman&add=berhasil");
+        if (!$simpan_detail) {
+            $semua_detail_berhasil = false;
+            break;
         }
-        else {
-            //Jika ada query yang gagal, lakukan rollback
-            mysqli_query($kon,"ROLLBACK");
 
-            //Kosongkan kerangjang belanja
-            unset($_SESSION["cart_pustaka"]);
-            header("Location:../index.php?page=daftar-peminjaman&add=gagal");
+        // Update stok
+        $update_stok = mysqli_query($kon, "
+            UPDATE varianbarang SET stok = $stok_baru WHERE idVarian = '$idVarian'
+        ");
+
+        if (!$update_stok) {
+            $semua_detail_berhasil = false;
+            break;
         }
-    
+    } else {
+        $semua_detail_berhasil = false;
+        break;
+    }
+}
 
+
+}
+
+// Finalisasi transaksi
+if ($simpan_tabel_transaksi && $semua_detail_berhasil) {
+    mysqli_query($kon, "COMMIT");
+    unset($_SESSION["cart_barang"]);
+    header("Location:../index.php?page=daftar-transaksi&add=berhasil");
+} else {
+    mysqli_query($kon, "ROLLBACK");
+    unset($_SESSION["cart_barang"]);
+    header("Location:../index.php?page=daftar-transaksi&add=gagal");
+}
 ?>
