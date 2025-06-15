@@ -77,21 +77,25 @@ $pdf->Cell(60, 6, 'Status', 1, 1, 'C');
 $pdf->SetFont('Arial', '', 10);
 $no = 0;
 
+// Peta status
+$statusMap = [
+    'belum dibayar' => 'Belum Dibayar',
+    'dikemas' => 'Dikemas',
+    'dikirim' => 'Dikirim',
+    'selesai' => 'Selesai',
+    'dibatalkan' => 'Dibatalkan'
+];
+
+// Jalankan lagi query untuk isi tabel
 $hasil = mysqli_query($kon, $sql);
 while ($data = mysqli_fetch_array($hasil)) {
     $no++;
 
-    // Konversi status
-    switch ($data['status']) {
-        case 0: $status = "Belum Dibayar"; break;
-        case 1: $status = "Dikemas"; break;
-        case 2: $status = "Dikirim"; break;
-        case 3: $status = "Selesai"; break;
-        case 4: $status = "Dibatalkan"; break;
-        default: $status = "Tidak Diketahui"; break;
-    }
+    $status = isset($statusMap[$data['status']]) ? $statusMap[$data['status']] : 'Tidak Diketahui';
 
-    $tanggal = ($data['tglTransaksi'] == '0000-00-00' || $data['tglTransaksi'] == null) ? '-' : date("d/m/Y", strtotime($data['tglTransaksi']));
+    $tanggal = ($data['tglTransaksi'] == '0000-00-00' || $data['tglTransaksi'] == null) 
+                ? '-' 
+                : date("d/m/Y", strtotime($data['tglTransaksi']));
 
     $pdf->Cell(8, 6, $no, 1, 0, 'C');
     $pdf->Cell(72, 6, $data['namaBarang'], 1, 0);
@@ -101,7 +105,10 @@ while ($data = mysqli_fetch_array($hasil)) {
 
 // Fungsi format tanggal Indonesia
 function tanggal($tanggal) {
-    $bulan = [1 => 'Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    $bulan = [
+        1 => 'Januari','Februari','Maret','April','Mei','Juni',
+        'Juli','Agustus','September','Oktober','November','Desember'
+    ];
     $split = explode('-', $tanggal);
     return $split[2] . ' ' . $bulan[(int)$split[1]] . ' ' . $split[0];
 }
@@ -111,7 +118,7 @@ $pdf->Ln(10);
 $tanggalCetak = date('Y-m-d');
 $pdf->Ln(10);
 $pdf->SetFont('Arial','',10);
-$pdf->SetX(140); // Geser ke kanan, bisa disesuaikan (120–140)
+$pdf->SetX(140);
 $pdf->Cell(70, 6, 'Surabaya, ' . tanggal($tanggalCetak), 0, 1, 'L');
 $pdf->SetX(140);
 $pdf->Cell(70, 6, 'Mengetahui,', 0, 1, 'L');
@@ -119,7 +126,6 @@ $pdf->Ln(20);
 $pdf->SetFont('Arial', 'B', 10);
 $pdf->SetX(140);
 $pdf->Cell(70, 6, $pimpinan, 0, 1, 'L');
-
 
 $pdf->Output();
 ?>
