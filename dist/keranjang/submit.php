@@ -1,96 +1,166 @@
-<?php 
+<?php
 session_start();
 include '../../config/database.php';
+require_once '../../config/midtrans_config.php';
 
+if (!isset($_SESSION['kodePengguna'])) {
+    header('Location: ../login.php');
+    exit;
+}
+
+$kodePengguna = $_SESSION['kodePengguna'];
+$idPengguna = $_SESSION['idPengguna'];
+
+// Validasi input
 if (!isset($_POST['pilih']) || empty($_POST['pilih']) || !isset($_POST['metode'])) {
     header("Location: ../index.php?page=keranjang&error=input_invalid");
     exit;
 }
 
 $metode = mysqli_real_escape_string($kon, $_POST['metode']);
-$allowed_methods = ['0', '1', '2', '3', '4'];
-if (!in_array($metode, $allowed_methods)) {
-    die("Metode pembayaran tidak valid.");
-}
+$tanggal = date('Y-m-d H:i:s');
 
-$tanggal = date('Y-m-d');
-$kodePelanggan = $_SESSION['kodePengguna'];
+// Ambil data pelanggan lengkap
+$pelanggan_query = mysqli_query($kon, "SELECT * FROM pelanggan WHERE kodePelanggan='$kodePengguna'");
+if (mysqli_num_rows($pelanggan_query) == 0) {
+    die("Data pelanggan tidak ditemukan.");
+}
+$pelanggan = mysqli_fetch_assoc($pelanggan_query);
+
+$kodePelanggan = $pelanggan['kodePelanggan'];
+$namaPelanggan = $pelanggan['namaPelanggan'];
+$email = $pelanggan['email'];
+$noTelp = $pelanggan['noTelp'];
+$alamat = $pelanggan['alamat'];
+
+// Generate kodeTransaksi unik
+function generateKodeTransaksi($prefix = 'tr') {
+    global $kon;
+    $query = mysqli_query($kon, "SELECT MAX(idTransaksi) AS idTerbesar FROM transaksi");
+    $data = mysqli_fetch_array($query);
+    $idBaru = $data['idTerbesar'] + 1;
+    return $prefix . sprintf("%03s", $idBaru);
+}
+$kodeTransaksi = generateKodeTransaksi();
 
 mysqli_query($kon, "START TRANSACTION");
 
-// Generate kode transaksi
-$q = mysqli_query($kon, "SELECT MAX(idTransaksi) as idTerbesar FROM transaksi");
-$d = mysqli_fetch_assoc($q);
-$idBaru = $d['idTerbesar'] + 1;
-$kodeTransaksi = "tr" . sprintf("%03s", $idBaru);
+// Simpan transaksi ke database
+$simpan_transaksi = mysqli_query($kon, "
+    INSERT INTO transaksi (kodeTransaksi, kodePelanggan, tanggal, metode)
+    VALUES ('$kodeTransaksi', '$kodePelanggan', '$tanggal', '$metode')
+");
 
-// Simpan transaksi
-$simpan_transaksi = mysqli_query($kon, 
-    "INSERT INTO transaksi (kodeTransaksi, kodePelanggan, tanggal, idMetode) 
-     VALUES ('$kodeTransaksi','$kodePelanggan','$tanggal','$metode')"
-);
+if (!$simpan_transaksi) {
+    mysqli_query($kon, "ROLLBACK");
+    die("Gagal menyimpan transaksi: " . mysqli_error($kon));
+}
 
-$sukses_detail = true;
-$error_message = "";
+$total_harga = 0;
+$item_details = [];
 
 foreach ($_POST['pilih'] as $idVarian) {
     $idVarian = intval($idVarian);
-    $jumlah = intval($_POST['jumlah'][$idVarian]);
+    $query = mysqli_query($kon, "
+        SELECT k.jumlah, v.harga, v.stok, v.kodeBarang, b.namaBarang
+        FROM keranjang k
+        JOIN varianBarang v ON k.idVarian = v.idVarian
+        JOIN barang b ON v.kodeBarang = b.kodeBarang
+        WHERE k.idPengguna='$idPengguna' AND k.idVarian='$idVarian'
+    ");
+    if (mysqli_num_rows($query) == 0) {
+        mysqli_query($kon, "ROLLBACK");
+        die("Barang dengan ID $idVarian tidak ditemukan di keranjang.");
+    }
 
-    $result = mysqli_query($kon, "SELECT kodeBarang, harga, stok FROM varianBarang WHERE idVarian='$idVarian'");
-    $row = mysqli_fetch_assoc($result);
-    if (!$row) {
-    // handle varian tidak ditemukan
+    $data = mysqli_fetch_assoc($query);
+    $jumlah = $data['jumlah'];
+    $harga = $data['harga'];
+    $stok = $data['stok'];
+    $kodeBarang = $data['kodeBarang'];
+    $namaBarang = $data['namaBarang'];
+
+    if ($jumlah > $stok) {
+        mysqli_query($kon, "ROLLBACK");
+        die("Stok tidak mencukupi untuk varian ID $idVarian.");
+    }
+
+    $simpan_detail = mysqli_query($kon, "
+        INSERT INTO detail_transaksi (kodeTransaksi, kodeBarang, idVarian, jumlah, status)
+        VALUES ('$kodeTransaksi', '$kodeBarang', '$idVarian', $jumlah, '1')
+    ");
+    if (!$simpan_detail) {
+        mysqli_query($kon, "ROLLBACK");
+        die("Gagal menyimpan detail transaksi.");
+    }
+
+    $update_stok = mysqli_query($kon, "
+        UPDATE varianBarang SET stok = stok - $jumlah WHERE idVarian = '$idVarian'
+    ");
+    if (!$update_stok) {
+        mysqli_query($kon, "ROLLBACK");
+        die("Gagal memperbarui stok.");
+    }
+
+    mysqli_query($kon, "
+        DELETE FROM keranjang WHERE idPengguna = '$idPengguna' AND idVarian = '$idVarian'
+    ");
+
+    $total_harga += $harga * $jumlah;
+
+    $item_details[] = [
+        'id' => $idVarian,
+        'price' => $harga,
+        'quantity' => $jumlah,
+        'name' => $namaBarang
+    ];
 }
-$harga = $row['harga'];
 
-    if (!$row) {
-        $sukses_detail = false;
-        $error_message = "❌ Varian dengan ID $idVarian tidak ditemukan.";
-        break;
-    }
+mysqli_query($kon, "COMMIT");
 
-    if ($jumlah > $row['stok']) {
-        $sukses_detail = false;
-        $error_message = "❌ Stok tidak cukup untuk barang {$row['kodeBarang']}. Sisa stok: {$row['stok']}, diminta: $jumlah.";
-        break;
-    }
+// MIDTRANS SNAP
+if ($metode == '1') {
+    $transaction = [
+        'transaction_details' => [
+            'order_id' => $kodeTransaksi,
+            'gross_amount' => $total_harga
+        ],
+        'item_details' => $item_details,
+        'customer_details' => [
+            'first_name' => $namaPelanggan,
+            'email' => $email,
+            'phone' => $noTelp,
+            'billing_address' => [
+                'first_name' => $namaPelanggan,
+                'email' => $email,
+                'phone' => $noTelp,
+                'address' => $alamat,
+                'city' => 'Jakarta',
+                'postal_code' => '12345',
+                'country_code' => 'IDN'
+            ],
+            'shipping_address' => [
+                'first_name' => $namaPelanggan,
+                'email' => $email,
+                'phone' => $noTelp,
+                'address' => $alamat,
+                'city' => 'Jakarta',
+                'postal_code' => '12345',
+                'country_code' => 'IDN'
+            ]
+        ]
+    ];
 
-    $kodeBarang = $row['kodeBarang'];
-    $tglTransaksi = date('Y-m-d H:i:s');
+    $snapToken = \Midtrans\Snap::getSnapToken($transaction);
 
-    $simpan_detail = mysqli_query($kon, 
-        "INSERT INTO detail_transaksi (kodeTransaksi, kodeBarang, idVarian, tglTransaksi, jumlah,harga, status) 
-         VALUES ('$kodeTransaksi', '$kodeBarang', '$idVarian', '$tglTransaksi', '$jumlah','$harga', '1')"
-    );
+    $_SESSION['snapToken'] = $snapToken;
+    $_SESSION['kodeTransaksi'] = $kodeTransaksi;
 
-    $update_stok = mysqli_query($kon, 
-        "UPDATE varianBarang SET stok = stok - $jumlah WHERE idVarian='$idVarian'"
-    );
-
-    if (!$simpan_detail || !$update_stok) {
-        $sukses_detail = false;
-        $error_message = "❌ Gagal menyimpan detail transaksi untuk barang {$row['kodeBarang']}.";
-        break;
-    }
-
-    unset($_SESSION['cart_barang'][$idVarian]);
-}
-
-if ($simpan_transaksi && $sukses_detail) {
-    mysqli_query($kon, "COMMIT");
-    unset($_SESSION['checkout']);
-    echo "<div style='text-align:center; padding: 50px;'>
-        <h2 style='color: green;'>🎉 Transaksi Berhasil!</h2>
-        <p>Kode Transaksi: <strong>$kodeTransaksi</strong></p>
-        <a href='../index.php?page=transaksi-saya' style='padding: 10px 20px; background: #28a745; color: white; text-decoration: none; border-radius: 5px;'>Lihat Transaksi Saya</a>
-    </div>";
+    header("Location: bayar.php");
+    exit;
 } else {
-    mysqli_query($kon, "ROLLBACK");
-    echo "<div style='text-align:center; padding: 50px;'>
-        <h2 style='color: red;'>❌ Transaksi Gagal</h2>
-        <p>$error_message</p>
-        <a href='../index.php?page=keranjang' style='padding: 10px 20px; background: #dc3545; color: white; text-decoration: none; border-radius: 5px;'>Kembali ke Keranjang</a>
-    </div>";
+    $_SESSION['kodeTransaksi'] = $kodeTransaksi;
+    header("Location: ../transaksi-sukses.php");
+    exit;
 }
 ?>

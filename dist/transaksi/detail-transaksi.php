@@ -124,76 +124,72 @@
                                             <?php echo "<th rowspan='2'>Aksi</th>";?>
                                         <?php endif; 
                                         ?>
-                                        <!-- <th rowspan="2">Aksi</th> -->
                                     </tr>
                                     </thead>
                                     <tbody>
                                    <?php
-include '../config/database.php';
-$kodeTransaksi = $_GET['kodeTransaksi'];
+                                    include '../config/database.php';
+                                    $kodeTransaksi = $_GET['kodeTransaksi'];
 
-// Menampilkan detail penyewaan
-$sql1 = "SELECT * FROM detail_transaksi 
-         INNER JOIN transaksi ON transaksi.kodeTransaksi = detail_transaksi.kodeTransaksi
-         INNER JOIN barang ON barang.kodeBarang = detail_transaksi.kodeBarang 
-         WHERE transaksi.kodeTransaksi = '$kodeTransaksi'";
-$result = mysqli_query($kon, $sql1);
+                                    $sql1 = "SELECT * FROM detail_transaksi 
+                                            INNER JOIN transaksi ON transaksi.kodeTransaksi = detail_transaksi.kodeTransaksi
+                                            INNER JOIN barang ON barang.kodeBarang = detail_transaksi.kodeBarang 
+                                            WHERE transaksi.kodeTransaksi = '$kodeTransaksi'";
+                                    $result = mysqli_query($kon, $sql1);
 
-$no = 1;
-while ($ambil = mysqli_fetch_array($result)):
-    // Status label
-    if ($ambil['status'] == 0) {
-        $status = "<span class='badge badge-dark'>Belum Dibayar</span>";
-    } else if ($ambil['status'] == 1) {
-        $status = "<span class='badge badge-primary'>Dikemas</span>";
-    } else if ($ambil['status'] == 2) {
-        $status = "<span class='badge badge-success'>Dikirim</span>";
-    } else if ($ambil['status'] == 3) {
-        $status = "<span class='badge badge-danger'>Selesai</span>";
-    } else if ($ambil['status'] == 4) {
-        $status = "<span class='badge badge-danger'>Batal</span>";
-    } else {
-        $status = "<span class='badge badge-secondary'>Tidak Diketahui</span>";
-    }
+                                    $no = 1;
+                                    while ($ambil = mysqli_fetch_array($result)):
+                                        if ($ambil['status'] == 0) {
+                                            $status = "<span class='badge badge-dark'>Belum Dibayar</span>";
+                                        } else if ($ambil['status'] == 1) {
+                                            $status = "<span class='badge badge-primary'>Dikemas</span>";
+                                        } else if ($ambil['status'] == 2) {
+                                            $status = "<span class='badge badge-success'>Dikirim</span>";
+                                        } else if ($ambil['status'] == 3) {
+                                            $status = "<span class='badge badge-danger'>Selesai</span>";
+                                        } else if ($ambil['status'] == 4) {
+                                            $status = "<span class='badge badge-danger'>Batal</span>";
+                                        } else {
+                                            $status = "<span class='badge badge-secondary'>Tidak Diketahui</span>";
+                                        }
 
-    // Format tanggal
-    if ($ambil['tanggal'] == '0000-00-00' || empty($ambil['tanggal'])) {
-        $tanggal = "";
-    } else {
-        $tanggal = date("d-m-Y", strtotime($ambil['tanggal']));
-    }
-?>
-<tr>
-    <td><?php echo $no++; ?></td>
-    <td><?php echo $ambil['namaBarang']; ?></td>
-    <td><?php echo $tanggal; ?></td>
-    <td><?php echo $status; ?></td>
-    <?php if (!isset($_SESSION['level']) || $_SESSION['level'] != 'Pelanggan'): ?>
-    <td>
-        <button class="tombol_konfirmasi btn btn-primary btn-circle" 
-                kodePelanggan="<?php echo $kodePelanggan; ?>" 
-                kodeBarang="<?php echo $ambil['kodeBarang']; ?>"  
-                id_detail_transaksi="<?php echo $ambil['id_detail_transaksi']; ?>"  
-                kodeTransaksi="<?php echo $_GET['kodeTransaksi']; ?>"  
-                tanggal="<?php echo $ambil['tanggal']; ?>" 
-                status="<?php echo $ambil['status']; ?>">
-            <i class="fas fa-check"></i>
-        </button>
-        <button class="tombol_edit_transaksi btn btn-warning btn-circle" 
-                id_detail_transaksi="<?php echo $ambil['id_detail_transaksi']; ?>" 
-                kodeTransaksi="<?php echo $_GET['kodeTransaksi']; ?>"  
-                kodeBarang="<?php echo $ambil['kodeBarang']; ?>">
-            <i class="fas fa-edit"></i>
-        </button>
-        <a href="transaksi/detail-transaksi/hapus-transaksi.php?kodeTransaksi=<?php echo $_GET['kodeTransaksi']; ?>&id_detail_transaksi=<?php echo $ambil['id_detail_transaksi'];?>" 
-           class="btn-hapus-transaksi btn btn-danger btn-circle">
-            <i class="fas fa-trash"></i>
-        </a>
-    </td>
-    <?php endif; ?>
-</tr>
-<?php endwhile; ?>
-
+                                        // Format tanggal
+                                        if ($ambil['tanggal'] == '0000-00-00' || empty($ambil['tanggal'])) {
+                                            $tanggal = "";
+                                        } else {
+                                            $tanggal = date("d-m-Y", strtotime($ambil['tanggal']));
+                                        }
+                                    ?>
+                                    <tr>
+                                        <td><?php echo $no++; ?></td>
+                                        <td><?php echo $ambil['namaBarang']; ?></td>
+                                        <td><?php echo $tanggal; ?></td>
+                                        <td><?php echo $status; ?></td>
+                                        <?php if (!isset($_SESSION['level']) || $_SESSION['level'] != 'Pelanggan'): ?>
+                                        <td>
+                                            <button class="tombol_konfirmasi btn btn-primary btn-circle" 
+                                                    kodePelanggan="<?php echo $kodePelanggan; ?>" 
+                                                    kodeBarang="<?php echo $ambil['kodeBarang']; ?>"  
+                                                    id_detail_transaksi="<?php echo $ambil['id_detail_transaksi']; ?>"  
+                                                    kodeTransaksi="<?php echo $_GET['kodeTransaksi']; ?>"  
+                                                    tanggal="<?php echo $ambil['tanggal']; ?>" 
+                                                    status="<?php echo $ambil['status']; ?>">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            <button class="tombol_edit_transaksi btn btn-warning btn-circle" 
+                                                    id_detail_transaksi="<?php echo $ambil['id_detail_transaksi']; ?>" 
+                                                    kodeTransaksi="<?php echo $_GET['kodeTransaksi']; ?>"  
+                                                    kodeBarang="<?php echo $ambil['kodeBarang']; ?>">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <a href="transaksi/detail-transaksi/hapus-transaksi.php?kodeTransaksi=<?php echo $_GET['kodeTransaksi']; ?>&id_detail_transaksi=<?php echo $ambil['id_detail_transaksi'];?>" 
+                                            class="btn-hapus-transaksi btn btn-danger btn-circle">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </td>
+                                        <?php endif; ?>
+                                    </tr>
+                                    <?php endwhile; ?>
                                     </tbody>
                                 </table>
                                 <a href="transaksi/detail-transaksi/invoice.php?kodeTransaksi=<?php echo $kodeTransaksi; ?>" target='blank' class="btn btn-dark btn-icon-pdf"><span class="text"><i class="fas fa-print fa-sm"></i> Cetak</span></a>
@@ -207,7 +203,6 @@ while ($ambil = mysqli_fetch_array($result)):
 </main>
 
 <?php 
-    //Membuat format tanggal
     function tanggal($tanggal)
     {
         $bulan = array (1 =>   'Januari',
