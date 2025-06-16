@@ -30,8 +30,6 @@ if (isset($_POST['edit_transaksi_barang'])) {
     $kodePengguna=$_SESSION["kodePengguna"];
     $waktu=date("Y-m-d h:i:s");
     $log_aktivitas="Edit transaksi barang #$kodeBarang ";
-    $simpan_aktivitas=mysqli_query($kon,"insert into log_aktivitas (waktu,aktivitas,kodePengguna) values ('$waktu','$log_aktivitas',$kodePengguna)");
-
 
     //Kondisi apakah berhasil atau tidak dalam mengeksekusi query diatas
     if ($edit_transaksi_barang) {
@@ -70,10 +68,14 @@ if (isset($_POST['edit_transaksi_barang'])) {
                     <?php
                         include '../../../config/database.php';
                         if ($kodeBarang=='') echo "<option value='0'>-</option>";
-                        $hasil=mysqli_query($kon,"select * from barang order by id_barang asc");
+                        $hasil=mysqli_query($kon,"SELECT vb.*, b.namaBarang 
+                            FROM varianbarang vb 
+                            INNER JOIN barang b ON vb.kodeBarang = b.kodeBarang 
+                            ORDER BY vb.idVarian ASC
+                            ");
                         while ($data = mysqli_fetch_array($hasil)):
                     ?>
-                        <option <?php if ($kodeBarang==$data['kodeBarang']) echo "selected"; ?>  value="<?php echo $data['kodeBarang']; ?>"><?php echo $data['judul_barang']; ?></option>
+                        <option <?php if ($kodeBarang==$data['kodeBarang']) echo "selected"; ?>  value="<?php echo $data['kodeBarang']; ?>"><?php echo $data['namaBarang']; ?></option>
                         <?php endwhile; ?>
                 </select>
             </div>

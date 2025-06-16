@@ -1,6 +1,8 @@
 <?php
 //session_start();
 include '../config/database.php';
+
+$idPengguna = $_SESSION['idPengguna'];
 ?>
 
 <script>
@@ -15,50 +17,32 @@ include '../config/database.php';
     </ol>
 
     <?php
+    // Tambah item ke keranjang
     if (isset($_GET['idVarian'])) {
         $idVarian = $_GET['idVarian'];
         $jumlahBaru = isset($_GET['jumlah']) ? intval($_GET['jumlah']) : 1;
 
-        $query = mysqli_query($kon, "
-            SELECT b.kodeBarang, b.namaBarang, v.idVarian, v.typeVarian, v.size, v.harga, v.stok, g.gambarvarian 
-            FROM varianbarang v
-            INNER JOIN barang b ON v.kodeBarang = b.kodeBarang
-            LEFT JOIN gambarvarian g ON v.idGambarVarian = g.idGambarVarian
-            WHERE v.idVarian='$idVarian'
-        ");
-        $data = mysqli_fetch_array($query);
-
-        if ($data) {
-            if (!isset($_SESSION["cart_barang"])) $_SESSION["cart_barang"] = [];
-
-            if (array_key_exists($idVarian, $_SESSION["cart_barang"])) {
-                $_SESSION["cart_barang"][$idVarian]['jumlah'] += $jumlahBaru;
-            } else {
-                $_SESSION["cart_barang"][$idVarian] = [
-                    'kodeBarang' => $data['kodeBarang'],
-                    'idVarian' => $data['idVarian'],
-                    'namaBarang' => $data['namaBarang'],
-                    'typeVarian' => $data['typeVarian'],
-                    'size' => $data['size'],
-                    'harga' => $data['harga'],
-                    'gambar' => $data['gambarvarian'],
-                    'jumlah' => $jumlahBaru
-                ];
-            }
-
-            $_SESSION['baru_ditambahkan'] = $idVarian;
+        $cek = mysqli_query($kon, "SELECT * FROM keranjang WHERE idPengguna='$idPengguna' AND idVarian='$idVarian'");
+        if (mysqli_num_rows($cek) > 0) {
+            mysqli_query($kon, "UPDATE keranjang SET jumlah = jumlah + $jumlahBaru WHERE idPengguna='$idPengguna' AND idVarian='$idVarian'");
+        } else {
+            mysqli_query($kon, "INSERT INTO keranjang (idPengguna, idVarian, jumlah) VALUES ('$idPengguna', '$idVarian', $jumlahBaru)");
         }
+
+        $_SESSION['baru_ditambahkan'] = $idVarian;
     }
 
+    // Hapus item dari keranjang
     if (isset($_GET['aksi']) && $_GET['aksi'] === "hapus_barang" && isset($_GET['idVarian'])) {
-        unset($_SESSION["cart_barang"][$_GET['idVarian']]);
+        $idVarian = $_GET['idVarian'];
+        mysqli_query($kon, "DELETE FROM keranjang WHERE idPengguna='$idPengguna' AND idVarian='$idVarian'");
     }
 
+    // Update jumlah
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_jumlah'])) {
         foreach ($_POST['jumlah'] as $idVarian => $jumlah) {
-            if (isset($_SESSION['cart_barang'][$idVarian])) {
-                $_SESSION['cart_barang'][$idVarian]['jumlah'] = max(1, intval($jumlah));
-            }
+            $jumlah = max(1, intval($jumlah));
+            mysqli_query($kon, "UPDATE keranjang SET jumlah=$jumlah WHERE idPengguna='$idPengguna' AND idVarian='$idVarian'");
         }
     }
     ?>
@@ -83,18 +67,34 @@ include '../config/database.php';
                     <tbody>
                         <?php
                         $no = 0;
-                        if (!empty($_SESSION["cart_barang"])):
-                            foreach ($_SESSION["cart_barang"] as $idVarian => $item):
+                        $query = mysqli_query($kon, "
+                            SELECT k.idVarian, k.jumlah, 
+                                   b.kodeBarang, b.namaBarang, 
+                                   v.typeVarian, v.size, v.harga, v.stok, 
+                                   g.gambarvarian 
+                            FROM keranjang k
+                            INNER JOIN varianbarang v ON k.idVarian = v.idVarian
+                            INNER JOIN barang b ON v.kodeBarang = b.kodeBarang
+                            LEFT JOIN gambarvarian g ON v.idGambarVarian = g.idGambarVarian
+                            WHERE k.idPengguna = '$idPengguna'
+                        ");
+
+                        if (mysqli_num_rows($query) > 0):
+                            while ($item = mysqli_fetch_assoc($query)):
                                 $no++;
+                                $idVarian = $item['idVarian'];
                                 $jumlah = $item['jumlah'];
                                 $total = $item['harga'] * $jumlah;
                         ?>
                         <tr>
-                            <td><input type="checkbox" class="pilih-item" name="pilih[]" value="<?php echo $idVarian; ?>" <?php if (isset($_SESSION['baru_ditambahkan']) && $_SESSION['baru_ditambahkan'] == $idVarian) echo 'checked'; ?>></td>
+                            <td>
+                                <input type="checkbox" class="pilih-item" name="pilih[]" value="<?= $idVarian ?>"
+                                <?php if (isset($_SESSION['baru_ditambahkan']) && $_SESSION['baru_ditambahkan'] == $idVarian) echo 'checked'; ?>>
+                            </td>
                             <td><?= $no ?></td>
                             <td>
-                                <?php if (!empty($item['gambar'])): ?>
-                                    <img src="../dist/barang/gambar/<?= htmlspecialchars($item['gambar']) ?>" style="width: 80px;">
+                                <?php if (!empty($item['gambarvarian'])): ?>
+                                    <img src="../dist/barang/gambar/<?= htmlspecialchars($item['gambarvarian']) ?>" style="width: 80px;">
                                 <?php else: ?>
                                     <span>Tidak ada gambar</span>
                                 <?php endif; ?>
@@ -120,7 +120,7 @@ include '../config/database.php';
                                 <a href="index.php?page=keranjang&idVarian=<?= $idVarian ?>&aksi=hapus_barang" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
-                        <?php endforeach; unset($_SESSION['baru_ditambahkan']); ?>
+                        <?php endwhile; unset($_SESSION['baru_ditambahkan']); ?>
                         <?php else: ?>
                         <tr><td colspan="9" class="text-center">Keranjang masih kosong.</td></tr>
                         <?php endif; ?>
@@ -184,8 +184,10 @@ document.addEventListener('DOMContentLoaded', function () {
         updateTotalDipilih();
     });
 
-    // Hitung awal
     updateTotalDipilih();
 });
 
+function konfirmasiCheckout() {
+    return confirm("Yakin ingin melanjutkan ke checkout?");
+}
 </script>

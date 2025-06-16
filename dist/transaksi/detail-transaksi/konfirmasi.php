@@ -13,7 +13,7 @@ if (isset($_POST['konfirmasi'])) {
         }
 
         public function updateStok($kon, $jumlah) {
-            $query = "UPDATE barang SET stok = stok + ($jumlah) WHERE kodeBarang='" . mysqli_real_escape_string($kon, $this->kodeBarang) . "'";
+            $query = "UPDATE varianbarang SET stok = stok + ($jumlah) WHERE kodeBarang='$this->kodeBarang'";
             return mysqli_query($kon, $query);
         }
     }
@@ -37,9 +37,9 @@ if (isset($_POST['konfirmasi'])) {
 
         public function updateTransaksi($kon) {
             $sql = "UPDATE detail_transaksi SET 
-                        status = '" . mysqli_real_escape_string($kon, $this->status) . "', 
-                        tglTransaksi = '" . mysqli_real_escape_string($kon, $this->tanggal) . "'
-                    WHERE id_detail_transaksi = '" . mysqli_real_escape_string($kon, $this->id_detail_transaksi) . "'";
+                        status='$this->status', 
+                        tglTransaksi='$this->tanggal' 
+                    WHERE id_detail_transaksi='$this->id_detail_transaksi'";
             return mysqli_query($kon, $sql);
         }
     }
@@ -48,30 +48,13 @@ if (isset($_POST['konfirmasi'])) {
         return isset($data) ? htmlspecialchars(trim($data)) : '';
     }
 
-    // Mapping angka ke enum string
-    $status_map = [
-        '0' => 'belum dibayar',
-        '1' => 'dikemas',
-        '2' => 'dikirim',
-        '3' => 'selesai'
-        // Tambahkan di database enum kalau mau 'dibatalkan' atau 'selesai'
-    ];
-
-    $status_input = input($_POST["status"]);
-    if (!array_key_exists($status_input, $status_map)) {
-        mysqli_query($kon, "ROLLBACK");
-        die("Status tidak valid");
-    }
-
-    $status_enum = $status_map[$status_input];
-
     $kodeBarang = input($_POST["kodeBarang"]);
     $barang = new Barang($kodeBarang);
 
     $transaksi = new Transaksi(
         input($_POST["id_detail_transaksi"]),
         input($_POST["kodeTransaksi"]),
-        $status_enum,
+        input($_POST["status"]),
         input($_POST["kodePelanggan"]),
         date('Y-m-d H:i:s'),
         $barang
@@ -79,9 +62,9 @@ if (isset($_POST['konfirmasi'])) {
 
     $updateTransaksi = $transaksi->updateTransaksi($kon);
 
-    // Update stok jika dibatalkan (hanya jika enum mendukung)
+    // Update stok hanya jika dibatalkan (status = 3), atau selesai (4) bila perlu
     $updateStok = true;
-    if ($status_enum === 'dibatalkan') {
+    if ($transaksi->status == '4') { // Jika dibatalkan
         $updateStok = $barang->updateStok($kon, 1);
     }
 
@@ -95,18 +78,22 @@ if (isset($_POST['konfirmasi'])) {
 }
 ?>
 <form action="transaksi/detail-transaksi/konfirmasi.php" method="post">
-    <input type="hidden" name="id_detail_transaksi" value="<?= htmlspecialchars($_POST['id_detail_transaksi']) ?>"/>
-    <input type="hidden" name="kodeTransaksi" value="<?= htmlspecialchars($_POST['kodeTransaksi']) ?>"/>
-    <input type="hidden" name="kodeBarang" value="<?= htmlspecialchars($_POST['kodeBarang']) ?>"/>
-    <input type="hidden" name="kodePelanggan" value="<?= htmlspecialchars($_POST['kodePelanggan']) ?>"/>
+    <input type="hidden" name="tanggal" value="<?php echo date('Y-m-d'); ?>"/>
+    <input type="hidden" name="id_detail_transaksi" value="<?php echo $_POST['id_detail_transaksi']; ?>"/>
+    <input type="hidden" name="kodeTransaksi" value="<?php echo $_POST['kodeTransaksi']; ?>"/>
+    <input type="hidden" name="kodeBarang" value="<?php echo $_POST['kodeBarang']; ?>"/>
+    <input type="hidden" name="kodePelanggan" value="<?php echo $_POST['kodePelanggan']; ?>"/>
 
     <div class="form-group">
         <label for="status">Status:</label>
         <select class="form-control" name="status" id="status" required>
             <option value="0" <?= $_POST['status'] == '0' ? 'selected' : '' ?>>Belum Dibayar</option>
             <option value="1" <?= $_POST['status'] == '1' ? 'selected' : '' ?>>Dikemas</option>
-            <option value="2" <?= $_POST['status'] == '2' ? 'selected' : '' ?>>Dikirim</option>
-            <option value="3" <?= $_POST['status'] == '3' ? 'selected' : '' ?>>Selesai</option>
+            <?php if ($_POST['status'] >= 1): ?>
+                <option value="2" <?= $_POST['status'] == '2' ? 'selected' : '' ?>>Dikirim</option>
+                <option value="3" <?= $_POST['status'] == '3' ? 'selected' : '' ?>>Selesai</option>
+            <?php endif; ?>
+            <option value="4" <?= $_POST['status'] == '4' ? 'selected' : '' ?>>Dibatalkan</option>
         </select>
     </div>
 
