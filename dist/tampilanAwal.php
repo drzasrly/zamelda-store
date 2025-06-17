@@ -65,7 +65,7 @@ $barangs = mysqli_fetch_all($hasil, MYSQLI_ASSOC);
         .slider-container {
             position: relative;
             width: 100%;
-            height: 100vh;
+            height: 90vh;
             overflow: hidden;
             box-shadow: 0 8px 12px -6px rgba(0, 0, 0, 0.1);
         }
