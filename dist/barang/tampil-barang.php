@@ -67,7 +67,7 @@ while ($row = mysqli_fetch_assoc($barang_query)) {
     <div class="row">
         <div class="col-sm-2">
             <div class="form-group">
-                <button type="button" id="btn-tambah-barang" class="btn btn-warning">
+                <button type="button" id="btn-tambah-barang" class="btn" style="background-color: #706D54; color: white;">
                     <i class="fas fa-book fa-sm"></i> Tambah barang
                 </button>
             </div>
@@ -75,13 +75,13 @@ while ($row = mysqli_fetch_assoc($barang_query)) {
     </div>
 
     <div class="table-responsive col-sm-12">
-        <table class="table table-bordered table-striped">
-            <thead class="thead-dark">
+        <table class="table table-hover table-striped table-bordered align-middle text-center">
+            <thead class="table-dark">
                 <tr>
-                    <th>No</th>
-                    <th>Gambar</th>
-                    <th>Nama Barang</th>
-                    <th>Aksi</th>
+                    <th scope="col">No</th>
+                    <th scope="col">Gambar</th>
+                    <th scope="col">Nama Barang</th>
+                    <th scope="col">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -102,17 +102,17 @@ while ($row = mysqli_fetch_assoc($barang_query)) {
             </tbody>
         </table>
     </div>
-
 <?php else: ?>
     <!-- Pelanggan -->
-    <div class="row">
+    <div class="row row-cols-2 row-cols-md-4 g-4 justify-content-center">
         <?php foreach ($barang_pelanggan as $data): ?>
-            <div class="col-sm-2 mb-4">
-                <div class="card card-barang h-100 shadow-sm btn-detail-barang" style="cursor:pointer"
+            <div class="col">
+                <div class="card card-barang h-100 shadow-sm btn-detail-barang border rounded-4 p-2" style="cursor:pointer"
                     idBarang="<?= $data['idBarang'] ?>" 
                     kodeBarang="<?= $data['kodeBarang'] ?>">
-                    
-                    <img class="card-img-top img-fluid" src="../dist/barang/gambar/<?= htmlspecialchars($data['gambarBarang']) ?>" alt="<?= htmlspecialchars($data['namaBarang']) ?>">
+                    <div class="img-container">
+                        <img class="card-img-top product-img" src="../dist/barang/gambar/<?= htmlspecialchars($data['gambarBarang']) ?>" alt="<?= htmlspecialchars($data['namaBarang']) ?>">
+                    </div>
                     <div class="card-body text-center">
                         <h6 class="card-title mb-1"><?= htmlspecialchars($data['namaBarang']) ?></h6>
                         <p class="text-danger fw-bold mb-0">
@@ -125,6 +125,12 @@ while ($row = mysqli_fetch_assoc($barang_query)) {
                             }
                             ?>
                         </p>
+                        <button type="button"
+                            class="btn-detail-barang btn btn-outline-dark btn-sm mt-2"
+                            idBarang="<?= $data['idBarang'] ?>"
+                            kodeBarang="<?= $data['kodeBarang'] ?>">
+                            Detail
+                        </button>
                     </div>
                 </div>
             </div>
@@ -136,56 +142,50 @@ while ($row = mysqli_fetch_assoc($barang_query)) {
 <div class="modal fade" id="modal">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-
-        <div class="modal-header">
-            <h4 class="modal-title" id="namaBarang"></h4>
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-
-        <div class="modal-body">
-            <div id="tampil_data"></div>  
-        </div>
-
-        <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-        </div>
-
+            <div class="modal-header">
+                <h4 class="modal-title" id="namaBarang"></h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="tampil_data"></div>  
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Tambah barang
-    $('#btn-tambah-barang').on('click',function(){
+$(document).ready(function () {
+    $('#btn-tambah-barang').on('click', function () {
         $.ajax({
             url: 'barang/tambah.php',
             method: 'post',
-            success:function(data){
-                $('#tampil_data').html(data);  
-                $("#namaBarang").text('Tambah Barang Baru');
+            success: function (data) {
+                $('#tampil_data').html(data);
+                $('#namaBarang').text('Tambah Barang Baru');
                 $('#modal').modal('show');
             }
         });
     });
 
-    // Lihat detail barang (semua user)
-    $(document).on('click', '.btn-detail-barang', function(){
+    $(document).on('click', '.btn-detail-barang', function () {
         var idBarang = $(this).attr("idBarang");
         var kodeBarang = $(this).attr("kodeBarang");
 
         $.ajax({
             url: 'barang/detail.php',
             method: 'post',
-            data: {idBarang: idBarang},
-            success:function(data){
-                $('#tampil_data').html(data);  
-                $("#namaBarang").text('Detail Barang #' + kodeBarang);
+            data: { idBarang: idBarang },
+            success: function (data) {
+                $('#tampil_data').html(data);
+                $('#namaBarang').text('Detail Barang #' + kodeBarang);
                 $('#modal').modal('show');
             }
         });
     });
 
-    // Edit barang
     $(document).on('click', '.btn-edit-barang', function () {
         var idBarang = $(this).attr("idBarang");
         var kodeBarang = $(this).attr("kodeBarang");
@@ -205,44 +205,72 @@ while ($row = mysqli_fetch_assoc($barang_query)) {
         });
     });
 
-    // Konfirmasi hapus
-    $(document).on('click', '.btn-hapus', function(){
+    $(document).on('click', '.btn-hapus', function () {
         return confirm("Yakin ingin menghapus barang ini?");
     });
+});
 </script>
+
 <style>
-    .card-barang {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        cursor: pointer;
-        border: none;
-        border-radius: 12px;
-    }
+.card-barang {
+    max-width: 220px;
+    margin: 12px auto; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    border-radius: 16px;
+    background-color: #fff;
+    overflow: hidden;
+    height: 100%;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e0e0e0;
+}
 
-    .card-barang:hover {
-        transform: translateY(-5px) scale(1.02);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        z-index: 5;
-    }
+.card-barang:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
 
-    .card-barang img {
-        border-top-left-radius: 12px;
-        border-top-right-radius: 15px;
-        height: 150px;
-        object-fit: cover;
-    }
+.card-barang .img-container {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    position: relative;
+    overflow: hidden;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    background-color: #f8f9fa;
+}
 
-    .card-barang .card-body {
-        padding: 10px;
-    }
+.card-barang .product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
 
-    .card-barang h6 {
-        font-size: 14px;
-        font-weight: 600;
-    }
+.card-barang .card-body {
+    padding: 12px;
+    text-align: center;
+}
 
-    .card-barang p {
-        font-size: 13px;
-        margin-bottom: 4px;
-    }
+.card-barang h6 {
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 36px;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+.card-barang p {
+    font-size: 12px;
+    margin-bottom: 6px;
+    color: #C0392B;
+}
+
+.row.row-cols-2.row-cols-md-4.g-4 {
+    row-gap: 32px !important; 
+}
 </style>
 

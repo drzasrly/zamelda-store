@@ -9,7 +9,7 @@
             <li class="breadcrumb-item active">Dashboard</li>
         </ol>
 
-        <?php if ($_SESSION["level"] == 'Penjual' || $_SESSION["level"] == 'penjual' or $_SESSION["level"] == 'admin' || $_SESSION["level"] == 'Admin'): ?>
+        <?php if ($_SESSION["level"] == 'Penjual' || $_SESSION["level"] == 'penjual' || $_SESSION["level"] == 'admin' || $_SESSION["level"] == 'Admin'): ?>
         <div class="row">
             <?php
                 include '../config/database.php';
@@ -19,15 +19,15 @@
                 $total_transaksi = mysqli_num_rows($hasil);
             ?>
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card bg-dark text-white mb-4">
+                <div class="card bg-custom-status text-white mb-4">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
-                                <div class="text-xs text-white text-uppercase mb-1">Total Transaksi</div>
-                                <div class="h5 mb-0 font-weight-bold text-dark-800"><?php echo $total_transaksi; ?></div>
+                                <div class="text-xs text-uppercase mb-1">Total Transaksi</div>
+                                <div class="h5 mb-0 font-weight-bold"> <?= $total_transaksi ?> </div>
                             </div>
                             <div class="col-auto">
-                                <i class="fas fa-grip-horizontal fa-2x text-dark-300"></i>
+                                <i class="fas fa-grip-horizontal fa-2x"></i>
                             </div>
                         </div>
                     </div>
@@ -40,15 +40,15 @@
                 $jumlah_pelanggan = mysqli_num_rows($hasil);
             ?>
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card bg-warning text-white mb-4">
+                <div class="card bg-custom-status text-white mb-4">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
-                                <div class="text-xs text-white text-uppercase mb-1">Jumlah Pelanggan</div>
-                                <div class="h5 mb-0 font-weight-bold text-dark-800"><?php echo $jumlah_pelanggan; ?></div>
+                                <div class="text-xs text-uppercase mb-1">Jumlah Pelanggan</div>
+                                <div class="h5 mb-0 font-weight-bold"><?= $jumlah_pelanggan ?></div>
                             </div>
                             <div class="col-auto">
-                                <i class="fas fa-user fa-2x text-dark-300"></i>
+                                <i class="fas fa-user fa-2x"></i>
                             </div>
                         </div>
                     </div>
@@ -61,15 +61,15 @@
                 $jumlah_barang = mysqli_num_rows($hasil);
             ?>
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card bg-success text-white mb-4">
+                <div class="card bg-custom-status text-white mb-4">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
-                                <div class="text-xs text-white text-uppercase mb-1">Jumlah Barang</div>
-                                <div class="h5 mb-0 font-weight-bold text-dark-800"><?php echo $jumlah_barang; ?></div>
+                                <div class="text-xs text-uppercase mb-1">Jumlah Barang</div>
+                                <div class="h5 mb-0 font-weight-bold"><?= $jumlah_barang ?></div>
                             </div>
                             <div class="col-auto">
-                                <i class="fas fa-book fa-2x text-dark-300"></i>
+                                <i class="fas fa-book fa-2x"></i>
                             </div>
                         </div>
                     </div>
@@ -78,16 +78,12 @@
         </div>
         <?php endif; ?>
 
-        <?php 
-        if ($_SESSION["level"] == 'Pelanggan' || $_SESSION["level"] == 'pelanggan'): ?>
+        <?php if ($_SESSION["level"] == 'Pelanggan' || $_SESSION["level"] == 'pelanggan'): ?>
         <div class="row">
-             <?php
+            <?php
                 include '../config/database.php';
                 $kodePelanggan = isset($_SESSION["kodePelanggan"]) ? $_SESSION["kodePelanggan"] : null;
 
-            
-                include '../config/database.php';
-                // STATUS: 0 = Belum Bayar, 1 = Dikemas, 2 = Dikirim, 3 = Selesai, 4 = Dibatalkan
                 function hitungStatus($kon, $kodePelanggan, $status) {
                     $sql = "SELECT p.kodeTransaksi FROM detail_transaksi d
                             INNER JOIN transaksi p ON p.kodeTransaksi = d.kodeTransaksi
@@ -103,25 +99,25 @@
                 $dibatalkan = hitungStatus($kon, $kodePelanggan, '4');
 
                 $statusList = [
-                    ['label' => 'Belum Bayar', 'jumlah' => $belum_bayar, 'bg' => 'warning', 'icon' => 'wallet'],
-                    ['label' => 'Dikemas', 'jumlah' => $dikemas, 'bg' => 'primary', 'icon' => 'box'],
-                    ['label' => 'Dikirim', 'jumlah' => $dikirim, 'bg' => 'success', 'icon' => 'truck'],
-                    ['label' => 'Selesai', 'jumlah' => $selesai, 'bg' => 'info', 'icon' => 'box-open'],
-                    ['label' => 'Dibatalkan', 'jumlah' => $dibatalkan, 'bg' => 'secondary', 'icon' => 'times-circle'],
+                    ['label' => 'Belum Bayar', 'jumlah' => $belum_bayar, 'icon' => 'wallet'],
+                    ['label' => 'Dikemas', 'jumlah' => $dikemas, 'icon' => 'box'],
+                    ['label' => 'Dikirim', 'jumlah' => $dikirim, 'icon' => 'truck'],
+                    ['label' => 'Selesai', 'jumlah' => $selesai, 'icon' => 'box-open'],
+                    ['label' => 'Dibatalkan', 'jumlah' => $dibatalkan, 'icon' => 'times-circle'],
                 ];
             ?>
 
             <?php foreach ($statusList as $status): ?>
                 <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card bg-<?php echo $status['bg']; ?> text-white mb-4">
+                    <div class="card bg-custom-status text-white mb-4">
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
-                                    <div class="text-xs text-white text-uppercase mb-1"><?php echo $status['label']; ?></div>
-                                    <div class="h5 mb-0 font-weight-bold text-dark-800"><?php echo $status['jumlah']; ?></div>
+                                    <div class="text-xs text-uppercase mb-1"><?php echo $status['label']; ?></div>
+                                    <div class="h5 mb-0 font-weight-bold"><?php echo $status['jumlah']; ?></div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fas fa-<?php echo $status['icon']; ?> fa-3x text-dark-300"></i>
+                                    <i class="fas fa-<?php echo $status['icon']; ?> fa-3x"></i>
                                 </div>
                             </div>
                         </div>
