@@ -104,7 +104,7 @@ while ($row = mysqli_fetch_assoc($barang_query)) {
     </div>
 <?php else: ?>
     <!-- Pelanggan -->
-    <div class="row row-cols-2 row-cols-md-4 g-4 justify-content-center">
+    <div class="row row-cols-2 row-cols-md-5 gx-3 gy-3 justify-content-start px-2">
         <?php foreach ($barang_pelanggan as $data): ?>
             <div class="col">
                 <div class="card card-barang h-100 shadow-sm btn-detail-barang border rounded-4 p-2" style="cursor:pointer"
@@ -125,12 +125,12 @@ while ($row = mysqli_fetch_assoc($barang_query)) {
                             }
                             ?>
                         </p>
-                        <button type="button"
+                        <!-- <button type="button"
                             class="btn-detail-barang btn btn-outline-dark btn-sm mt-2"
                             idBarang="<?= $data['idBarang'] ?>"
                             kodeBarang="<?= $data['kodeBarang'] ?>">
                             Detail
-                        </button>
+                        </button> -->
                     </div>
                 </div>
             </div>
@@ -214,7 +214,7 @@ $(document).ready(function () {
 <style>
 .card-barang {
     max-width: 220px;
-    margin: 12px auto; 
+    width: 100%;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
     border-radius: 16px;
@@ -223,6 +223,10 @@ $(document).ready(function () {
     height: 100%;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
     border: 1px solid #e0e0e0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .card-barang:hover {
@@ -235,8 +239,8 @@ $(document).ready(function () {
     aspect-ratio: 1 / 1;
     position: relative;
     overflow: hidden;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
     background-color: #f8f9fa;
 }
 
@@ -251,26 +255,47 @@ $(document).ready(function () {
 }
 
 .card-barang .card-body {
-    padding: 12px;
+    padding: 10px;
     text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 90px;
 }
 
-.card-barang h6 {
+.card-barang h6.card-title {
     font-size: 13px;
     font-weight: 600;
-    min-height: 36px;
+    min-height: 38px;
     margin-bottom: 6px;
     color: #333;
+    line-height: 1.3;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 .card-barang p {
     font-size: 12px;
-    margin-bottom: 6px;
     color: #C0392B;
+    margin-bottom: 0;
 }
 
-.row.row-cols-2.row-cols-md-4.g-4 {
-    row-gap: 32px !important; 
+/* Jarak antar card */
+.row.row-cols-2.row-cols-md-4.gx-2.gy-4.justify-content-start.px-2 {
+    --bs-gutter-x: 1rem;
+    --bs-gutter-y: 2rem; /* Tambah jarak vertikal antar baris */
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+/* Pastikan setiap .col punya jarak bawah */
+.col {
+    margin-bottom: 20px;
 }
 </style>
 
