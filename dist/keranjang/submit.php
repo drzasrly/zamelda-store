@@ -160,7 +160,7 @@ if ($metode == '1') {
     exit;
 } else {
     $_SESSION['kodeTransaksi'] = $kodeTransaksi;
-    header("Location: ../transaksi-sukses.php");
+    header("Location: ../transaksi-berhasil.php");
     exit;
 }
 ?>
