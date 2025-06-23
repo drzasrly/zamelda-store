@@ -53,7 +53,7 @@
 
     </head>
     <body class="sb-nav-fixed">
-        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark" style="background-color:rgb(66, 138, 155);">
             <a class="navbar-brand" href="#"><?php  echo $data['nama_aplikasi'];?></a>
             <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
             <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
@@ -329,7 +329,7 @@
                 <div class="modal-body">Apakah anda yakin ingin keluar?</div>
                 <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
-                <a class="btn" href="logout.php" style="background-color: #706D54; color: white;">Logout</a>
+                <a class="btn" href="logout.php" style="background-color: #118c8c; color: white;">Logout</a>
                 </div>
             </div>
             </div>

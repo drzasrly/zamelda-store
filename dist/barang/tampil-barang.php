@@ -67,7 +67,7 @@ while ($row = mysqli_fetch_assoc($barang_query)) {
     <div class="row">
         <div class="col-sm-2">
             <div class="form-group">
-                <button type="button" id="btn-tambah-barang" class="btn" style="background-color: #706D54; color: white;">
+                <button type="button" id="btn-tambah-barang" class="btn" style="background-color: #4F959D; color: white;">
                     <i class="fas fa-book fa-sm"></i> Tambah barang
                 </button>
             </div>

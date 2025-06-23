@@ -26,7 +26,7 @@ $kodeTransaksi = $_SESSION['kodeTransaksi'];
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(to right, #ffecd2, #fcb69f);
+            background: linear-gradient(to right,rgb(168, 204, 209),rgb(45, 117, 113));
             margin: 0;
             padding: 0;
         }
@@ -79,7 +79,7 @@ $kodeTransaksi = $_SESSION['kodeTransaksi'];
             Silakan klik tombol di bawah untuk menyelesaikan pembayaran pesanan Anda.<br>
             Kode Transaksi: <strong><?= htmlspecialchars($kodeTransaksi) ?></strong>
         </div>
-        <button id="pay-button">Bayar Sekarang</button>
+        <button id="pay-button" style="background-color: #118C8C; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Bayar Sekarang</button>
         <div class="footer">Zamelda Store &copy; <?= date('Y') ?></div>
     </div>
 

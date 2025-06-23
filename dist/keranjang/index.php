@@ -132,7 +132,8 @@ $idPengguna = $_SESSION['idPengguna'];
 
         <div class="text-right">
             <h5>Total Dipilih: <span id="total-dipilih">Rp0</span></h5>
-            <button type="submit" class="btn btn-success" onclick="return konfirmasiCheckout();">Checkout</button>
+            <button type="submit" onclick="return konfirmasiCheckout();" style="background-color:rgb(63, 126, 126); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Checkout</button>
+
         </div>
     </form>
 </div>
