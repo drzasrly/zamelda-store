@@ -44,13 +44,31 @@ if (isset($_SESSION['ongkir'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-        body { background-color: #f5f5f5; }
-        .container { max-width: 1000px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .section-title { font-weight: bold; color: #ee4d2d; margin-bottom: 10px; }
+        body { background-color: #bad9ce; }
+        .container { max-width: 1000px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px #0e6973; }
+        .section-title { font-weight: bold; color:rgb(12, 86, 94); margin-bottom: 10px; }
         .produk-item { display: flex; justify-content: space-between; margin-bottom: 20px; }
         .produk-info { display: flex; gap: 10px; }
         .produk-item img { width: 110px; height: 110px; border: 1px solid #ddd; border-radius: 5px; }
-        .highlight { color: #ee4d2d; font-weight: bold; }
+        .highlight { color: #f2bb16; font-weight: bold; }
+        .btn-pesan {
+            background-color: #f2bb16;         /* warna oranye dari palet */
+            color: #1b1b1b;                    /* teks gelap agar kontras di tombol terang */
+            border: none;
+            padding: 10px;
+            border-radius: 10px;              /* sudut kotak */
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(255, 145, 77, 0.3); /* bayangan halus */
+            transition: all 0.3s ease;
+            text-transform: uppercase;        /* biar lebih tegas */
+        }
+
+        .btn-pesan:hover {
+            background-color: #ff7f2a;        /* sedikit lebih gelap saat hover */
+            box-shadow: 0 6px 16px rgba(255, 145, 77, 0.5);
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
@@ -59,9 +77,13 @@ if (isset($_SESSION['ongkir'])) {
         <div class="mb-4">
             <div class="section-title d-flex justify-content-between align-items-center">
                 <span>Alamat Pengiriman</span>
-                <div>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalAlamat">Ubah Alamat</button>
-                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalTambahAlamat">Tambah Alamat</button>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-warning btn-sm d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#modalAlamat">
+                        <i class="bi bi-pencil-square me-1"></i> <span style="color: #ff914d;">Ubah Alamat</span>
+                    </button>
+                    <button type="button" class="btn btn-sm d-flex align-items-center" style="background-color: #f2bb16; color: #1b1b1b;" data-bs-toggle="modal" data-bs-target="#modalTambahAlamat">
+                        <i class="bi bi-plus-circle me-1"></i> Tambah Alamat
+                    </button>
                 </div>
             </div>
             <div id="alamatTerpilih">
@@ -152,7 +174,7 @@ if (isset($_SESSION['ongkir'])) {
             <input type="hidden" name="jumlah[<?= $idVarian ?>]" value="<?= $jumlah[$idVarian] ?>">
         <?php endforeach; ?>
 
-        <button type="submit" class="btn btn-danger w-100">Buat Pesanan</button>
+        <button type="submit" class="btn btn-pesan w-100">Buat Pesanan</button>
     </form>
 </div>
 

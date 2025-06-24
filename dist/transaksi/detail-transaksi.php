@@ -71,15 +71,12 @@
                             </div>
                         </div>
                     </div>
-
-
                 </div>
                 <div class="row" id="bagian_detail_transaksi">
                     <div class="col-sm-12">
                         <div class="card mb-4">
                             <div class="card-body">
                             <?php
-                                    //Validasi untuk menampilkan pesan pemberitahuan saat user menambah penyewaan baru
                                     if (isset($_GET['edit-transaksi'])) {
                                         if ($_GET['edit-transaksi']=='berhasil'){
                                             echo"<div class='alert alert-success'><strong>Berhasil!</strong> barang berhasil diupdate</div>";
@@ -87,7 +84,6 @@
                                             echo"<div class='alert alert-danger'><strong>Gagal!</strong> barang gagal diupdate</div>";
                                         }   
                                     }
-                                    //Validasi untuk menampilkan pesan pemberitahuan saat user menghapus penyewaan
                                     if (isset($_GET['hapus-transaksi'])) {
                                         if ($_GET['hapus-transaksi']=='berhasil'){
                                             echo"<div class='alert alert-success'><strong>Berhasil!</strong> barang telah dihapus</div>";
@@ -96,7 +92,6 @@
                                         }    
                                     }
 
-                                    //Validasi untuk menampilkan pesan pemberitahuan saat user menambah penyewaan baru
                                     if (isset($_GET['konfirmasi'])) {
                                         if ($_GET['konfirmasi']=='berhasil'){
                                             echo"<div class='alert alert-success'><strong>Berhasil!</strong> Status transaksi telah ditetapkan</div>";
