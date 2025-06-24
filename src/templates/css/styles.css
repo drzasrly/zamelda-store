@@ -2480,8 +2480,8 @@ fieldset:disabled a.btn {
 
 .btn-primary {
   color: #fff;
-  background-color: #007bff;
-  border-color: #007bff;
+  background-color: rgb(31, 124, 161);
+  border-color: rgb(31, 124, 161);
 }
 .btn-primary:hover {
   color: #fff;
@@ -6101,6 +6101,11 @@ a.close.disabled {
 
 .align-text-top {
   vertical-align: text-top !important;
+}
+
+.bg-custom-status {
+    background-color: #0062cc !important;
+    color: white !important;
 }
 
 .bg-primary {

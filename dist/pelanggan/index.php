@@ -67,7 +67,7 @@ class DashboardBase {
         <div class="card mb-4">
           <div class="card-header py-3">
             <!-- Tombol tambah pelanggan -->
-            <button class="btn-tambah btn btn-icon-split" style="background-color: #4F959D; color: white; border: none;;">
+            <button class="btn-tambah btn btn-icon-split" style="background-color: rgb(31, 124, 161); color: white; border: none;;">
   <span class="text">Tambah</span>
 </button>
             <div class="card-body">

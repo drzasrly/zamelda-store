@@ -329,7 +329,7 @@
                 <div class="modal-body">Apakah anda yakin ingin keluar?</div>
                 <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
-                <a class="btn" href="logout.php" style="background-color: #118c8c; color: white;">Logout</a>
+                <a class="btn" href="logout.php" style="background-color: rgb(31, 124, 161); color: white;">Logout</a>
                 </div>
             </div>
             </div>

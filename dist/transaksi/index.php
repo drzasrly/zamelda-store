@@ -50,7 +50,7 @@
         <div class="card mb-4">
             <div class="card-header">
                 <?php if ($_SESSION["level"] != "Pelanggan"): ?>
-                    <a href="index.php?page=input-transaksi" class="btn btn-primary" role="button">Input transaksi</a>
+                    <a href="index.php?page=input-transaksi" class="btn" role="button" style="background-color:rgb(31, 124, 161); color: white; border: none;">Input transaksi</a>
                 <?php endif; ?>
             </div>
             <div class="card-body">

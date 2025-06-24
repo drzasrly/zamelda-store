@@ -2,6 +2,13 @@
     $('title').text('Dashboard');
 </script>
 
+<style>
+.bg-custom-status {
+    background-color:rgb(31, 124, 161) !important;
+    color: white !important;
+}
+</style>
+
 <main>
     <div class="container-fluid">
         <h2 class="mt-4">Dashboard</h2>
@@ -151,6 +158,67 @@
                         <div id="tampil_grafik_transaksi_per_kategori"></div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- FILTER DAN TABEL TRANSAKSI -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <strong>Daftar Transaksi Berdasarkan Tanggal</strong>
+            </div>
+            <div class="card-body">
+                <form method="GET" action="">
+                    <input type="hidden" name="page" value="dashboard">
+                    <div class="row mb-3">
+                        <div class="col-md-5">
+                            <label for="tgl_awal">Tanggal Awal</label>
+                            <input type="date" name="tgl_awal" class="form-control" required>
+                        </div>
+                        <div class="col-md-5">
+                            <label for="tgl_akhir">Tanggal Akhir</label>
+                            <input type="date" name="tgl_akhir" class="form-control" required>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn w-100" style="background-color: rgb(35, 126, 162); color: white; border: none;">Tampilkan</button>
+                        </div>
+                    </div>
+                </form>
+
+                <?php
+                if (isset($_GET['tgl_awal']) && isset($_GET['tgl_akhir'])) {
+                    $tgl_awal = $_GET['tgl_awal'];
+                    $tgl_akhir = $_GET['tgl_akhir'];
+
+                    include '../config/database.php';
+
+                    $sql = "SELECT t.kodeTransaksi, t.tanggal, p.namaPelanggan AS nama, SUM(d.jumlah) AS total
+                            FROM transaksi t
+                            INNER JOIN pelanggan p ON p.kodePelanggan = t.kodePelanggan
+                            INNER JOIN detail_transaksi d ON d.kodeTransaksi = t.kodeTransaksi
+                            WHERE t.tanggal BETWEEN '$tgl_awal' AND '$tgl_akhir'
+                            GROUP BY t.kodeTransaksi, t.tanggal, p.namaPelanggan
+                            ORDER BY t.tanggal ASC";
+
+                    $hasil = mysqli_query($kon, $sql);
+
+                    echo "<div class='table-responsive'>";
+                    echo "<table class='table table-bordered'>";
+                    echo "<thead><tr><th>No</th><th>Kode Transaksi</th><th>Tanggal</th><th>Nama Pembeli</th><th>Total</th></tr></thead><tbody>";
+                    $no = 1;
+                    while ($data = mysqli_fetch_array($hasil)) {
+                        echo "<tr>";
+                        echo "<td>$no</td>";
+                        echo "<td>" . $data['kodeTransaksi'] . "</td>";
+                        echo "<td>" . $data['tanggal'] . "</td>";
+                        echo "<td>" . $data['nama'] . "</td>";
+                        echo "<td>Rp " . number_format($data['total'], 0, ',', '.') . "</td>";
+                        echo "</tr>";
+                        $no++;
+                    }
+                    echo "</tbody></table>";
+                    echo "</div>";
+                }
+                ?>
             </div>
         </div>
     </div>

@@ -64,7 +64,7 @@
                             </div>
                         </div>
                         <div class="col-sm-2 align-self-end">
-                            <button type="button" id="btn-cari" class="btn" style="background-color: #118C8C; color: white;">
+                            <button type="button" id="btn-cari" class="btn" style="background-color:rgb(31, 124, 161); color: white;">
                                 <i class="fas fa-search"></i> Cari
                             </button>
                         </div>
