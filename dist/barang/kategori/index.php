@@ -37,7 +37,7 @@
 
         <div class="card mb-4">
           <div class="card-header py-3">
-            <button class="btn-tambah btn btn-icon-split" style="background-color: #706D54; color: white;"><span class="text" style="color: white;">Tambah</span></button>
+            <button class="btn-tambah btn btn-icon-split" style="background-color: #4F959D; color: white;"><span class="text" style="color: white;">Tambah</span></button>
           </div>
             <div class="card-body">
                 <div class="table-responsive">

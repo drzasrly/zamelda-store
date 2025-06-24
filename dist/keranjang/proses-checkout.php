@@ -27,15 +27,15 @@ $pelanggan = mysqli_fetch_assoc(mysqli_query($kon, "SELECT * FROM pelanggan WHER
         body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 0; }
         .container { max-width: 1000px; margin: 30px auto; background: #fff; border-radius: 8px; padding: 30px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .section { margin-bottom: 30px; }
-        .section-title { font-weight: bold; color: #ee4d2d; margin-bottom: 10px; }
+        .section-title { font-weight: bold; color:rgb(11, 72, 78); margin-bottom: 10px; }
         .alamat, .produk, .pembayaran, .total { border-top: 1px solid #eee; padding-top: 20px; }
         .alamat p, .produk-item, .total-baris { display: flex; justify-content: space-between; margin: 10px 0; }
         .produk-item img { width: 70px; height: auto; border: 1px solid #ddd; border-radius: 5px; margin-right: 10px; }
         .produk-detail { flex: 1; }
         .produk-info { display: flex; gap: 10px; }
-        .highlight { color: #ee4d2d; font-weight: bold; }
+        .highlight { color: rgb(11, 72, 78); font-weight: bold; }
         .select { width: 100%; padding: 10px; margin-top: 10px; }
-        .btn-order { background-color: #ee4d2d; color: white; padding: 15px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; }
+        .btn-order { background-color: rgb(11, 72, 78); color: white; padding: 15px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; }
     </style>
 </head>
 <body>
@@ -113,7 +113,7 @@ $pelanggan = mysqli_fetch_assoc(mysqli_query($kon, "SELECT * FROM pelanggan WHER
             </div>
         </div>
 
-        <button type="submit" class="btn-order">Buat Pesanan</button>
+        <button type="submit" class="btn-order" style="background-color: #118C8C; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Buat Pesanan</button>
     </form>
 </div>
 </body>

@@ -67,8 +67,9 @@ class DashboardBase {
         <div class="card mb-4">
           <div class="card-header py-3">
             <!-- Tombol tambah pelanggan -->
-            <button  class="btn-tambah btn btn-dark btn-icon-split"><span class="text">Tambah</span></button>
-          </div>
+            <button class="btn-tambah btn btn-icon-split" style="background-color: #4F959D; color: white; border: none;;">
+  <span class="text">Tambah</span>
+</button>
             <div class="card-body">
                 <div class="table-responsive">
                   <table class="table table-bordered" id="tabel_pelanggan" width="100%" cellspacing="0">
