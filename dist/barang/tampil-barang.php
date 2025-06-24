@@ -37,7 +37,6 @@ if ($cek <= 0) {
 }
 $barang_admin = mysqli_fetch_all($hasil, MYSQLI_ASSOC);
 
-// Data pelanggan
 $barang_query = mysqli_query($kon, "
     SELECT 
         b.idBarang,
@@ -50,11 +49,13 @@ $barang_query = mysqli_query($kon, "
          ORDER BY vb.idVarian ASC
          LIMIT 1) AS gambarBarang,
         MIN(v.harga) as harga_min,
-        MAX(v.harga) as harga_max
+        MAX(v.harga) as harga_max,
+        SUM(v.stok) as total_stok
     FROM barang b
     JOIN varianBarang v ON b.kodeBarang = v.kodeBarang
     GROUP BY b.kodeBarang
 ");
+
 
 $barang_pelanggan = [];
 while ($row = mysqli_fetch_assoc($barang_query)) {
@@ -107,11 +108,19 @@ while ($row = mysqli_fetch_assoc($barang_query)) {
     <div class="row row-cols-2 row-cols-md-5 gx-3 gy-3 justify-content-start px-2">
         <?php foreach ($barang_pelanggan as $data): ?>
             <div class="col">
-                <div class="card card-barang h-100 shadow-sm btn-detail-barang border rounded-4 p-2" style="cursor:pointer"
-                    idBarang="<?= $data['idBarang'] ?>" 
-                    kodeBarang="<?= $data['kodeBarang'] ?>">
-                    <div class="img-container">
-                        <img class="card-img-top product-img" src="../dist/barang/gambar/<?= htmlspecialchars($data['gambarBarang']) ?>" alt="<?= htmlspecialchars($data['namaBarang']) ?>">
+                <div class="card card-barang h-100 shadow-sm border rounded-4 p-2 <?= $data['total_stok'] > 0 ? 'btn-detail-barang' : '' ?>"
+                    style="<?= $data['total_stok'] > 0?>"
+                    <?= $data['total_stok'] > 0 ? 'idBarang="' . $data['idBarang'] . '" kodeBarang="' . $data['kodeBarang'] . '"' : '' ?>>
+                    <div class="img-container" style="position: relative;">
+                        <img class="card-img-top product-img" 
+                            src="../dist/barang/gambar/<?= htmlspecialchars($data['gambarBarang']) ?>" 
+                            alt="<?= htmlspecialchars($data['namaBarang']) ?>">
+
+                        <?php if ($data['total_stok'] == 0): ?>
+                            <div class="stok-habis-overlay">
+                                <span>Stok Habis</span>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <div class="card-body text-center">
                         <h6 class="card-title mb-1"><?= htmlspecialchars($data['namaBarang']) ?></h6>
@@ -297,5 +306,23 @@ $(document).ready(function () {
 .col {
     margin-bottom: 20px;
 }
+
+.stok-habis-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(81, 81, 81, 0.6); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+    border-radius: 0.5rem;
+    text-transform: uppercase;
+}
+
 </style>
 
