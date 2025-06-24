@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3307
--- Generation Time: Jun 10, 2025 at 03:19 PM
+-- Generation Time: Jun 23, 2025 at 01:32 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -62,9 +62,9 @@ CREATE TABLE `barang` (
 --
 
 INSERT INTO `barang` (`idBarang`, `kodeBarang`, `kodeKategori`, `namaBarang`, `deskripsi`) VALUES
-(1, 'br001', 'kat001', 'korean', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'),
+(1, 'br001', 'kat001', 'korean', 'tes'),
 (2, ' br002', 'kat002', 'Jeans lucu gemoy', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \r\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \r\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. \r\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\r\n'),
-(3, 'br003', 'kat003', 'Hoodie Hitam ', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \r\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \r\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. \r\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\r\n'),
+(3, 'br003', 'kat003', 'Hoodie Hitam', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'),
 (4, 'br004', 'kat003', 'Kemeja Kotak Lengan Panjang', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \r\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \r\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. \r\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\r\n'),
 (5, 'br005', 'kat004', 'Celana Panjang Pria Hitam', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. \r\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \r\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. \r\nExcepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\r\n'),
 (79, 'br007', 'kat003', 'Jaket Walk NCT127', 'Jaket Walk adalah merch dari NCT 127 dalam aalbumnya yang bernama walk'),
@@ -81,16 +81,46 @@ CREATE TABLE `detail_transaksi` (
   `id_detail_transaksi` int NOT NULL,
   `kodeTransaksi` varchar(20) NOT NULL,
   `kodeBarang` varchar(20) NOT NULL,
-  `tglTransaksi` timestamp NOT NULL,
-  `status` enum('belum dibayar','dikemas','dikirim') NOT NULL
+  `idVarian` int NOT NULL,
+  `tglTransaksi` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` enum('0','1','2','3','4') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `jumlah` int NOT NULL DEFAULT '1',
+  `metodeBayar` enum('0','1','2','3','4') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `detail_transaksi`
 --
 
-INSERT INTO `detail_transaksi` (`id_detail_transaksi`, `kodeTransaksi`, `kodeBarang`, `tglTransaksi`, `status`) VALUES
-(1, 'tr001', 'br001', '2025-05-06 20:01:04', 'belum dibayar');
+INSERT INTO `detail_transaksi` (`id_detail_transaksi`, `kodeTransaksi`, `kodeBarang`, `idVarian`, `tglTransaksi`, `status`, `jumlah`, `metodeBayar`) VALUES
+(25, 'tr001', 'br003', 3, '2025-06-14 11:05:14', '0', 1, '0'),
+(28, 'tr035', ' br002', 2, '2025-06-14 11:59:26', '0', 1, '0'),
+(29, 'tr038', ' br002', 2, '2025-06-14 12:00:33', '0', 1, '0'),
+(30, 'tr039', ' br002', 2, '2025-06-14 12:01:15', '0', 1, '0'),
+(31, 'tr040', 'br003', 3, '2025-06-14 12:02:03', '0', 1, '0'),
+(32, 'tr041', 'br003', 3, '2025-06-15 23:59:33', '4', 1, '0'),
+(64, 'tr0042', 'br007', 99, '2025-06-16 20:09:30', '0', 1, '0'),
+(65, 'tr0114', 'br004', 4, '2025-06-16 20:16:38', '0', 6, '0'),
+(66, 'tr0117', 'br004', 4, '2025-06-16 20:21:18', '0', 1, '0'),
+(67, 'tr0119', 'br004', 4, '2025-06-16 20:21:52', '0', 2, '0'),
+(68, 'tr0120', 'br004', 4, '2025-06-16 20:27:48', '0', 3, '0'),
+(69, 'tr0121', 'br004', 4, '2025-06-16 20:36:33', '0', 4, '0'),
+(70, 'tr0122', 'br004', 4, '2025-06-16 20:42:12', '0', 2, '0'),
+(71, 'tr0123', 'br004', 4, '2025-06-16 20:44:31', '0', 1, '0'),
+(72, 'tr0124', 'br004', 4, '2025-06-16 20:49:29', '0', 11, '0'),
+(73, 'tr0125', 'br005', 5, '2025-06-16 20:56:32', '0', 1, '0'),
+(74, 'tr126', 'br004', 4, '2025-06-16 21:00:05', '1', 1, '0'),
+(75, 'tr127', 'br004', 4, '2025-06-16 21:29:47', '1', 1, '0'),
+(76, 'tr128', 'br004', 4, '2025-06-16 22:07:58', '1', 1, '0'),
+(77, 'tr130', 'br004', 4, '2025-06-17 01:37:25', '1', 1, '0'),
+(78, 'tr131', 'br007', 4, '2025-06-17 02:53:30', '1', 1, '0'),
+(79, 'tr132', 'br009', 122, '2025-06-18 06:44:36', '1', 1, '0'),
+(80, 'tr133', 'br009', 122, '2025-06-18 06:45:23', '1', 5, '0'),
+(81, 'tr134', 'br004', 4, '2025-06-18 06:46:41', '1', 1, '0'),
+(82, 'tr135', 'br004', 4, '2025-06-18 06:50:33', '1', 5, '0'),
+(83, 'tr136', 'br004', 4, '2025-06-18 07:03:31', '0', 1, '0'),
+(84, 'tr137', 'br004', 4, '2025-06-18 00:33:54', '2', 1, '0'),
+(85, 'tr137', 'br003', 3, '2025-06-18 00:33:28', '3', 1, '0');
 
 -- --------------------------------------------------------
 
@@ -189,10 +219,8 @@ CREATE TABLE `keranjang` (
 --
 
 INSERT INTO `keranjang` (`idKeranjang`, `idPengguna`, `idVarian`, `jumlah`, `tanggalDitambahkan`) VALUES
-(1, 2, 80, 1, '2025-06-09 11:13:24'),
-(2, 2, 123, 7, '2025-06-09 11:18:26'),
-(3, 2, 4, 1, '2025-06-09 11:24:40'),
-(4, 5, 4, 1, '2025-06-09 12:59:54');
+(8, 2, 80, 1, '2025-06-16 16:28:22'),
+(30, 2, 4, 1, '2025-06-19 00:01:04');
 
 -- --------------------------------------------------------
 
@@ -321,15 +349,42 @@ CREATE TABLE `transaksi` (
   `idTransaksi` int NOT NULL,
   `kodeTransaksi` varchar(10) NOT NULL,
   `kodePelanggan` varchar(10) NOT NULL,
-  `tanggal` timestamp NOT NULL
+  `tanggal` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `metode` enum('0','1','2','3','4') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `transaksi`
 --
 
-INSERT INTO `transaksi` (`idTransaksi`, `kodeTransaksi`, `kodePelanggan`, `tanggal`) VALUES
-(1, 'tr001', 'plg001', '2025-05-06 19:57:27');
+INSERT INTO `transaksi` (`idTransaksi`, `kodeTransaksi`, `kodePelanggan`, `tanggal`, `metode`) VALUES
+(34, 'tr001', 'plg001', '2025-06-13 17:00:00', '0'),
+(37, 'tr035', 'plg001', '2025-06-13 17:00:00', '0'),
+(38, 'tr038', 'plg001', '2025-06-13 17:00:00', '0'),
+(39, 'tr039', 'plg001', '2025-06-13 17:00:00', '0'),
+(40, 'tr040', 'plg001', '2025-06-13 17:00:00', '0'),
+(41, 'tr041', 'plg001', '2025-06-13 17:00:00', '0'),
+(113, 'tr0042', 'plg001', '2025-06-16 13:09:30', '1'),
+(116, 'tr0114', 'plg001', '2025-06-16 13:16:38', '1'),
+(118, 'tr0117', 'plg001', '2025-06-16 13:21:18', '1'),
+(119, 'tr0119', 'plg001', '2025-06-16 13:21:52', '1'),
+(120, 'tr0120', 'plg001', '2025-06-16 13:27:48', '1'),
+(121, 'tr0121', 'plg001', '2025-06-16 13:36:33', '1'),
+(122, 'tr0122', 'plg001', '2025-06-16 13:42:12', '1'),
+(123, 'tr0123', 'plg001', '2025-06-16 13:44:31', '1'),
+(124, 'tr0124', 'plg001', '2025-06-16 13:49:29', '1'),
+(125, 'tr0125', 'plg001', '2025-06-16 13:56:32', '1'),
+(126, 'tr126', 'plg001', '2025-06-16 14:00:05', '1'),
+(127, 'tr127', 'plg001', '2025-06-16 14:29:47', '1'),
+(129, 'tr128', 'plg001', '2025-06-16 15:07:58', '1'),
+(130, 'tr130', 'plg001', '2025-06-16 18:37:25', '1'),
+(131, 'tr131', 'plg001', '2025-06-16 19:53:30', '1'),
+(132, 'tr132', 'plg001', '2025-06-17 23:44:36', '0'),
+(133, 'tr133', 'plg001', '2025-06-17 23:45:23', '1'),
+(134, 'tr134', 'plg001', '2025-06-17 23:46:41', '1'),
+(135, 'tr135', 'plg001', '2025-06-17 23:50:33', '1'),
+(136, 'tr136', 'plg001', '2025-06-18 00:03:31', '1'),
+(137, 'tr137', 'plg001', '2025-06-18 00:27:48', '1');
 
 -- --------------------------------------------------------
 
@@ -352,15 +407,15 @@ CREATE TABLE `varianbarang` (
 --
 
 INSERT INTO `varianbarang` (`idVarian`, `kodeBarang`, `idGambarVarian`, `typeVarian`, `size`, `harga`, `stok`) VALUES
-(2, ' br002', 2, 'pink', 'XL', '120000', 10),
-(3, 'br003', 3, 'hitam', 'L', '750000', 5),
-(4, 'br004', 4, 'lengan panjang', 'L', '56000', 120),
-(5, 'br005', 5, 'celana hitam', 'L', '299999', 20),
-(80, 'br001', 1, 'pink', 'L', '200000', 12),
+(2, ' br002', 2, 'pink', 'XL', '120000', 0),
+(3, 'br003', 3, 'hitam', 'L', '750000', 1),
+(4, 'br004', 4, 'lengan panjang', 'L', '56000', 72),
+(5, 'br005', 5, 'celana hitam', 'L', '299999', 16),
+(80, 'br001', 1, 'pink', 'L', '200000', 0),
 (98, 'br007', 16, 'Hitam', 'L', '127000', 20),
-(99, 'br007', 16, 'Hitam', 'M', '127500', 10),
+(99, 'br007', 16, 'Hitam', 'M', '127500', 9),
 (100, 'br007', 17, 'Hitam Putih', 'L', '100000', 10),
-(122, 'br009', 21, 'Hitam Putih', 'L', '20000', 10),
+(122, 'br009', 21, 'Hitam Putih', 'L', '20000', 4),
 (123, 'br009', 21, 'Hitam Putih', 'M', '29999', 2),
 (124, 'br009', 21, 'Hitam Putih', 'S', '129000', 1),
 (128, 'br008', 18, 'Hitam', 'L', '90000', 20),
@@ -391,7 +446,8 @@ ALTER TABLE `barang`
 ALTER TABLE `detail_transaksi`
   ADD PRIMARY KEY (`id_detail_transaksi`),
   ADD KEY `kodeBarang` (`kodeBarang`),
-  ADD KEY `detail_transaksi_ibfk_2` (`kodeTransaksi`);
+  ADD KEY `detail_transaksi_ibfk_2` (`kodeTransaksi`),
+  ADD KEY `idVarian` (`idVarian`);
 
 --
 -- Indexes for table `gambarutama`
@@ -491,7 +547,7 @@ ALTER TABLE `barang`
 -- AUTO_INCREMENT for table `detail_transaksi`
 --
 ALTER TABLE `detail_transaksi`
-  MODIFY `id_detail_transaksi` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_detail_transaksi` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
 
 --
 -- AUTO_INCREMENT for table `gambarutama`
@@ -515,7 +571,7 @@ ALTER TABLE `kategoribarang`
 -- AUTO_INCREMENT for table `keranjang`
 --
 ALTER TABLE `keranjang`
-  MODIFY `idKeranjang` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `idKeranjang` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `pelanggan`
@@ -551,7 +607,7 @@ ALTER TABLE `tampilanawal`
 -- AUTO_INCREMENT for table `transaksi`
 --
 ALTER TABLE `transaksi`
-  MODIFY `idTransaksi` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `idTransaksi` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=138;
 
 --
 -- AUTO_INCREMENT for table `varianbarang`
@@ -574,7 +630,8 @@ ALTER TABLE `barang`
 --
 ALTER TABLE `detail_transaksi`
   ADD CONSTRAINT `detail_transaksi_ibfk_1` FOREIGN KEY (`kodeBarang`) REFERENCES `barang` (`kodeBarang`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  ADD CONSTRAINT `detail_transaksi_ibfk_2` FOREIGN KEY (`kodeTransaksi`) REFERENCES `transaksi` (`kodeTransaksi`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+  ADD CONSTRAINT `detail_transaksi_ibfk_2` FOREIGN KEY (`kodeTransaksi`) REFERENCES `transaksi` (`kodeTransaksi`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  ADD CONSTRAINT `detail_transaksi_ibfk_3` FOREIGN KEY (`idVarian`) REFERENCES `varianbarang` (`idVarian`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 --
 -- Constraints for table `gambarutama`

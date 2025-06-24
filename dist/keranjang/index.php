@@ -1,13 +1,22 @@
 <?php
-//session_start();
+// session_start(); // Pastikan ini aktif di file utama
 include '../config/database.php';
 
 $idPengguna = $_SESSION['idPengguna'];
 ?>
 
+<!-- Include SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     $('title').text('Keranjang Barang');
 </script>
+
+<style>
+    .highlight-row {
+        background-color: #e0ffe0 !important;
+    }
+</style>
 
 <main>
 <div class="container-fluid">
@@ -36,6 +45,7 @@ $idPengguna = $_SESSION['idPengguna'];
     if (isset($_GET['aksi']) && $_GET['aksi'] === "hapus_barang" && isset($_GET['idVarian'])) {
         $idVarian = $_GET['idVarian'];
         mysqli_query($kon, "DELETE FROM keranjang WHERE idPengguna='$idPengguna' AND idVarian='$idVarian'");
+        $_SESSION['barang_dihapus'] = true;
     }
 
     // Update jumlah
@@ -85,12 +95,10 @@ $idPengguna = $_SESSION['idPengguna'];
                                 $idVarian = $item['idVarian'];
                                 $jumlah = $item['jumlah'];
                                 $total = $item['harga'] * $jumlah;
+                                $isBaru = isset($_SESSION['baru_ditambahkan']) && $_SESSION['baru_ditambahkan'] == $idVarian;
                         ?>
-                        <tr>
-                            <td>
-                                <input type="checkbox" class="pilih-item" name="pilih[]" value="<?= $idVarian ?>"
-                                <?php if (isset($_SESSION['baru_ditambahkan']) && $_SESSION['baru_ditambahkan'] == $idVarian) echo 'checked'; ?>>
-                            </td>
+                        <tr class="<?= $isBaru ? 'highlight-row' : '' ?>">
+                            <td><input type="checkbox" class="pilih-item" name="pilih[]" value="<?= $idVarian ?>" checked></td>
                             <td><?= $no ?></td>
                             <td>
                                 <?php if (!empty($item['gambarvarian'])): ?>
@@ -120,7 +128,7 @@ $idPengguna = $_SESSION['idPengguna'];
                                 <a href="index.php?page=keranjang&idVarian=<?= $idVarian ?>&aksi=hapus_barang" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
-                        <?php endwhile; unset($_SESSION['baru_ditambahkan']); ?>
+                        <?php endwhile; ?>
                         <?php else: ?>
                         <tr><td colspan="9" class="text-center">Keranjang masih kosong.</td></tr>
                         <?php endif; ?>
@@ -135,9 +143,48 @@ $idPengguna = $_SESSION['idPengguna'];
             <button type="submit" class="btn btn-success" onclick="return konfirmasiCheckout();">Checkout</button>
         </div>
     </form>
+
+    <?php
+    // Bersihkan session notifikasi
+    if (!isset($_GET['idVarian'])) {
+        unset($_SESSION['baru_ditambahkan']);
+    }
+    ?>
 </div>
 </main>
 
+<!-- NOTIFIKASI SweetAlert -->
+<?php if (isset($_SESSION['baru_ditambahkan'])): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: 'Barang berhasil ditambahkan ke keranjang.',
+        timer: 2000,
+        showConfirmButton: false
+    });
+});
+</script>
+<?php unset($_SESSION['baru_ditambahkan']); ?>
+<?php endif; ?>
+
+<?php if (isset($_SESSION['barang_dihapus'])): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    Swal.fire({
+        icon: 'success',
+        title: 'Dihapus!',
+        text: 'Barang telah dihapus dari keranjang.',
+        timer: 2000,
+        showConfirmButton: false
+    });
+});
+</script>
+<?php unset($_SESSION['barang_dihapus']); ?>
+<?php endif; ?>
+
+<!-- Script JS Update Total Harga dan Fungsi Tombol -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     function updateTotalDipilih() {
