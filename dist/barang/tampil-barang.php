@@ -104,7 +104,6 @@ while ($row = mysqli_fetch_assoc($barang_query)) {
         </table>
     </div>
 <?php else: ?>
-    <!-- Pelanggan -->
     <div class="row row-cols-2 row-cols-md-5 gx-3 gy-3 justify-content-start px-2">
         <?php foreach ($barang_pelanggan as $data): ?>
             <div class="col">
@@ -134,12 +133,6 @@ while ($row = mysqli_fetch_assoc($barang_query)) {
                             }
                             ?>
                         </p>
-                        <!-- <button type="button"
-                            class="btn-detail-barang btn btn-outline-dark btn-sm mt-2"
-                            idBarang="<?= $data['idBarang'] ?>"
-                            kodeBarang="<?= $data['kodeBarang'] ?>">
-                            Detail
-                        </button> -->
                     </div>
                 </div>
             </div>

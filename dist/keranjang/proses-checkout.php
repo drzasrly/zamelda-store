@@ -16,6 +16,24 @@ $pilih = $_POST['pilih'];
 $jumlah = $_POST['jumlah'];
 $kodePelanggan = $_SESSION['kodePengguna'];
 $pelanggan = mysqli_fetch_assoc(mysqli_query($kon, "SELECT * FROM pelanggan WHERE kodePelanggan='$kodePelanggan'"));
+$alamatUtama = mysqli_fetch_assoc(mysqli_query($kon, "SELECT * FROM alamat_pelanggan WHERE kodePelanggan='$kodePelanggan' AND label_alamat='Rumah' LIMIT 1"));
+$provinsi = $alamatUtama['provinsi'];
+
+$total = 0;
+$beratTotal = 0;
+foreach ($pilih as $idVarian) {
+    $jumlahBeli = intval($jumlah[$idVarian]);
+    $v = mysqli_fetch_assoc(mysqli_query($kon, "SELECT harga, berat FROM varianBarang WHERE idVarian='$idVarian'"));
+    $total += $v['harga'] * $jumlahBeli;
+    $beratTotal += $v['berat'] * $jumlahBeli;
+}
+
+$ongkir = 0;
+if (isset($_SESSION['ongkir'])) {
+    $ongkir = $_SESSION['ongkir'];
+} else {
+    $_SESSION['ongkir'] = 0;
+}
 ?>
 
 <!DOCTYPE html>
@@ -23,36 +41,43 @@ $pelanggan = mysqli_fetch_assoc(mysqli_query($kon, "SELECT * FROM pelanggan WHER
 <head>
     <meta charset="UTF-8">
     <title>Checkout | Zamelda Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 0; }
-        .container { max-width: 1000px; margin: 30px auto; background: #fff; border-radius: 8px; padding: 30px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .section { margin-bottom: 30px; }
-        .section-title { font-weight: bold; color:rgb(11, 72, 78); margin-bottom: 10px; }
-        .alamat, .produk, .pembayaran, .total { border-top: 1px solid #eee; padding-top: 20px; }
-        .alamat p, .produk-item, .total-baris { display: flex; justify-content: space-between; margin: 10px 0; }
-        .produk-item img { width: 70px; height: auto; border: 1px solid #ddd; border-radius: 5px; margin-right: 10px; }
-        .produk-detail { flex: 1; }
+        body { background-color: #f5f5f5; }
+        .container { max-width: 1000px; margin: 30px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .section-title { font-weight: bold; color: #ee4d2d; margin-bottom: 10px; }
+        .produk-item { display: flex; justify-content: space-between; margin-bottom: 20px; }
         .produk-info { display: flex; gap: 10px; }
-        .highlight { color: rgb(11, 72, 78); font-weight: bold; }
-        .select { width: 100%; padding: 10px; margin-top: 10px; }
-        .btn-order { background-color: rgb(11, 72, 78); color: white; padding: 15px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; width: 100%; }
+        .produk-item img { width: 110px; height: 110px; border: 1px solid #ddd; border-radius: 5px; }
+        .highlight { color: #ee4d2d; font-weight: bold; }
     </style>
 </head>
 <body>
 <div class="container">
-    <form action="submit.php" method="post">
-        <!-- Alamat Pengiriman -->
-        <div class="section alamat">
-            <div class="section-title">Alamat Pengiriman</div>
-            <p><strong><?= $pelanggan['namaPelanggan'] ?></strong> (<?= $pelanggan['noTelp'] ?>)</p>
-            <p><?= $pelanggan['alamat'] ?></p>
+    <form action="submit.php" method="post" id="checkoutForm">
+        <div class="mb-4">
+            <div class="section-title d-flex justify-content-between align-items-center">
+                <span>Alamat Pengiriman</span>
+                <div>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalAlamat">Ubah Alamat</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalTambahAlamat">Tambah Alamat</button>
+                </div>
+            </div>
+            <div id="alamatTerpilih">
+                <?php if ($alamatUtama): ?>
+                    <strong><?= $alamatUtama['nama_penerima'] ?></strong> (<?= $alamatUtama['no_hp'] ?>)<br>
+                    <?= $alamatUtama['alamat_detail'] . ', ' . $alamatUtama['kota'] . ', ' . $alamatUtama['provinsi']; ?><br>
+                    <input type="hidden" name="idAlamat" id="idAlamat" value="<?= $alamatUtama['idAlamat'] ?>">
+                <?php else: ?>
+                    <p class="text-danger">Tidak ada alamat rumah! Silakan tambahkan.</p>
+                <?php endif; ?>
+            </div>
         </div>
 
-        <!-- Produk Dipesan -->
-        <div class="section produk">
+        <div class="mb-4">
             <div class="section-title">Produk Dipesan</div>
             <?php
-            $total = 0;
             foreach ($pilih as $idVarian):
                 $jumlahBeli = intval($jumlah[$idVarian]);
                 $q = mysqli_query($kon, "SELECT vb.*, b.namaBarang, gv.gambarVarian FROM varianBarang vb 
@@ -65,28 +90,34 @@ $pelanggan = mysqli_fetch_assoc(mysqli_query($kon, "SELECT * FROM pelanggan WHER
                     continue;
                 }
                 $subtotal = $v['harga'] * $jumlahBeli;
-                $total += $subtotal;
             ?>
             <div class="produk-item">
                 <div class="produk-info">
                     <img src="../barang/gambar/<?= $v['gambarVarian'] ?>" alt="<?= $v['namaBarang'] ?>">
-                    <div class="produk-detail">
-                        <div><strong><?= $v['namaBarang'] ?></strong></div>
-                        <div>Type: <?= $v['typeVarian'] ?> | Ukuran: <?= $v['size'] ?></div>
-                        <div>Jumlah: <?= $jumlahBeli ?></div>
+                    <div>
+                        <strong><?= $v['namaBarang'] ?></strong><br>
+                        Varian: <?= $v['typeVarian'] ?>, Ukuran: <?= $v['size'] ?><br>
+                        Harga: Rp<?= number_format($v['harga'], 0, ',', '.') ?><br>
+                        Jumlah: <?= $jumlahBeli ?> pcs<br>
+                        Subtotal: Rp<?= number_format($subtotal, 0, ',', '.') ?>
                     </div>
                 </div>
-                <div class="highlight">Rp<?= number_format($subtotal, 0, ',', '.') ?></div>
             </div>
-            <input type="hidden" name="pilih[]" value="<?= $idVarian ?>">
-            <input type="hidden" name="jumlah[<?= $idVarian ?>]" value="<?= $jumlahBeli ?>">
             <?php endforeach; ?>
         </div>
 
-        <!-- Metode Pembayaran -->
-        <div class="section pembayaran">
+        <div class="mb-4">
+            <div class="section-title">Kurir Pengiriman</div>
+            <select name="kurir" id="kurirSelect" class="form-select" required>
+                <option value="jne">JNE</option>
+                <option value="tiki">TIKI</option>
+                <option value="pos">POS Indonesia</option>
+            </select>
+        </div>
+
+        <div class="mb-4">
             <div class="section-title">Metode Pembayaran</div>
-            <select name="metode" required>
+            <select name="metode" class="form-select" required>
                 <option value="">-- Pilih Metode --</option>
                 <option value="0">Bayar di Tempat (COD)</option>
                 <option value="1">Transfer Bank</option>
@@ -94,27 +125,86 @@ $pelanggan = mysqli_fetch_assoc(mysqli_query($kon, "SELECT * FROM pelanggan WHER
                 <option value="3">Bayar di Alfamart</option>
                 <option value="4">Bayar di Indomaret</option>
             </select>
-            <p class="highlight">Pastikan Anda memilih metode pembayaran yang sesuai.</p>
         </div>
 
-        <!-- Total Pembayaran -->
-        <div class="section total">
-            <div class="total-bar">
-                <div class="total-bar">Subtotal Pesanan</div>
-                <div class="highlight">Rp<?= number_format($total, 0, ',', '.') ?></div>
+        <div class="mb-4">
+            <div class="section-title">Total Pembayaran</div>
+            <div class="d-flex justify-content-between">
+                <span>Subtotal Pesanan</span>
+                <span class="highlight">Rp<?= number_format($total, 0, ',', '.') ?></span>
             </div>
-            <div class="total-bar">
-                <div class="total-bar">Biaya Pengiriman</div>
-                <div>Rp0</div>
+            <div class="d-flex justify-content-between">
+                <span>Biaya Pengiriman</span>
+                <span class="highlight" id="ongkirText">Rp<?= number_format($ongkir, 0, ',', '.') ?></span>
             </div>
-            <div class="total-bar">
-                <div class="total-bar">Total Pembayaran</div>
-                <div class="highlight">Rp<?= number_format($total, 0, ',', '.') ?></div>
+            <div class="d-flex justify-content-between">
+                <strong>Total Pembayaran</strong>
+                <strong class="highlight" id="totalBayar">Rp<?= number_format($total + $ongkir, 0, ',', '.') ?></strong>
             </div>
         </div>
 
-        <button type="submit" class="btn-order" style="background-color: #118C8C; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Buat Pesanan</button>
+        <input type="hidden" name="ongkir" id="ongkirInput" value="<?= $ongkir ?>">
+        <input type="hidden" name="berat_total" id="beratTotal" value="<?= $beratTotal ?>">
+        <input type="hidden" name="total_barang" value="<?= $total ?>">
+
+        <?php foreach ($pilih as $idVarian): ?>
+            <input type="hidden" name="pilih[]" value="<?= $idVarian ?>">
+            <input type="hidden" name="jumlah[<?= $idVarian ?>]" value="<?= $jumlah[$idVarian] ?>">
+        <?php endforeach; ?>
+
+        <button type="submit" class="btn btn-danger w-100">Buat Pesanan</button>
     </form>
 </div>
+
+<!-- Modal Alamat -->
+<div class="modal fade" id="modalAlamat" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Pilih Alamat Lain</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <?php
+                $daftarAlamat = mysqli_query($kon, "SELECT * FROM alamat_pelanggan WHERE kodePelanggan='$kodePelanggan'");
+                while ($a = mysqli_fetch_assoc($daftarAlamat)) {
+                    echo "<div class='mb-2'>
+                            <input type='radio' name='pilihAlamat' value='{$a['idAlamat']}' data-provinsi='{$a['provinsi']}' onchange=\"pilihAlamat(this)\">
+                            <label>
+                                <strong>{$a['nama_penerima']}</strong> ({$a['no_hp']})<br>
+                                {$a['alamat_detail']}, {$a['kota']}, {$a['provinsi']}
+                            </label>
+                          </div>";
+                }
+                ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function pilihAlamat(radio) {
+    const id = radio.value;
+    const provinsi = radio.dataset.provinsi;
+
+    $.getJSON('ongkir_provinsi.json', function (json) {
+        const match = json.ongkir_per_provinsi.find(p => p.provinsi === provinsi);
+        const ongkir = match ? match.ongkir : 0;
+        const subtotal = <?= $total ?>;
+
+        $('#idAlamat').val(id);
+        $('#alamatTerpilih').html(
+            radio.nextElementSibling.innerHTML + 
+            `<input type="hidden" name="idAlamat" id="idAlamat" value="${id}">`
+        );
+        $('#ongkirText').text('Rp' + ongkir.toLocaleString('id-ID'));
+        $('#totalBayar').text('Rp' + (subtotal + ongkir).toLocaleString('id-ID'));
+        $('#ongkirInput').val(ongkir);
+        $('#modalAlamat').modal('hide');
+    });
+}
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
