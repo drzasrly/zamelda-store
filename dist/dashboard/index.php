@@ -21,9 +21,12 @@
             <?php
                 include '../config/database.php';
 
-                // Total Transaksi
-                $hasil = mysqli_query($kon, "SELECT kodeTransaksi FROM detail_transaksi");
-                $total_transaksi = mysqli_num_rows($hasil);
+                // ✅ Total Nilai Transaksi (akumulasi nominal)
+                $q = mysqli_query($kon, "SELECT SUM(v.harga * d.jumlah) AS totalBayar 
+                                        FROM detail_transaksi d 
+                                        JOIN varianBarang v ON v.idVarian = d.idVarian");
+                $t = mysqli_fetch_assoc($q);
+                $totalBayar = $t['totalBayar'] ?? 0;
             ?>
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card bg-custom-status text-white mb-4">
@@ -31,7 +34,7 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col mr-2">
                                 <div class="text-xs text-uppercase mb-1">Total Transaksi</div>
-                                <div class="h5 mb-0 font-weight-bold"> <?= $total_transaksi ?> </div>
+                                <div class="h5 mb-0 font-weight-bold">Rp <?= number_format($totalBayar, 0, ',', '.') ?></div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-grip-horizontal fa-2x"></i>
@@ -191,10 +194,11 @@
 
                     include '../config/database.php';
 
-                    $sql = "SELECT t.kodeTransaksi, t.tanggal, p.namaPelanggan AS nama, SUM(d.jumlah) AS total
+                    $sql = "SELECT t.kodeTransaksi, t.tanggal, p.namaPelanggan AS nama, SUM(d.jumlah * vb.harga) AS total
                             FROM transaksi t
                             INNER JOIN pelanggan p ON p.kodePelanggan = t.kodePelanggan
                             INNER JOIN detail_transaksi d ON d.kodeTransaksi = t.kodeTransaksi
+                            INNER JOIN varianBarang vb ON vb.idVarian = d.idVarian
                             WHERE t.tanggal BETWEEN '$tgl_awal' AND '$tgl_akhir'
                             GROUP BY t.kodeTransaksi, t.tanggal, p.namaPelanggan
                             ORDER BY t.tanggal ASC";

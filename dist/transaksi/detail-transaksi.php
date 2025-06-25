@@ -160,6 +160,23 @@
                                         <td><?php echo $ambil['namaBarang']; ?></td>
                                         <td><?php echo $tanggal; ?></td>
                                         <td><?php echo $status; ?></td>
+                                        <?php if (isset($_SESSION['level']) && $_SESSION['level'] == 'Pelanggan'): ?>
+                                        <td>
+                                            <?php 
+                                                if ($ambil['status'] == 1) { 
+                                                    $tanggal_transaksi = strtotime($ambil['tanggal']);
+                                                    $selisih_hari = floor((time() - $tanggal_transaksi) / (60 * 60 * 24));
+                                                    
+                                                    if ($selisih_hari > 7) {
+                                                        $pesan = urlencode("Halo Admin,\nSaya ingin komplain karena barang *{$ambil['namaBarang']}* dengan kode transaksi *{$ambil['kodeTransaksi']}* belum dikirim lebih dari 7 hari.");
+                                                        echo "<a href='https://wa.me/62895397081000?text={$pesan}' target='_blank' class='btn btn-danger btn-sm'>Komplain via WA</a>";
+                                                    }
+                                                } else {
+                                                    echo "-";
+                                                }
+                                            ?>
+                                        </td>
+                                        <?php endif; ?>
                                         <?php if (!isset($_SESSION['level']) || $_SESSION['level'] != 'Pelanggan'): ?>
                                         <td>
                                             <button class="tombol_konfirmasi btn btn-primary btn-circle" 

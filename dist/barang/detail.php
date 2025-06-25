@@ -177,7 +177,7 @@ class BarangDetailCarouselDenganThumbnail {
                 echo "<p><strong>Harga:</strong> Rp" . number_format($varian['harga'], 0, ',', '.') . "</p>";
 
                 if (strtolower($_SESSION['level'] ?? '') === 'pelanggan' && $varian['stok'] > 0) {
-                    echo "<a href='index.php?page=keranjang&kodeBarang={$barang['kodeBarang']}&idVarian={$varian['idVarian']}' class='btn btn-primary btn-sm'>";
+                    echo "<a href='index.php?page=keranjang&idVarian={$varian['idVarian']}&redirect=detail&kodeBarang={$barang['kodeBarang']}' class='btn btn-primary btn-sm'>";
                     echo "<i class='fas fa-cart-plus'></i> Tambah ke Keranjang</a>";
                 } elseif ($varian['stok'] <= 0) {
                     echo "<div class='alert alert-warning p-1 text-center'>Stok Kosong</div>";
@@ -263,3 +263,19 @@ $handler = new BarangDetailCarouselDenganThumbnail($kon);
 <div class="container mt-4">
     <?php $handler->tampilkanDetail($idBarang); ?>
 </div>
+
+<?php if (isset($_SESSION['notifikasi_keranjang'])): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: '<?= $_SESSION['notifikasi_keranjang'] ?>',
+        timer: 2000,
+        showConfirmButton: false
+    });
+});
+</script>
+<?php unset($_SESSION['notifikasi_keranjang']); ?>
+<?php endif; ?>
+

@@ -27,19 +27,30 @@ $idPengguna = $_SESSION['idPengguna'];
 
     <?php
     // Tambah item ke keranjang
-    if (isset($_GET['idVarian'])) {
-        $idVarian = $_GET['idVarian'];
-        $jumlahBaru = isset($_GET['jumlah']) ? intval($_GET['jumlah']) : 1;
+    // Tambah item ke keranjang
+if (isset($_GET['idVarian'])) {
+    $idVarian = $_GET['idVarian'];
+    $jumlahBaru = isset($_GET['jumlah']) ? intval($_GET['jumlah']) : 1;
 
-        $cek = mysqli_query($kon, "SELECT * FROM keranjang WHERE idPengguna='$idPengguna' AND idVarian='$idVarian'");
-        if (mysqli_num_rows($cek) > 0) {
-            mysqli_query($kon, "UPDATE keranjang SET jumlah = jumlah + $jumlahBaru WHERE idPengguna='$idPengguna' AND idVarian='$idVarian'");
-        } else {
-            mysqli_query($kon, "INSERT INTO keranjang (idPengguna, idVarian, jumlah) VALUES ('$idPengguna', '$idVarian', $jumlahBaru)");
-        }
-
-        $_SESSION['baru_ditambahkan'] = $idVarian;
+    $cek = mysqli_query($kon, "SELECT * FROM keranjang WHERE idPengguna='$idPengguna' AND idVarian='$idVarian'");
+    if (mysqli_num_rows($cek) > 0) {
+        mysqli_query($kon, "UPDATE keranjang SET jumlah = jumlah + $jumlahBaru WHERE idPengguna='$idPengguna' AND idVarian='$idVarian'");
+    } else {
+        mysqli_query($kon, "INSERT INTO keranjang (idPengguna, idVarian, jumlah) VALUES ('$idPengguna', '$idVarian', $jumlahBaru)");
     }
+
+    $_SESSION['notifikasi_keranjang'] = 'Barang berhasil ditambahkan ke keranjang';
+
+    // Redirect kembali ke halaman sebelumnya
+    if (isset($_GET['redirect']) && $_GET['redirect'] === 'detail' && isset($_GET['kodeBarang'])) {
+        $kodeBarang = $_GET['kodeBarang'];
+        header("Location: index.php?page=detail&kodeBarang=$kodeBarang");
+        exit;
+    }
+
+    $_SESSION['baru_ditambahkan'] = $idVarian;
+}
+
 
     // Hapus item dari keranjang
     if (isset($_GET['aksi']) && $_GET['aksi'] === "hapus_barang" && isset($_GET['idVarian'])) {
@@ -140,8 +151,7 @@ $idPengguna = $_SESSION['idPengguna'];
 
         <div class="text-right">
             <h5>Total Dipilih: <span id="total-dipilih">Rp0</span></h5>
-            <button type="submit" onclick="return konfirmasiCheckout();" style="background-color:rgb(63, 126, 126); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Checkout</button>
-
+            <button type="submit" class="btn btn-success" onclick="return konfirmasiCheckout();">Checkout</button>
         </div>
     </form>
 
@@ -239,3 +249,7 @@ function konfirmasiCheckout() {
     return confirm("Yakin ingin melanjutkan ke checkout?");
 }
 </script>
+
+
+
+

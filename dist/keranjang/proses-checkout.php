@@ -34,6 +34,9 @@ if (isset($_SESSION['ongkir'])) {
 } else {
     $_SESSION['ongkir'] = 0;
 }
+
+$_SESSION['total_bayar'] = $total + $ongkir;
+
 ?>
 
 <!DOCTYPE html>
