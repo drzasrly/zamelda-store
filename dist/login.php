@@ -67,6 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($row["status"] == 1) {
             $_SESSION["idPengguna"] = $row["idPengguna"];
             $_SESSION["kodePengguna"] = $row["kodePengguna"];
+            $_SESSION["kodePelanggan"] = $row["kodePelanggan"];
             $_SESSION["namaPelanggan"] = $row["namaPelanggan"];
             $_SESSION["username"] = $row["username"];
             $_SESSION["level"] = $row["level"];
