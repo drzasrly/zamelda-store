@@ -55,20 +55,20 @@ $_SESSION['total_bayar'] = $total + $ongkir;
         .produk-item img { width: 110px; height: 110px; border: 1px solid #ddd; border-radius: 5px; }
         .highlight { color: #f2bb16; font-weight: bold; }
         .btn-pesan {
-            background-color: #f2bb16;         /* warna oranye dari palet */
-            color: #1b1b1b;                    /* teks gelap agar kontras di tombol terang */
+            background-color: #f2bb16;        
+            color: #1b1b1b;                   
             border: none;
             padding: 10px;
-            border-radius: 10px;              /* sudut kotak */
+            border-radius: 10px;           
             font-weight: bold;
             font-size: 16px;
-            box-shadow: 0 4px 12px rgba(255, 145, 77, 0.3); /* bayangan halus */
+            box-shadow: 0 4px 12px rgba(255, 145, 77, 0.3); 
             transition: all 0.3s ease;
-            text-transform: uppercase;        /* biar lebih tegas */
+            text-transform: uppercase;        
         }
 
         .btn-pesan:hover {
-            background-color: #ff7f2a;        /* sedikit lebih gelap saat hover */
+            background-color: #ff7f2a;       
             box-shadow: 0 6px 16px rgba(255, 145, 77, 0.5);
             transform: translateY(-2px);
         }
@@ -137,6 +137,9 @@ $_SESSION['total_bayar'] = $total + $ongkir;
                 <option value="jne">JNE</option>
                 <option value="tiki">TIKI</option>
                 <option value="pos">POS Indonesia</option>
+                <option value="jnt">JNT</option>
+                <option value="anteraja">Anter Aja</option>
+                <option value="sicepat">SICEPAT</option>
             </select>
         </div>
 
@@ -208,26 +211,40 @@ $_SESSION['total_bayar'] = $total + $ongkir;
 </div>
 
 <script>
+function hitungOngkir() {
+    const provinsi = $('#idAlamat').data('provinsi');
+    const kurir = $('#kurirSelect').val();
+    const subtotal = <?= $total ?>;
+
+    $.getJSON('ongkir_kurir.json', function(json) {
+        const match = json.ongkir_per_kurir.find(
+            o => o.provinsi === provinsi && o.kurir === kurir
+        );
+        const ongkir = match ? match.ongkir : 0;
+
+        $('#ongkirText').text('Rp' + ongkir.toLocaleString('id-ID'));
+        $('#totalBayar').text('Rp' + (subtotal + ongkir).toLocaleString('id-ID'));
+        $('#ongkirInput').val(ongkir);
+    });
+}
+
+$('#kurirSelect').on('change', hitungOngkir);
+
 function pilihAlamat(radio) {
     const id = radio.value;
     const provinsi = radio.dataset.provinsi;
 
-    $.getJSON('ongkir_provinsi.json', function (json) {
-        const match = json.ongkir_per_provinsi.find(p => p.provinsi === provinsi);
-        const ongkir = match ? match.ongkir : 0;
-        const subtotal = <?= $total ?>;
+    $('#idAlamat').val(id).data('provinsi', provinsi); 
+    $('#alamatTerpilih').html(
+        radio.nextElementSibling.innerHTML + 
+        `<input type="hidden" name="idAlamat" id="idAlamat" value="${id}" data-provinsi="${provinsi}">`
+    );
+    
+    $('#modalAlamat').modal('hide');
 
-        $('#idAlamat').val(id);
-        $('#alamatTerpilih').html(
-            radio.nextElementSibling.innerHTML + 
-            `<input type="hidden" name="idAlamat" id="idAlamat" value="${id}">`
-        );
-        $('#ongkirText').text('Rp' + ongkir.toLocaleString('id-ID'));
-        $('#totalBayar').text('Rp' + (subtotal + ongkir).toLocaleString('id-ID'));
-        $('#ongkirInput').val(ongkir);
-        $('#modalAlamat').modal('hide');
-    });
+    hitungOngkir(); 
 }
+</script>
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,0 +1,1334 @@
+{
+    "ongkir_per_kurir": [
+        {
+            "kurir": "jne",
+            "provinsi": "Aceh",
+            "ongkir": 39695
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Sumatera Utara",
+            "ongkir": 35986
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Sumatera Barat",
+            "ongkir": 20264
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Riau",
+            "ongkir": 20996
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Kepulauan Riau",
+            "ongkir": 12688
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Jambi",
+            "ongkir": 24281
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Bengkulu",
+            "ongkir": 16283
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Sumatera Selatan",
+            "ongkir": 21345
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Lampung",
+            "ongkir": 20464
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Bangka Belitung",
+            "ongkir": 30166
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "DKI Jakarta",
+            "ongkir": 27115
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Jawa Barat",
+            "ongkir": 31819
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Banten",
+            "ongkir": 13851
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Jawa Tengah",
+            "ongkir": 37465
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "DI Yogyakarta",
+            "ongkir": 28804
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Jawa Timur",
+            "ongkir": 32768
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Bali",
+            "ongkir": 21066
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Nusa Tenggara Barat",
+            "ongkir": 19030
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Nusa Tenggara Timur",
+            "ongkir": 28098
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Kalimantan Barat",
+            "ongkir": 21812
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Kalimantan Tengah",
+            "ongkir": 30762
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Kalimantan Selatan",
+            "ongkir": 25064
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Kalimantan Timur",
+            "ongkir": 11085
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Kalimantan Utara",
+            "ongkir": 35079
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Sulawesi Utara",
+            "ongkir": 20934
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Gorontalo",
+            "ongkir": 24365
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Sulawesi Tengah",
+            "ongkir": 29057
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Sulawesi Barat",
+            "ongkir": 24040
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Sulawesi Selatan",
+            "ongkir": 35816
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Sulawesi Tenggara",
+            "ongkir": 19740
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Maluku",
+            "ongkir": 20268
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Maluku Utara",
+            "ongkir": 29999
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Papua",
+            "ongkir": 20466
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Papua Barat",
+            "ongkir": 29614
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Papua Selatan",
+            "ongkir": 29881
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Papua Tengah",
+            "ongkir": 22207
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Papua Pegunungan",
+            "ongkir": 21685
+        },
+        {
+            "kurir": "jne",
+            "provinsi": "Papua Barat Daya",
+            "ongkir": 30818
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Aceh",
+            "ongkir": 38416
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Sumatera Utara",
+            "ongkir": 22211
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Sumatera Barat",
+            "ongkir": 36939
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Riau",
+            "ongkir": 19544
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Kepulauan Riau",
+            "ongkir": 12365
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Jambi",
+            "ongkir": 12630
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Bengkulu",
+            "ongkir": 20205
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Sumatera Selatan",
+            "ongkir": 28091
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Lampung",
+            "ongkir": 10561
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Bangka Belitung",
+            "ongkir": 34478
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "DKI Jakarta",
+            "ongkir": 11451
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Jawa Barat",
+            "ongkir": 36310
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Banten",
+            "ongkir": 22041
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Jawa Tengah",
+            "ongkir": 39956
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "DI Yogyakarta",
+            "ongkir": 15939
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Jawa Timur",
+            "ongkir": 18088
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Bali",
+            "ongkir": 31344
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Nusa Tenggara Barat",
+            "ongkir": 29299
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Nusa Tenggara Timur",
+            "ongkir": 37354
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Kalimantan Barat",
+            "ongkir": 35501
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Kalimantan Tengah",
+            "ongkir": 12095
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Kalimantan Selatan",
+            "ongkir": 35617
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Kalimantan Timur",
+            "ongkir": 14071
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Kalimantan Utara",
+            "ongkir": 28926
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Sulawesi Utara",
+            "ongkir": 39635
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Gorontalo",
+            "ongkir": 30740
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Sulawesi Tengah",
+            "ongkir": 23321
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Sulawesi Barat",
+            "ongkir": 38869
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Sulawesi Selatan",
+            "ongkir": 35060
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Sulawesi Tenggara",
+            "ongkir": 16956
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Maluku",
+            "ongkir": 23327
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Maluku Utara",
+            "ongkir": 31422
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Papua",
+            "ongkir": 18408
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Papua Barat",
+            "ongkir": 33333
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Papua Selatan",
+            "ongkir": 11620
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Papua Tengah",
+            "ongkir": 31602
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Papua Pegunungan",
+            "ongkir": 31182
+        },
+        {
+            "kurir": "tiki",
+            "provinsi": "Papua Barat Daya",
+            "ongkir": 17648
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Aceh",
+            "ongkir": 17287
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Sumatera Utara",
+            "ongkir": 27305
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Sumatera Barat",
+            "ongkir": 30352
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Riau",
+            "ongkir": 20146
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Kepulauan Riau",
+            "ongkir": 21753
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Jambi",
+            "ongkir": 27406
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Bengkulu",
+            "ongkir": 21136
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Sumatera Selatan",
+            "ongkir": 18841
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Lampung",
+            "ongkir": 15506
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Bangka Belitung",
+            "ongkir": 12531
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "DKI Jakarta",
+            "ongkir": 27371
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Jawa Barat",
+            "ongkir": 10927
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Banten",
+            "ongkir": 23292
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Jawa Tengah",
+            "ongkir": 24981
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "DI Yogyakarta",
+            "ongkir": 12988
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Jawa Timur",
+            "ongkir": 34313
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Bali",
+            "ongkir": 22130
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Nusa Tenggara Barat",
+            "ongkir": 20083
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Nusa Tenggara Timur",
+            "ongkir": 31020
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Kalimantan Barat",
+            "ongkir": 33555
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Kalimantan Tengah",
+            "ongkir": 30925
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Kalimantan Selatan",
+            "ongkir": 21095
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Kalimantan Timur",
+            "ongkir": 30494
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Kalimantan Utara",
+            "ongkir": 25963
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Sulawesi Utara",
+            "ongkir": 29810
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Gorontalo",
+            "ongkir": 25012
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Sulawesi Tengah",
+            "ongkir": 10758
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Sulawesi Barat",
+            "ongkir": 17933
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Sulawesi Selatan",
+            "ongkir": 33352
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Sulawesi Tenggara",
+            "ongkir": 23525
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Maluku",
+            "ongkir": 27262
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Maluku Utara",
+            "ongkir": 30120
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Papua",
+            "ongkir": 37860
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Papua Barat",
+            "ongkir": 34042
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Papua Selatan",
+            "ongkir": 20194
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Papua Tengah",
+            "ongkir": 24594
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Papua Pegunungan",
+            "ongkir": 18698
+        },
+        {
+            "kurir": "pos",
+            "provinsi": "Papua Barat Daya",
+            "ongkir": 28019
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Aceh",
+            "ongkir": 19682
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Sumatera Utara",
+            "ongkir": 10784
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Sumatera Barat",
+            "ongkir": 11391
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Riau",
+            "ongkir": 36821
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Kepulauan Riau",
+            "ongkir": 29601
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Jambi",
+            "ongkir": 18903
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Bengkulu",
+            "ongkir": 10468
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Sumatera Selatan",
+            "ongkir": 13360
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Lampung",
+            "ongkir": 11072
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Bangka Belitung",
+            "ongkir": 11968
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "DKI Jakarta",
+            "ongkir": 12422
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Jawa Barat",
+            "ongkir": 24561
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Banten",
+            "ongkir": 21547
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Jawa Tengah",
+            "ongkir": 18216
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "DI Yogyakarta",
+            "ongkir": 30035
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Jawa Timur",
+            "ongkir": 19052
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Bali",
+            "ongkir": 16784
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Nusa Tenggara Barat",
+            "ongkir": 38524
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Nusa Tenggara Timur",
+            "ongkir": 39573
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Kalimantan Barat",
+            "ongkir": 23577
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Kalimantan Tengah",
+            "ongkir": 33984
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Kalimantan Selatan",
+            "ongkir": 32662
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Kalimantan Timur",
+            "ongkir": 37725
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Kalimantan Utara",
+            "ongkir": 18289
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Sulawesi Utara",
+            "ongkir": 32518
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Gorontalo",
+            "ongkir": 34346
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Sulawesi Tengah",
+            "ongkir": 18344
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Sulawesi Barat",
+            "ongkir": 37179
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Sulawesi Selatan",
+            "ongkir": 20596
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Sulawesi Tenggara",
+            "ongkir": 13822
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Maluku",
+            "ongkir": 27085
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Maluku Utara",
+            "ongkir": 38171
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Papua",
+            "ongkir": 14235
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Papua Barat",
+            "ongkir": 15971
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Papua Selatan",
+            "ongkir": 21554
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Papua Tengah",
+            "ongkir": 35051
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Papua Pegunungan",
+            "ongkir": 32228
+        },
+        {
+            "kurir": "sicepat",
+            "provinsi": "Papua Barat Daya",
+            "ongkir": 12761
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Aceh",
+            "ongkir": 31441
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Sumatera Utara",
+            "ongkir": 19307
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Sumatera Barat",
+            "ongkir": 25161
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Riau",
+            "ongkir": 35355
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Kepulauan Riau",
+            "ongkir": 22001
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Jambi",
+            "ongkir": 16891
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Bengkulu",
+            "ongkir": 13413
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Sumatera Selatan",
+            "ongkir": 18630
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Lampung",
+            "ongkir": 22877
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Bangka Belitung",
+            "ongkir": 20484
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "DKI Jakarta",
+            "ongkir": 27124
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Jawa Barat",
+            "ongkir": 39155
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Banten",
+            "ongkir": 13896
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Jawa Tengah",
+            "ongkir": 38858
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "DI Yogyakarta",
+            "ongkir": 34139
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Jawa Timur",
+            "ongkir": 24771
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Bali",
+            "ongkir": 34751
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Nusa Tenggara Barat",
+            "ongkir": 30116
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Nusa Tenggara Timur",
+            "ongkir": 33352
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Kalimantan Barat",
+            "ongkir": 38893
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Kalimantan Tengah",
+            "ongkir": 16477
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Kalimantan Selatan",
+            "ongkir": 39419
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Kalimantan Timur",
+            "ongkir": 17793
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Kalimantan Utara",
+            "ongkir": 33560
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Sulawesi Utara",
+            "ongkir": 14506
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Gorontalo",
+            "ongkir": 17343
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Sulawesi Tengah",
+            "ongkir": 33281
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Sulawesi Barat",
+            "ongkir": 25024
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Sulawesi Selatan",
+            "ongkir": 12884
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Sulawesi Tenggara",
+            "ongkir": 37051
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Maluku",
+            "ongkir": 32612
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Maluku Utara",
+            "ongkir": 13906
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Papua",
+            "ongkir": 33400
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Papua Barat",
+            "ongkir": 38477
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Papua Selatan",
+            "ongkir": 14983
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Papua Tengah",
+            "ongkir": 32763
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Papua Pegunungan",
+            "ongkir": 14346
+        },
+        {
+            "kurir": "anteraja",
+            "provinsi": "Papua Barat Daya",
+            "ongkir": 25236
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Aceh",
+            "ongkir": 21416
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Sumatera Utara",
+            "ongkir": 16961
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Sumatera Barat",
+            "ongkir": 33827
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Riau",
+            "ongkir": 33785
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Kepulauan Riau",
+            "ongkir": 27704
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Jambi",
+            "ongkir": 37208
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Bengkulu",
+            "ongkir": 37903
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Sumatera Selatan",
+            "ongkir": 29633
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Lampung",
+            "ongkir": 22343
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Bangka Belitung",
+            "ongkir": 13458
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "DKI Jakarta",
+            "ongkir": 38880
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Jawa Barat",
+            "ongkir": 26762
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Banten",
+            "ongkir": 21067
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Jawa Tengah",
+            "ongkir": 21775
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "DI Yogyakarta",
+            "ongkir": 24563
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Jawa Timur",
+            "ongkir": 10022
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Bali",
+            "ongkir": 16500
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Nusa Tenggara Barat",
+            "ongkir": 10474
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Nusa Tenggara Timur",
+            "ongkir": 13749
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Kalimantan Barat",
+            "ongkir": 26714
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Kalimantan Tengah",
+            "ongkir": 19300
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Kalimantan Selatan",
+            "ongkir": 35112
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Kalimantan Timur",
+            "ongkir": 21915
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Kalimantan Utara",
+            "ongkir": 27406
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Sulawesi Utara",
+            "ongkir": 35317
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Gorontalo",
+            "ongkir": 35627
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Sulawesi Tengah",
+            "ongkir": 26389
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Sulawesi Barat",
+            "ongkir": 38229
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Sulawesi Selatan",
+            "ongkir": 12504
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Sulawesi Tenggara",
+            "ongkir": 16260
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Maluku",
+            "ongkir": 27808
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Maluku Utara",
+            "ongkir": 16572
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Papua",
+            "ongkir": 23245
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Papua Barat",
+            "ongkir": 15046
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Papua Selatan",
+            "ongkir": 27986
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Papua Tengah",
+            "ongkir": 36447
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Papua Pegunungan",
+            "ongkir": 20287
+        },
+        {
+            "kurir": "jnt",
+            "provinsi": "Papua Barat Daya",
+            "ongkir": 16179
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Aceh",
+            "ongkir": 35289
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Sumatera Utara",
+            "ongkir": 13137
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Sumatera Barat",
+            "ongkir": 32196
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Riau",
+            "ongkir": 18225
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Kepulauan Riau",
+            "ongkir": 27238
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Jambi",
+            "ongkir": 33878
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Bengkulu",
+            "ongkir": 32537
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Sumatera Selatan",
+            "ongkir": 31201
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Lampung",
+            "ongkir": 34664
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Bangka Belitung",
+            "ongkir": 12193
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "DKI Jakarta",
+            "ongkir": 38481
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Jawa Barat",
+            "ongkir": 15692
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Banten",
+            "ongkir": 24641
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Jawa Tengah",
+            "ongkir": 33337
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "DI Yogyakarta",
+            "ongkir": 23488
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Jawa Timur",
+            "ongkir": 36632
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Bali",
+            "ongkir": 30268
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Nusa Tenggara Barat",
+            "ongkir": 20442
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Nusa Tenggara Timur",
+            "ongkir": 24340
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Kalimantan Barat",
+            "ongkir": 39682
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Kalimantan Tengah",
+            "ongkir": 25386
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Kalimantan Selatan",
+            "ongkir": 28328
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Kalimantan Timur",
+            "ongkir": 28152
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Kalimantan Utara",
+            "ongkir": 18478
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Sulawesi Utara",
+            "ongkir": 15993
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Gorontalo",
+            "ongkir": 14683
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Sulawesi Tengah",
+            "ongkir": 21035
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Sulawesi Barat",
+            "ongkir": 18786
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Sulawesi Selatan",
+            "ongkir": 33359
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Sulawesi Tenggara",
+            "ongkir": 36525
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Maluku",
+            "ongkir": 27101
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Maluku Utara",
+            "ongkir": 37243
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Papua",
+            "ongkir": 33230
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Papua Barat",
+            "ongkir": 11435
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Papua Selatan",
+            "ongkir": 25595
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Papua Tengah",
+            "ongkir": 18125
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Papua Pegunungan",
+            "ongkir": 25338
+        },
+        {
+            "kurir": "wahana",
+            "provinsi": "Papua Barat Daya",
+            "ongkir": 23557
+        }
+    ]
+}

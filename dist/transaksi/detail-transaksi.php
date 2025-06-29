@@ -2,6 +2,10 @@
     $('title').text('Detail transaksi');
 </script>
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
 
 <main>
     <div class="container-fluid">
@@ -32,15 +36,21 @@
                                     <?php
                                         include '../config/database.php';
                                         $kodeTransaksi=$_GET['kodeTransaksi'];
-                                        $sql="select *
-                                        from transaksi p
-                                        left join pelanggan an on an.kodePelanggan=p.kodePelanggan
-                                        left join detail_transaksi dp on dp.kodeTransaksi=p.kodeTransaksi
-                                        left join barang pk on pk.kodeBarang=dp.kodeBarang
-                                        where p.kodeTransaksi='$kodeTransaksi'";
+                                        $sql="SELECT *, ap.alamat_detail, ap.kota, ap.provinsi 
+                                        FROM transaksi p
+                                        LEFT JOIN pelanggan an ON an.kodePelanggan=p.kodePelanggan
+                                        LEFT JOIN detail_transaksi dp ON dp.kodeTransaksi=p.kodeTransaksi
+                                        LEFT JOIN alamat_pelanggan ap ON ap.idAlamat = dp.idAlamat
+                                        LEFT JOIN barang pk ON pk.kodeBarang=dp.kodeBarang
+                                        WHERE p.kodeTransaksi='$kodeTransaksi'
+                                        LIMIT 1"; 
                                         $query = mysqli_query($kon,$sql);    
                                         $ambil = mysqli_fetch_array($query);
                                         $kodePelanggan=$ambil['kodePelanggan'];
+                                        $alamatLengkap = $ambil['alamat_detail'] . ', ' . $ambil['kota'] . ', ' . $ambil['provinsi'];
+                                        if (empty(trim($ambil['alamat_detail']))) {
+                                            $alamatLengkap = "Alamat belum tersedia";
+                                        }
                                     ?>
             
                                     <tr>
@@ -57,7 +67,7 @@
                                     </tr>
                                     <tr>
                                         <td>Alamat</td>
-                                        <td>: <?php echo  $ambil['alamat'];?></td>
+                                        <td>: <?php echo $alamatLengkap; ?></td>
                                     </tr>
                                     <tr>
                                         <?php if (strtolower($_SESSION['level'] ?? '') != 'Pelanggan'): ?>
@@ -147,8 +157,6 @@
                                         } else {
                                             $status = "<span class='badge badge-secondary'>Tidak Diketahui</span>";
                                         }
-
-                                        // Format tanggal
                                         if ($ambil['tanggal'] == '0000-00-00' || empty($ambil['tanggal'])) {
                                             $tanggal = "";
                                         } else {
@@ -159,7 +167,14 @@
                                         <td><?php echo $no++; ?></td>
                                         <td><?php echo $ambil['namaBarang']; ?></td>
                                         <td><?php echo $tanggal; ?></td>
-                                        <td><?php echo $status; ?></td>
+                                        <td>
+                                        <?php if ($ambil['status'] == 2): ?>
+                                            <button class="btn btn-sm btn-info btn-lihat-peta" 
+                                                data-alamat="<?= htmlspecialchars($alamatLengkap) ?>" >Dikirim</button>
+                                        <?php else: ?>
+                                            <?= $status ?>
+                                        <?php endif; ?>
+                                        </td>
                                         <?php if (isset($_SESSION['level']) && $_SESSION['level'] == 'Pelanggan'): ?>
                                         <td>
                                             <?php 
@@ -241,22 +256,14 @@
 <div class="modal fade" id="modal">
   <div class="modal-dialog">
     <div class="modal-content">
-
-      <!-- Bagian header -->
       <div class="modal-header">
         <h4 class="modal-title" id="judul"></h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
-
-      <!-- Bagian body -->
       <div class="modal-body">
-        
-        <div id="tampil_data">
-          <!-- Data akan ditampilkan disini dengan AJAX -->                   
+        <div id="tampil_data">                 
         </div>
-            
       </div>
-      <!-- Bagian footer -->
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
@@ -265,9 +272,23 @@
   </div>
 </div>
 
+<!-- Modal Peta -->
+<div class="modal fade" id="modalPeta" tabindex="-1" aria-labelledby="judulPeta" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="judulPeta">Rute Pengiriman Barang</h5>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body" style="height: 500px;">
+        <div id="mapPeta" style="height: 100%; width: 100%;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <script>
-  
-    // edit transaksi
     $('.tombol_edit_transaksi').on('click',function(){
         var id_detail_transaksi = $(this).attr("id_detail_transaksi");
         var kodeTransaksi = $(this).attr("kodeTransaksi");
@@ -282,12 +303,10 @@
                 document.getElementById("judul").innerHTML='Edit barang';
             }
         });
-        // Membuka modal
         $('#modal').modal('show');
     });
 
 
-    // konfirmasi
     $('.tombol_konfirmasi').on('click',function(){
         var kodePelanggan = $(this).attr("kodePelanggan");
         var id_detail_transaksi = $(this).attr("id_detail_transaksi");
@@ -306,11 +325,9 @@
                 document.getElementById("judul").innerHTML='Konfirmasi transaksi';
             }
         });
-        // Membuka modal
         $('#modal').modal('show');
     });
 
-    // edit penyewa
      $('#tombol_edit_Pelanggan').on('click',function(){
      
         var kodeTransaksi = $(this).attr("kodeTransaksi");
@@ -324,11 +341,9 @@
                 document.getElementById("judul").innerHTML='Edit transaksi barang';
             }
         });
-        // Membuka modal
         $('#modal').modal('show');
     });
 
-    // fungsi hapus transaksi
     $('.btn-hapus-transaksi').on('click',function(){
         konfirmasi=confirm("Yakin ingin menghapus data transaksi ini?")
         if (konfirmasi){
@@ -338,8 +353,6 @@
         }
     });
 
-
-        // lihat transaksi
         $('#lihat_detail_transaksi').on('click',function(){
         var kodePelanggan = $(this).attr("kodePelanggan");
         $.ajax({
@@ -351,11 +364,107 @@
                 document.getElementById("judul").innerHTML='Daftar barang yang Sedang Dipinjam';
             }
         });
-        // Membuka modal
         $('#modal').modal('show');
     });
 
 
+let map = null;
+let routingControl = null;
+let sudahDimuat = false; // Flag global untuk status peta
+
+$(document).on('click', '.btn-lihat-peta', function () {
+    const alamatTujuan = $(this).data('alamat');
+    const namaPelanggan = $(this).data('nama');
+    const asal = [-7.2575, 112.7521];
+
+    $('#modalPeta').modal('show');
+
+    setTimeout(() => {
+        if (sudahDimuat) return; // ❌ Jika sudah dimuat sebelumnya, tidak usah buat ulang
+
+        // Lanjut buat peta
+        $.getJSON(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(alamatTujuan)}`, function (data) {
+            if (data && data.length > 0) {
+                const tujuan = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+
+                map = L.map('mapPeta').setView(asal, 10);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
+
+                routingControl = L.Routing.control({
+                    waypoints: [
+                        L.latLng(asal),
+                        L.latLng(tujuan)
+                    ],
+                    createMarker: function (i, wp, nWps) {
+                        if (i === 0) {
+                            return L.marker(wp.latLng).bindPopup("Gudang/Asal");
+                        } else {
+                            return L.marker(wp.latLng).bindPopup(`Tujuan: ${namaPelanggan}`);
+                        }
+                    },
+                    routeWhileDragging: false,
+                    addWaypoints: false,
+                    show: false
+                }).addTo(map);
+
+                routingControl.on('routesfound', function (e) {
+                    const route = e.routes[0];
+                    const coords = route.coordinates;
+
+                    let marker = L.marker(coords[0], {
+                        icon: L.icon({
+                            iconUrl: 'transaksi/motor.png',
+                            iconSize: [40, 40],
+                            iconAnchor: [20, 20]
+                        })
+                    }).addTo(map);
+
+                    let i = 0;
+                    const anim = setInterval(() => {
+                        if (i < coords.length) {
+                            marker.setLatLng(coords[i]);
+
+                            // AJAX tracking titik (boleh tetap ada)
+                            $.post('transaksi/detail-transaksi/simpan-rute-realtime.php', {
+                                kodeTransaksi: $('#kodeTransaksi').val(),
+                                lat: coords[i].lat,
+                                lng: coords[i].lng
+                            });
+
+                            i++;
+                        } else {
+                            clearInterval(anim);
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Barang Telah Sampai',
+                                text: 'Silakan klik tombol di bawah jika barang sudah diterima.',
+                                confirmButtonText: 'Konfirmasi Diterima'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    $.post('transaksi/detail-transaksi/update-status.php', {
+                                        kodeTransaksi: $('#kodeTransaksi').val(),
+                                        status: 3
+                                    }, function (response) {
+                                        Swal.fire('Berhasil!', 'Transaksi telah diselesaikan.', 'success')
+                                            .then(() => location.reload());
+                                    }).fail(function () {
+                                        Swal.fire('Gagal!', 'Terjadi kesalahan saat update status.', 'error');
+                                    });
+                                }
+                            });
+                        }
+                    }, 10);
+                });
+
+                sudahDimuat = true; // ✅ Set flag agar tidak buat ulang
+            } else {
+                alert("Gagal menemukan lokasi tujuan.");
+            }
+        });
+    }, 500);
+});
 
 </script>
 
