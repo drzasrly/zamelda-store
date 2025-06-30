@@ -50,7 +50,7 @@
         <div class="card mb-4">
             <div class="card-header">
                 <?php if ($_SESSION["level"] != "Pelanggan"): ?>
-                    <a href="index.php?page=input-transaksi" class="btn" role="button" style="background-color:rgb(31, 124, 161); color: white; border: none;">Input transaksi</a>
+                    <a href="index.php?page=input-transaksi" class="btn" role="button" style="background-color:rgb(31, 124, 161); color: white; border: none;">Riwayat transaksi</a>
                 <?php endif; ?>
             </div>
             <div class="card-body">
@@ -74,8 +74,14 @@
                                     FROM transaksi p
                                     INNER JOIN pelanggan an ON an.kodePelanggan = p.kodePelanggan
                                     INNER JOIN detail_transaksi dp ON dp.kodeTransaksi = p.kodeTransaksi
-                                    INNER JOIN barang pk ON pk.kodeBarang = dp.kodeBarang
-                                    GROUP BY an.namaPelanggan, p.kodeTransaksi
+                                    INNER JOIN barang pk ON pk.kodeBarang = dp.kodeBarang";
+
+                            if ($_SESSION["level"] == "Pelanggan") {
+                                $kodePelanggan = $_SESSION['kodePelanggan'];
+                                $sql .= " WHERE p.kodePelanggan = '$kodePelanggan'";
+                            }
+
+                            $sql .= " GROUP BY an.namaPelanggan, p.kodeTransaksi
                                     ORDER BY p.kodeTransaksi DESC";
 
                             $hasil = mysqli_query($kon, $sql);

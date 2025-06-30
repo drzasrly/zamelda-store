@@ -19,9 +19,9 @@ $tanggal = date("Y-m-d");
 <main>
     <input type="hidden" name="kodeTransaksi" value="<?php echo $kodeTransaksi; ?>"/>
     <div class="container-fluid">
-        <h2 class="mt-4">Input Transaksi #<?php echo $kodeTransaksi; ?></h2>
+        <h2 class="mt-4">Riwayat Transaksi #<?php echo $kodeTransaksi; ?></h2>
         <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item active">Input Transaksi #<?php echo $kodeTransaksi; ?></li>
+            <li class="breadcrumb-item active">Riwayat Transaksi #<?php echo $kodeTransaksi; ?></li>
         </ol>
 
         <!-- Pilih Pelanggan -->
@@ -59,7 +59,6 @@ $tanggal = date("Y-m-d");
             </div>
         </div>
 
-        <!-- Jika pelanggan sudah dipilih -->
         <?php if (isset($_GET['pelanggan'])):
             $kodePelanggan = addslashes(trim($_GET['pelanggan']));
             $query1 = mysqli_query($kon, "SELECT * FROM pelanggan WHERE kodePelanggan='$kodePelanggan'");
@@ -69,7 +68,6 @@ $tanggal = date("Y-m-d");
         <div class="card mb-4">
             <div class="card-body">
                 <div class="row">
-                    <!-- Profil Pelanggan -->
                     <div class="col-sm-4">
                         <div class="card mb-4">
                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -89,8 +87,7 @@ $tanggal = date("Y-m-d");
                         </div>
                     </div>
 
-                    <!-- Keranjang -->
-                    <div class="col-sm-8">
+                    <!-- <div class="col-sm-8">
                         <div id="tampil_cart"></div>
                         <div class="form-group mt-2">
                             <span class="badge badge-info">Tanggal: <?php echo $tanggal; ?></span>
@@ -98,7 +95,7 @@ $tanggal = date("Y-m-d");
                         <div class="form-group">
                             <a href="transaksi/simpan.php?kodePelanggan=<?php echo $_GET['pelanggan']; ?>" id="tombol_simpan_transaksi" class="btn btn-success float-right">Simpan</a>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
