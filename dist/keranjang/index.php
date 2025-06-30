@@ -151,7 +151,12 @@ if (isset($_GET['idVarian'])) {
 
         <div class="text-right">
             <h5>Total Dipilih: <span id="total-dipilih">Rp0</span></h5>
-            <button type="submit" class="btn btn-success" onclick="return konfirmasiCheckout();">Checkout</button>
+            <button type="submit"
+        style="background-color:rgb(40, 133, 175); color: white; border: none; padding: 8px 16px; border-radius: 6px;"
+        onclick="return konfirmasiCheckout();">
+    Checkout
+</button>
+
         </div>
     </form>
 

@@ -81,10 +81,14 @@ $_SESSION['total_bayar'] = $total + $ongkir;
             <div class="section-title d-flex justify-content-between align-items-center">
                 <span>Alamat Pengiriman</span>
                 <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-outline-warning btn-sm d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#modalAlamat">
-                        <i class="bi bi-pencil-square me-1"></i> <span style="color:rgb(30, 121, 173);">Ubah Alamat</span>
-                    </button>
-                    <button type="button" class="btn btn-sm d-flex align-items-center" style="background-color:rgb(27, 154, 168); color: #1b1b1b;" data-bs-toggle="modal" data-bs-target="#modalTambahAlamat">
+                    <button type="button" class="btn btn-outline-warning btn-sm d-flex align-items-center"
+                        style="border-color: rgb(30, 121, 173); color: rgb(30, 121, 173); transition: 0.3s;"
+                            onmouseover="this.style.backgroundColor='rgb(88, 170, 184)'; this.style.color='white';"
+                                onmouseout="this.style.backgroundColor='white'; this.style.color='rgb(30, 121, 173)';"
+                                    data-bs-toggle="modal" data-bs-target="#modalAlamat">
+                        <i class="bi bi-pencil-square me-1"></i><span>Ubah Alamat</span>
+                        </button>
+                    <button type="button" class="btn btn-sm d-flex align-items-center" style="background-color:rgb(40, 174, 189); color: #1b1b1b;" data-bs-toggle="modal" data-bs-target="#modalTambahAlamat">
                         <i class="bi bi-plus-circle me-1"></i> Tambah Alamat
                     </button>
                 </div>
