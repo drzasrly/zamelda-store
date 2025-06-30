@@ -160,8 +160,14 @@ class BarangDetailCarouselDenganThumbnail {
                 echo "<p><strong>Harga:</strong> Rp <span id='info-harga-{$index}'>" . number_format($varian['harga'], 0, ',', '.') . "</span></p>";
 
                 if (strtolower($_SESSION['level'] ?? '') === 'pelanggan' && $varian['stok'] > 0) {
-                    echo "<a href='index.php?page=keranjang&kodeBarang={$barang['kodeBarang']}&idVarian={$varian['idVarian']}' class='btn btn-primary btn-sm'>";
-                    echo "<i class='fas fa-cart-plus'></i> Tambah ke Keranjang</a>";
+                    echo "<button 
+    type='button'
+    class='btn btn-primary btn-sm tambah-keranjang-btn' 
+    data-idvarian='{$varian['idVarian']}' 
+    data-kodebarang='{$barang['kodeBarang']}'>
+    <i class='fas fa-cart-plus'></i> Tambah ke Keranjang
+</button>";
+
                 } elseif ($varian['stok'] <= 0) {
                     echo "<div class='alert alert-warning p-1 text-center'>Stok Kosong</div>";
                 }
@@ -177,8 +183,12 @@ class BarangDetailCarouselDenganThumbnail {
                 echo "<p><strong>Harga:</strong> Rp" . number_format($varian['harga'], 0, ',', '.') . "</p>";
 
                 if (strtolower($_SESSION['level'] ?? '') === 'pelanggan' && $varian['stok'] > 0) {
-                    echo "<a href='index.php?page=keranjang&idVarian={$varian['idVarian']}&redirect=detail&kodeBarang={$barang['kodeBarang']}' class='btn btn-primary btn-sm'>";
-                    echo "<i class='fas fa-cart-plus'></i> Tambah ke Keranjang</a>";
+                    echo "<button 
+    class='btn btn-primary btn-sm tambah-keranjang-btn' 
+    data-idvarian='{$varian['idVarian']}' 
+    data-kodebarang='{$barang['kodeBarang']}'>
+    <i class='fas fa-cart-plus'></i> Tambah ke Keranjang
+</button>";
                 } elseif ($varian['stok'] <= 0) {
                     echo "<div class='alert alert-warning p-1 text-center'>Stok Kosong</div>";
                 }
@@ -276,6 +286,49 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-<?php unset($_SESSION['notifikasi_keranjang']); ?>
 <?php endif; ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.querySelectorAll('.tambah-keranjang-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        const idVarian = this.dataset.idvarian;
+        const kodeBarang = this.dataset.kodebarang;
+
+        fetch('keranjang/tambah-keranjang.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `idVarian=${idVarian}&kodeBarang=${kodeBarang}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: data.message,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: data.message
+                });
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: ' saat menambahkan Terjadi kesalahan ke keranjang.'
+            });
+        });
+    });
+});
+</script>
+
+<?php unset($_SESSION['notifikasi_keranjang']); ?>
+
 

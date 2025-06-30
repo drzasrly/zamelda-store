@@ -20,8 +20,6 @@
         <div class="row">
             <?php
                 include '../config/database.php';
-
-                // ✅ Total Nilai Transaksi (akumulasi nominal)
                 $q = mysqli_query($kon, "SELECT SUM(v.harga * d.jumlah) AS totalBayar 
                                         FROM detail_transaksi d 
                                         JOIN varianBarang v ON v.idVarian = d.idVarian");
@@ -116,24 +114,31 @@
                     ['label' => 'Dibatalkan', 'jumlah' => $dibatalkan, 'icon' => 'times-circle'],
                 ];
             ?>
-
-            <?php foreach ($statusList as $status): ?>
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card bg-custom-status text-white mb-4">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs text-uppercase mb-1"><?php echo $status['label']; ?></div>
-                                    <div class="h5 mb-0 font-weight-bold"><?php echo $status['jumlah']; ?></div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-<?php echo $status['icon']; ?> fa-3x"></i>
+            <div class="container-fluid">
+                <div class="d-flex overflow-auto px-3 pb-4" style="gap: 1rem;">
+                    <?php foreach ($statusList as $status): ?>
+                        <div class="flex-shrink-0" style="width: 220px;">
+                            <div class="card shadow-sm border-0 bg-custom-status text-white h-100 rounded-4">
+                                <div class="card-body p-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="text-uppercase small font-weight-bold mb-1">
+                                                <?php echo $status['label']; ?>
+                                            </div>
+                                            <div class="h4 font-weight-bold mb-0">
+                                                <?php echo $status['jumlah']; ?>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <i class="fas fa-<?php echo $status['icon']; ?> fa-2x"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
-            <?php endforeach; ?>
+            </div>
         </div>
         <?php endif; ?>
 
