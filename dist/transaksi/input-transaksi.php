@@ -84,7 +84,7 @@ $tanggal = date("Y-m-d");
                                         <tr><td>Email</td><td>: <?php echo $data1['email']; ?></td></tr>
                                     </tbody>
                                 </table>
-                                <button type="button" kodePelanggan="<?php echo $data1['kodePelanggan']; ?>" class="btn btn-dark" id="lihat_riwayat_transaksi">Lihat Riwayat Peminjaman</button>
+                                <button type="button" kodePelanggan="<?php echo $data1['kodePelanggan']; ?>" class="btn btn-dark" id="lihat_riwayat_transaksi">Lihat Riwayat Transaksi</button>
                             </div>
                         </div>
                     </div>

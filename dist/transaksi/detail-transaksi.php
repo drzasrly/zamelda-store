@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <main>
     <div class="container-fluid">
@@ -70,11 +71,11 @@
                                         <td>: <?php echo $alamatLengkap; ?></td>
                                     </tr>
                                     <tr>
-                                        <?php if (strtolower($_SESSION['level'] ?? '') != 'Pelanggan'): ?>
+                                        <!-- <?php if (strtolower($_SESSION['level'] ?? '') != 'Pelanggan'): ?>
                                         <td colspan="2">
                                             <button class="btn btn-warning btn-circle" id="tombol_edit_pelanggan" kodeTransaksi="<?php echo $_GET['kodeTransaksi'];?>"  kodePelanggan="<?php echo $ambil['kodePelanggan'];?>" ><i class="fas fa-edit"></i></button>
                                         </td>
-                                        <?php endif; ?>
+                                        <?php endif; ?> -->
                                     </tr>
                                     </tbody>
                                 </table>    
@@ -219,8 +220,8 @@
                                     <?php endwhile; ?>
                                     </tbody>
                                 </table>
-                                <a href="transaksi/detail-transaksi/invoice.php?kodeTransaksi=<?php echo $kodeTransaksi; ?>" target="_blank" 
-                                    class="btn-icon-pdf" style="background-color:rgb(17, 102, 102); color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;"><span class="text"><i class="fas fa-print fa-sm"></i> Cetak</span></a>
+                                <!-- <a href="transaksi/detail-transaksi/invoice.php?kodeTransaksi=<?php echo $kodeTransaksi; ?>" target="_blank" 
+                                    class="btn-icon-pdf" style="background-color:rgb(17, 102, 102); color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;"><span class="text"><i class="fas fa-print fa-sm"></i> Cetak</span></a> -->
                             </div>
                         </div>
                     </div>
@@ -421,12 +422,35 @@ $(document).on('click', '.btn-lihat-peta', function () {
                         })
                     }).addTo(map);
 
+                    marker.on('click', function () {
+                            Swal.fire({
+                                icon: 'question',
+                                title: 'Selesaikan Pengiriman?',
+                                text: 'Klik "Selesai" jika barang sudah diterima pelanggan.',
+                                showCancelButton: true,
+                                confirmButtonText: 'Selesai',
+                                cancelButtonText: 'Batal'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    $.post('transaksi/detail-transaksi/update-status.php', {
+                                        kodeTransaksi: $('#kodeTransaksi').val(),
+                                        status: 3
+                                    }, function (response) {
+                                        console.log("Respon update-status:", response);
+                                        Swal.fire('Berhasil!', 'Status transaksi diubah menjadi *Selesai*.', 'success')
+                                            .then(() => location.reload());
+                                    }).fail(function () {
+                                        Swal.fire('Gagal!', 'Gagal mengubah status.', 'error');
+                                    });
+                                }
+                            });
+                        });
+
                     let i = 0;
                     const anim = setInterval(() => {
                         if (i < coords.length) {
                             marker.setLatLng(coords[i]);
 
-                            // AJAX tracking titik (boleh tetap ada)
                             $.post('transaksi/detail-transaksi/simpan-rute-realtime.php', {
                                 kodeTransaksi: $('#kodeTransaksi').val(),
                                 lat: coords[i].lat,
@@ -447,9 +471,12 @@ $(document).on('click', '.btn-lihat-peta', function () {
                                         kodeTransaksi: $('#kodeTransaksi').val(),
                                         status: 3
                                     }, function (response) {
+                                        console.log("Respon update-status:", response);
                                         Swal.fire('Berhasil!', 'Transaksi telah diselesaikan.', 'success')
                                             .then(() => location.reload());
-                                    }).fail(function () {
+                                        status = 3; // Set status ke Selesai
+                                    }).fail(function (xhr, status, error) {
+                                        console.error("Gagal:", xhr.responseText);
                                         Swal.fire('Gagal!', 'Terjadi kesalahan saat update status.', 'error');
                                     });
                                 }
@@ -458,7 +485,7 @@ $(document).on('click', '.btn-lihat-peta', function () {
                     }, 10);
                 });
 
-                sudahDimuat = true; // ✅ Set flag agar tidak buat ulang
+                sudahDimuat = true; 
             } else {
                 alert("Gagal menemukan lokasi tujuan.");
             }
