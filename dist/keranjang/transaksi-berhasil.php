@@ -45,12 +45,12 @@ $detail = mysqli_query($kon, "
 <body class="bg-light">
 <div class="container py-5">
     <div class="text-center mb-4">
-        <h2 class="text-success">✅ Transaksi Berhasil!</h2>
+        <h2 style="color: rgb(32, 132, 203);">✅ Transaksi Berhasil!</h2>
         <p>Terima kasih, <?= htmlspecialchars($transaksi['namaPelanggan']) ?>. Pesanan Anda telah dicatat.</p>
     </div>
 
     <div class="card shadow-sm mb-4">
-        <div class="card-header bg-success text-white">Ringkasan Transaksi</div>
+        <div class="card-header text-white" style="background-color:rgb(32, 132, 203);">Ringkasan Transaksi</div>
         <div class="card-body">
             <p><strong>Kode Transaksi:</strong> <?= $transaksi['kodeTransaksi'] ?></p>
             <p><strong>Tanggal:</strong> <?= $transaksi['tanggal'] ?></p>
@@ -75,8 +75,10 @@ $detail = mysqli_query($kon, "
     </div>
 
     <div class="text-center">
-        <a href="../index.php?page=transaksi-saya" class="btn btn-primary me-2">📦 Lihat Transaksi Saya</a>
-        <a href="../index.php?page=barang" class="btn btn-outline-success">🛒 Lanjut Belanja</a>
+            <a href="../index.php?page=transaksi-saya"
+                class="btn me-2"
+                    style="background-color:rgb(22, 97, 151); color: white; border: none;">📦 Lihat Transaksi Saya</a>
+                        <a href="../index.php?page=barang"class="btn"style="border: 2px solid rgb(32, 132, 203); color:rgb(32, 132, 203);">🛒 Lanjut Belanja</a>
     </div>
 </div>
 </body>
