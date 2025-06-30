@@ -10309,3 +10309,19 @@ body {
     font-weight: bold;
     user-select: none;
 }
+
+.btn-ubah-alamat {
+    border: 2px solid #ffc107;      
+    background-color: white;
+    color: #ffc107;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 500;
+    display: inline-block;
+    transition: 0.3s;
+}
+
+.btn-ubah-alamat:hover {
+    background-color: #ffc107;
+    color: white;
+}
