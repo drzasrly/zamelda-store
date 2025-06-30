@@ -2,18 +2,43 @@
 session_start();
 include '../../config/database.php';
 
-if (!isset($_POST['pilih']) || empty($_POST['pilih'])) {
-    header("Location:../index.php?page=keranjang&error=tidak_ada_pilihan");
-    exit;
+if (isset($_POST['tambah_alamat'])) {
+    $kodePelanggan = $_POST['kodePelanggan'];
+    $label = $_POST['label_alamat'];
+    $nama = $_POST['nama_penerima'];
+    $no_hp = $_POST['no_hp'];
+    $alamat = $_POST['alamat_detail'];
+    $kota = $_POST['kota'];
+    $provinsi = $_POST['provinsi'];
+
+    $query = "INSERT INTO alamat_pelanggan (kodePelanggan, label_alamat, nama_penerima, no_hp, alamat_detail, kota, provinsi) 
+              VALUES ('$kodePelanggan', '$label', '$nama', '$no_hp', '$alamat', '$kota', '$provinsi')";
+
+    if (mysqli_query($kon, $query)) {
+        header("Location: proses-checkout.php"); // Kembali ke halaman checkout TANPA memproses ulang
+        exit;
+    } else {
+        echo "<script>alert('Gagal menambahkan alamat!');window.location.href='proses-checkout.php';</script>";
+        exit;
+    }
 }
 
-$_SESSION['checkout'] = [
-    'pilih' => $_POST['pilih'],
-    'jumlah' => $_POST['jumlah'],
-];
+if (!isset($_POST['pilih']) || empty($_POST['pilih'])) {
+    if (!isset($_SESSION['checkout'])) {
+        header("Location:../index.php?page=keranjang&error=tidak_ada_pilihan");
+        exit;
+    }
+    $pilih = $_SESSION['checkout']['pilih'];
+    $jumlah = $_SESSION['checkout']['jumlah'];
+} else {
+    $_SESSION['checkout'] = [
+        'pilih' => $_POST['pilih'],
+        'jumlah' => $_POST['jumlah'],
+    ];
+    $pilih = $_POST['pilih'];
+    $jumlah = $_POST['jumlah'];
+}
 
-$pilih = $_POST['pilih'];
-$jumlah = $_POST['jumlah'];
 $kodePelanggan = $_SESSION['kodePengguna'];
 $pelanggan = mysqli_fetch_assoc(mysqli_query($kon, "SELECT * FROM pelanggan WHERE kodePelanggan='$kodePelanggan'"));
 $alamatUtama = mysqli_fetch_assoc(mysqli_query($kon, "SELECT * FROM alamat_pelanggan WHERE kodePelanggan='$kodePelanggan' AND label_alamat='Rumah' LIMIT 1"));
@@ -36,8 +61,8 @@ if (isset($_SESSION['ongkir'])) {
 }
 
 $_SESSION['total_bayar'] = $total + $ongkir;
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="id">
@@ -210,6 +235,54 @@ $_SESSION['total_bayar'] = $total + $ongkir;
     </div>
 </div>
 
+<!-- Modal Tambah Alamat -->
+<div class="modal fade" id="modalTambahAlamat" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form action="proses-checkout.php" method="post" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Tambah Alamat Baru</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="kodePelanggan" value="<?= $kodePelanggan ?>">
+
+        <div class="mb-3">
+          <label class="form-label">Label Alamat (contoh: Rumah, Kantor)</label>
+          <input type="text" name="label_alamat" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Nama Penerima</label>
+          <input type="text" name="nama_penerima" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">No HP</label>
+          <input type="text" name="no_hp" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Alamat Lengkap</label>
+          <textarea name="alamat_detail" class="form-control" required></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Kota</label>
+          <input type="text" name="kota" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Provinsi</label>
+          <input type="text" name="provinsi" class="form-control" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" name="tambah_alamat" class="btn btn-success">Simpan Alamat</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
 function hitungOngkir() {
     const provinsi = $('#idAlamat').data('provinsi');
@@ -237,7 +310,7 @@ function pilihAlamat(radio) {
     $('#idAlamat').val(id).data('provinsi', provinsi); 
     $('#alamatTerpilih').html(
         radio.nextElementSibling.innerHTML + 
-        `<input type="hidden" name="idAlamat" id="idAlamat" value="${id}" data-provinsi="${provinsi}">`
+        <input type="hidden" name="idAlamat" id="idAlamat" value="${id}" data-provinsi="${provinsi}">
     );
     
     $('#modalAlamat').modal('hide');

@@ -25,64 +25,56 @@
         ?>
         <div class="card mb-4">
             <div class="card-body">
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="card mb-4">
-                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                <h6 class="m-0 font-weight-bold text-primary" id="judul_grafik" >Informasi Data Pelanggan</h6>
-                            </div>
-                            <div class="card-body">
-                                <table class="table table">
-                                    <tbody>
-                                    <?php
-                                        include '../config/database.php';
-                                        $kodeTransaksi=$_GET['kodeTransaksi'];
-                                        $sql="SELECT *, ap.alamat_detail, ap.kota, ap.provinsi 
-                                        FROM transaksi p
-                                        LEFT JOIN pelanggan an ON an.kodePelanggan=p.kodePelanggan
-                                        LEFT JOIN detail_transaksi dp ON dp.kodeTransaksi=p.kodeTransaksi
-                                        LEFT JOIN alamat_pelanggan ap ON ap.idAlamat = dp.idAlamat
-                                        LEFT JOIN barang pk ON pk.kodeBarang=dp.kodeBarang
-                                        WHERE p.kodeTransaksi='$kodeTransaksi'
-                                        LIMIT 1"; 
-                                        $query = mysqli_query($kon,$sql);    
-                                        $ambil = mysqli_fetch_array($query);
-                                        $kodePelanggan=$ambil['kodePelanggan'];
-                                        $alamatLengkap = $ambil['alamat_detail'] . ', ' . $ambil['kota'] . ', ' . $ambil['provinsi'];
-                                        if (empty(trim($ambil['alamat_detail']))) {
-                                            $alamatLengkap = "Alamat belum tersedia";
-                                        }
-                                    ?>
-            
-                                    <tr>
-                                        <td>Nama</td>
-                                        <td>: <?php echo $ambil['namaPelanggan'];?></td>
-                                    </tr>
-                                    <tr>
-                                        <td>No Telp</td>
-                                        <td>: <?php echo $ambil['noTelp'];?></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Email</td>
-                                        <td>: <?php echo $ambil['email'];?></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Alamat</td>
-                                        <td>: <?php echo $alamatLengkap; ?></td>
-                                    </tr>
-                                    <tr>
-                                        <!-- <?php if (strtolower($_SESSION['level'] ?? '') != 'Pelanggan'): ?>
-                                        <td colspan="2">
-                                            <button class="btn btn-warning btn-circle" id="tombol_edit_pelanggan" kodeTransaksi="<?php echo $_GET['kodeTransaksi'];?>"  kodePelanggan="<?php echo $ambil['kodePelanggan'];?>" ><i class="fas fa-edit"></i></button>
-                                        </td>
-                                        <?php endif; ?> -->
-                                    </tr>
-                                    </tbody>
-                                </table>    
-                            </div>
-                        </div>
-                    </div>
+                <div class="container-fluid">
+    <div class="row justify-content-right">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-4"> <!-- RESPONSIF -->
+            <div class="card mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary" id="judul_grafik">Informasi Data Pelanggan</h6>
                 </div>
+                <div class="card-body">
+                    <table class="table table-borderless table-sm mb-0">
+                        <tbody>
+                        <?php
+                            include '../config/database.php';
+                            $kodeTransaksi = $_GET['kodeTransaksi'];
+                            $sql = "SELECT *, ap.alamat_detail, ap.kota, ap.provinsi 
+                                    FROM transaksi p
+                                    LEFT JOIN pelanggan an ON an.kodePelanggan = p.kodePelanggan
+                                    LEFT JOIN detail_transaksi dp ON dp.kodeTransaksi = p.kodeTransaksi
+                                    LEFT JOIN alamat_pelanggan ap ON ap.idAlamat = dp.idAlamat
+                                    LEFT JOIN barang pk ON pk.kodeBarang = dp.kodeBarang
+                                    WHERE p.kodeTransaksi = '$kodeTransaksi'
+                                    LIMIT 1";
+                            $query = mysqli_query($kon, $sql);
+                            $ambil = mysqli_fetch_array($query);
+                            $kodePelanggan = $ambil['kodePelanggan'];
+                            $alamatLengkap = trim($ambil['alamat_detail']) ? $ambil['alamat_detail'] . ', ' . $ambil['kota'] . ', ' . $ambil['provinsi'] : 'Alamat belum tersedia';
+                        ?>
+                        <tr>
+                            <td>Nama</td>
+                            <td>: <?php echo $ambil['namaPelanggan']; ?></td>
+                        </tr>
+                        <tr>
+                            <td>No Telp</td>
+                            <td>: <?php echo $ambil['noTelp']; ?></td>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td>: <?php echo $ambil['email']; ?></td>
+                        </tr>
+                        <tr>
+                            <td>Alamat</td>
+                            <td>: <?php echo $alamatLengkap; ?></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
                 <div class="row" id="bagian_detail_transaksi">
                     <div class="col-sm-12">
                         <div class="card mb-4">
@@ -118,7 +110,7 @@
                                     }
 
                                 ?>
-
+                            <div class="table-responsive">
                                 <table class="table table-striped table-bordered">
                                     <thead>
                                     <tr>
@@ -194,7 +186,7 @@
                                                     $selisih_hari = floor((time() - $tanggal_transaksi) / (60 * 60 * 24));
                                                     
                                                     if ($selisih_hari > 7) {
-                                                        $pesan = urlencode("Halo Admin,\nSaya ingin komplain karena barang *{$ambil['namaBarang']}* dengan kode transaksi *{$ambil['kodeTransaksi']}* belum dikirim lebih dari 7 hari.");
+                                                        $pesan = urlencode("Halo Admin,\nSaya ingin komplain karena barang {$ambil['namaBarang']} dengan kode transaksi {$ambil['kodeTransaksi']} belum dikirim lebih dari 7 hari.");
                                                         echo "<a href='https://wa.me/62895397081000?text={$pesan}' target='_blank' class='btn btn-danger btn-sm'>Komplain via WA</a>";
                                                     }
                                                 } else {
@@ -232,6 +224,7 @@
                                 </table>
                                 <!-- <a href="transaksi/detail-transaksi/invoice.php?kodeTransaksi=<?php echo $kodeTransaksi; ?>" target="_blank" 
                                     class="btn-icon-pdf" style="background-color:rgb(17, 102, 102); color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;"><span class="text"><i class="fas fa-print fa-sm"></i> Cetak</span></a> -->
+                                
                             </div>
                         </div>
                     </div>
@@ -393,7 +386,7 @@ $(document).on('click', '.btn-lihat-peta', function () {
     setTimeout(() => {
         if (sudahDimuat) return;
 
-        $.getJSON(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(alamatTujuan)}`, function (data) {
+        $.getJSON(https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(alamatTujuan)}, function (data) {
             if (data && data.length > 0) {
                 const tujuan = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
 
@@ -439,7 +432,7 @@ $(document).on('click', '.btn-lihat-peta', function () {
                                 }, function (response) {
                                     console.log("Respon update-status:", response);
                                     status = '3'
-                                    Swal.fire('Berhasil!', 'Status transaksi diubah menjadi *Selesai*.', 'success')
+                                    Swal.fire('Berhasil!', 'Status transaksi diubah menjadi Selesai.', 'success')
                                         .then(() => location.reload());
                                 }).fail(function () {
                                     Swal.fire('Gagal!', 'Gagal mengubah status.', 'error');
