@@ -32,7 +32,8 @@
                                 <h6 class="m-0 font-weight-bold text-primary" id="judul_grafik" >Informasi Data Pelanggan</h6>
                             </div>
                             <div class="card-body">
-                                <table class="table table">
+                                <div class="table-responsive">
+                                 <table class="table table">
                                     <tbody>
                                     <?php
                                         include '../config/database.php';
@@ -78,7 +79,8 @@
                                         <?php endif; ?> -->
                                     </tr>
                                     </tbody>
-                                </table>    
+                                    </table>
+                                </div>   
                             </div>
                         </div>
                     </div>
@@ -118,7 +120,7 @@
                                     }
 
                                 ?>
-
+                            <div class="table-responsive">
                                 <table class="table table-striped table-bordered">
                                     <thead>
                                     <tr>
@@ -232,6 +234,7 @@
                                 </table>
                                 <!-- <a href="transaksi/detail-transaksi/invoice.php?kodeTransaksi=<?php echo $kodeTransaksi; ?>" target="_blank" 
                                     class="btn-icon-pdf" style="background-color:rgb(17, 102, 102); color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;"><span class="text"><i class="fas fa-print fa-sm"></i> Cetak</span></a> -->
+                                
                             </div>
                         </div>
                     </div>
