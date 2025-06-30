@@ -76,7 +76,7 @@ $detail = mysqli_query($kon, "
 
     <div class="text-center">
         <a href="../index.php?page=transaksi-saya" class="btn btn-primary me-2">📦 Lihat Transaksi Saya</a>
-        <a href="../index.php" class="btn btn-outline-success">🛒 Lanjut Belanja</a>
+        <a href="../index.php?page=barang" class="btn btn-outline-success">🛒 Lanjut Belanja</a>
     </div>
 </div>
 </body>
