@@ -137,10 +137,14 @@
                                     include '../config/database.php';
                                     $kodeTransaksi = $_GET['kodeTransaksi'];
 
-                                    $sql1 = "SELECT * FROM detail_transaksi 
-                                            INNER JOIN transaksi ON transaksi.kodeTransaksi = detail_transaksi.kodeTransaksi
-                                            INNER JOIN barang ON barang.kodeBarang = detail_transaksi.kodeBarang 
-                                            WHERE transaksi.kodeTransaksi = '$kodeTransaksi'";
+                                 $sql1 = "SELECT detail_transaksi.*, 
+                                            barang.namaBarang 
+                                    FROM detail_transaksi 
+                                    INNER JOIN barang ON barang.kodeBarang = detail_transaksi.kodeBarang 
+                                    WHERE detail_transaksi.kodeTransaksi = '$kodeTransaksi'";
+
+
+
                                     $result = mysqli_query($kon, $sql1);
 
                                     $no = 1;
@@ -152,16 +156,17 @@
                                         } else if ($ambil['status'] == 2) {
                                             $status = "<span class='badge badge-success'>Dikirim</span>";
                                         } else if ($ambil['status'] == 3) {
-                                            $status = "<span class='badge badge-danger'>Selesai</span>";
+                                            $status = "<span class='badge badge-success'>Selesai</span>";
                                         } else if ($ambil['status'] == 4) {
                                             $status = "<span class='badge badge-danger'>Batal</span>";
                                         } else {
                                             $status = "<span class='badge badge-secondary'>Tidak Diketahui</span>";
                                         }
-                                        if ($ambil['tanggal'] == '0000-00-00' || empty($ambil['tanggal'])) {
+                                        if ($ambil['tglTransaksi'] == '0000-00-00' || empty($ambil['tglTransaksi'])) {
                                             $tanggal = "";
                                         } else {
-                                            $tanggal = date("d-m-Y", strtotime($ambil['tanggal']));
+                                           $tanggal = date("d-m-Y", strtotime($ambil['tglTransaksi']));
+
                                         }
                                     ?>
                                     <tr>
@@ -169,18 +174,23 @@
                                         <td><?php echo $ambil['namaBarang']; ?></td>
                                         <td><?php echo $tanggal; ?></td>
                                         <td>
+                                       
                                         <?php if ($ambil['status'] == 2): ?>
                                             <button class="btn btn-sm btn-info btn-lihat-peta" 
-                                                data-alamat="<?= htmlspecialchars($alamatLengkap) ?>" >Dikirim</button>
+                                                data-alamat="<?= htmlspecialchars($alamatLengkap) ?>"
+                                                data-id_detail_transaksi="<?= $ambil['id_detail_transaksi'] ?>" >
+                                                Dikirim
+                                            </button>
                                         <?php else: ?>
                                             <?= $status ?>
                                         <?php endif; ?>
                                         </td>
+
                                         <?php if (isset($_SESSION['level']) && $_SESSION['level'] == 'Pelanggan'): ?>
                                         <td>
                                             <?php 
                                                 if ($ambil['status'] == 1) { 
-                                                    $tanggal_transaksi = strtotime($ambil['tanggal']);
+                                                    $tanggal_transaksi = strtotime($ambil['tglTransaksi']);
                                                     $selisih_hari = floor((time() - $tanggal_transaksi) / (60 * 60 * 24));
                                                     
                                                     if ($selisih_hari > 7) {
@@ -200,7 +210,7 @@
                                                     kodeBarang="<?php echo $ambil['kodeBarang']; ?>"  
                                                     id_detail_transaksi="<?php echo $ambil['id_detail_transaksi']; ?>"  
                                                     kodeTransaksi="<?php echo $_GET['kodeTransaksi']; ?>"  
-                                                    tanggal="<?php echo $ambil['tanggal']; ?>" 
+                                                    tglTransaksi="<?php echo $ambil['tglTransaksi']; ?>" 
                                                     status="<?php echo $ambil['status']; ?>">
                                                 <i class="fas fa-check"></i>
                                             </button>
@@ -375,15 +385,14 @@ let sudahDimuat = false; // Flag global untuk status peta
 
 $(document).on('click', '.btn-lihat-peta', function () {
     const alamatTujuan = $(this).data('alamat');
-    const namaPelanggan = $(this).data('nama');
+    const id_detail_transaksi = $(this).data('id_detail_transaksi'); // ✅ Tangkap id_detail_transaksi
     const asal = [-7.2575, 112.7521];
 
     $('#modalPeta').modal('show');
 
     setTimeout(() => {
-        if (sudahDimuat) return; // ❌ Jika sudah dimuat sebelumnya, tidak usah buat ulang
+        if (sudahDimuat) return;
 
-        // Lanjut buat peta
         $.getJSON(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(alamatTujuan)}`, function (data) {
             if (data && data.length > 0) {
                 const tujuan = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
@@ -394,16 +403,9 @@ $(document).on('click', '.btn-lihat-peta', function () {
                 }).addTo(map);
 
                 routingControl = L.Routing.control({
-                    waypoints: [
-                        L.latLng(asal),
-                        L.latLng(tujuan)
-                    ],
+                    waypoints: [L.latLng(asal), L.latLng(tujuan)],
                     createMarker: function (i, wp, nWps) {
-                        if (i === 0) {
-                            return L.marker(wp.latLng).bindPopup("Gudang/Asal");
-                        } else {
-                            return L.marker(wp.latLng).bindPopup(`Tujuan: ${namaPelanggan}`);
-                        }
+                        return L.marker(wp.latLng).bindPopup(i === 0 ? "Gudang/Asal" : "Tujuan");
                     },
                     routeWhileDragging: false,
                     addWaypoints: false,
@@ -411,9 +413,8 @@ $(document).on('click', '.btn-lihat-peta', function () {
                 }).addTo(map);
 
                 routingControl.on('routesfound', function (e) {
-                    const route = e.routes[0];
-                    const coords = route.coordinates;
-
+                    const coords = e.routes[0].coordinates;
+                    let i = 0;
                     let marker = L.marker(coords[0], {
                         icon: L.icon({
                             iconUrl: 'transaksi/motor.png',
@@ -423,77 +424,65 @@ $(document).on('click', '.btn-lihat-peta', function () {
                     }).addTo(map);
 
                     marker.on('click', function () {
-                            Swal.fire({
-                                icon: 'question',
-                                title: 'Selesaikan Pengiriman?',
-                                text: 'Klik "Selesai" jika barang sudah diterima pelanggan.',
-                                showCancelButton: true,
-                                confirmButtonText: 'Selesai',
-                                cancelButtonText: 'Batal'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    $.post('transaksi/detail-transaksi/update-status.php', {
-                                        kodeTransaksi: $('#kodeTransaksi').val(),
-                                        status: 3
-                                    }, function (response) {
-                                        console.log("Respon update-status:", response);
-                                        Swal.fire('Berhasil!', 'Status transaksi diubah menjadi *Selesai*.', 'success')
-                                            .then(() => location.reload());
-                                    }).fail(function () {
-                                        Swal.fire('Gagal!', 'Gagal mengubah status.', 'error');
-                                    });
-                                }
-                            });
+                        Swal.fire({
+                            icon: 'question',
+                            title: 'Selesaikan Pengiriman?',
+                            text: 'Klik "Selesai" jika barang sudah diterima pelanggan.',
+                            showCancelButton: true,
+                            confirmButtonText: 'Selesai',
+                            cancelButtonText: 'Batal'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $.post('transaksi/detail-transaksi/update-status.php', {
+                                    id_detail_transaksi: id_detail_transaksi, // ✅ Dikirim sekarang
+                                    status: '3'
+                                }, function (response) {
+                                    console.log("Respon update-status:", response);
+                                    status = '3'
+                                    Swal.fire('Berhasil!', 'Status transaksi diubah menjadi *Selesai*.', 'success')
+                                        .then(() => location.reload());
+                                }).fail(function () {
+                                    Swal.fire('Gagal!', 'Gagal mengubah status.', 'error');
+                                });
+                            }
                         });
+                    });
 
-                    let i = 0;
                     const anim = setInterval(() => {
                         if (i < coords.length) {
                             marker.setLatLng(coords[i]);
-
-                            $.post('transaksi/detail-transaksi/simpan-rute-realtime.php', {
-                                kodeTransaksi: $('#kodeTransaksi').val(),
-                                lat: coords[i].lat,
-                                lng: coords[i].lng
-                            });
-
                             i++;
                         } else {
                             clearInterval(anim);
                             Swal.fire({
                                 icon: 'info',
                                 title: 'Barang Telah Sampai',
-                                text: 'Silakan klik tombol di bawah jika barang sudah diterima.',
+                                text: 'Klik "Konfirmasi" jika barang telah diterima.',
                                 confirmButtonText: 'Konfirmasi Diterima'
                             }).then((result) => {
                                 if (result.isConfirmed) {
                                     $.post('transaksi/detail-transaksi/update-status.php', {
-                                        kodeTransaksi: $('#kodeTransaksi').val(),
-                                        status: 3
+                                        id_detail_transaksi: id_detail_transaksi, 
+                                        status: '3'
                                     }, function (response) {
                                         console.log("Respon update-status:", response);
                                         Swal.fire('Berhasil!', 'Transaksi telah diselesaikan.', 'success')
                                             .then(() => location.reload());
-                                        status = 3; // Set status ke Selesai
-                                    }).fail(function (xhr, status, error) {
+                                    }).fail(function (xhr) {
                                         console.error("Gagal:", xhr.responseText);
                                         Swal.fire('Gagal!', 'Terjadi kesalahan saat update status.', 'error');
                                     });
                                 }
                             });
                         }
-                    }, 10);
+                    }, 5);
                 });
 
-                sudahDimuat = true; 
+                sudahDimuat = true;
             } else {
                 alert("Gagal menemukan lokasi tujuan.");
             }
         });
     }, 500);
 });
-
 </script>
-
-
-
