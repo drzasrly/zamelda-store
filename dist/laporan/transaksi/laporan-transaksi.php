@@ -1,12 +1,12 @@
 
 <script>
-    $('title').text('Laporan Peminjaman');
+    $('title').text('Laporan transaksi');
 </script>
 <main>
     <div class="container-fluid">
-        <h2 class="mt-4">Laporan Peminjaman</h2>
+        <h2 class="mt-4">Laporan transaksi</h2>
         <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item active">Daftar Laporan Peminjaman</li>
+            <li class="breadcrumb-item active">Daftar Laporan transaksi</li>
         </ol>
         <div class="card shadow mb-4">
             <div class="card-body">
@@ -46,7 +46,7 @@
     </div>
 </main>
 <script>
-    //Menampilkan laporan peminjaman dengan menggunakan ajax
+    //Menampilkan laporan transaksi dengan menggunakan ajax
     $('#btn-tampil').on('click',function(){
         $( document ).ajaxStart(function() {
         $( "#ajax-wait" ).css({
@@ -62,7 +62,7 @@
         var data = $('#form').serialize();
             $.ajax({
                 type	: 'POST',
-                url: 'laporan/peminjaman/tampil-peminjaman.php',
+                url: 'laporan/transaksi/tampil-transaksi.php',
                 data: data,
                 cache	: false,
                 success	: function(data){

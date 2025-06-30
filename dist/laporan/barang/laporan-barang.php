@@ -1,12 +1,12 @@
 
 <script>
-    $('title').text('Laporan Anggota');
+    $('title').text('Laporan Barang');
 </script>
 <main>
     <div class="container-fluid">
-        <h2 class="mt-4">Laporan Anggota</h2>
+        <h2 class="mt-4">Laporan Barang</h2>
         <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item active">Daftar Laporan Anggota</li>
+            <li class="breadcrumb-item active">Daftar Laporan Barang</li>
         </ol>
         <div class="card shadow mb-4">
             <div class="card-body">
@@ -15,7 +15,7 @@
                     <form method="post" id="form">
                         <div class="form-row">
                             <div class="col-sm-4">
-                            <input type="text" class="form-control" id="kata_kunci"  name="kata_kunci" placeholder="Masukan kode, judul, kategori, penerbit atau penulis">
+                            <input type="text" class="form-control" name="kata_kunci" placeholder="Masukan kode, barang, kategori" id="kata_kunci">
                             </div>
                             <div class="col-sm-3">
                             <button  type="button" id="btn-tampil"  class="btn btn-dark"><span class="text"><i class="fas fa-search fa-sm"></i> Cari</span></button>
@@ -44,21 +44,15 @@
 </main>
 <script>
 
-    $(document).ready( function (){
-        tabel_anggota();
+    $(document).ready( function () {
+        tabel_barang();
     });
 
-    $('#kata_kunci').bind('keyup', function () {
-        if ($("#kata_kunci").val().length == 0) {
-            tabel_anggota();
-        }
-    });
-
-    function tabel_anggota(){
+    function tabel_barang(){
         var data = $('#form').serialize();
         $.ajax({
             type	: 'POST',
-            url: 'laporan/anggota/tampil-anggota.php',
+            url: 'laporan/barang/tampil-barang.php',
             data: data,
             cache	: false,
             success	: function(data){
@@ -86,7 +80,7 @@
     //Menampilkan laporan peminjaman dengan menggunakan ajax
     $('#btn-tampil').on('click',function(){
         loading();
-        tabel_anggota();
+        tabel_barang();
     });
 
 </script>

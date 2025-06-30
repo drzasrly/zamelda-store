@@ -13,7 +13,7 @@ session_start();
     $pimpinan=$row['nama_pimpinan'];
 
     $pdf->AddPage();
-    $pdf->Image('../../aplikasi/logo/'.$row['logo'],15,5,30,30);
+    $pdf->Image('../../aplikasi/logo/'.$row['logo'],15,1,30,30);
     $pdf->SetFont('Arial','B',21);
     $pdf->Cell(0,7,strtoupper($row['nama_aplikasi']),0,1,'C');
     $pdf->SetFont('Arial','B',10);
@@ -29,14 +29,14 @@ session_start();
 
     $pdf->SetFont('Arial','B',14);
 
-    $pdf->Cell(0,7,'LAPORAN ANGGOTA',0,1,'C');
+    $pdf->Cell(0,7,'LAPORAN pelanggan',0,1,'C');
     $pdf->Cell(10,4,'',0,1);
     $pdf->SetFont('Arial','B',10);
 
     $pdf->Cell(7,6,'No',1,0,'C');
     $pdf->Cell(13,6,'Kode',1,0,'C');
-    $pdf->Cell(75,6,'Nama',1,0,'C');
-    $pdf->Cell(40,6,'Email',1,0,'C');
+    $pdf->Cell(70,6,'Nama',1,0,'C');
+    $pdf->Cell(50,6,'Email',1,0,'C');
     $pdf->Cell(30,6,'No Telp',1,0,'C');
     $pdf->Cell(75,6,'Alamat',1,0,'C');
     $pdf->Cell(20,6,'Status',1,1,'C');
@@ -53,9 +53,9 @@ session_start();
     }
     $kata_kunci=$_GET['kata_kunci'];
     $sql="select *
-    from anggota a
-    inner join pengguna p on p.kode_pengguna=a.kode_anggota
-    where kode_anggota like'%".$kata_kunci."%' or nama_anggota like'%".$kata_kunci."%' or email like'%".$kata_kunci."%' or status='".$status."'
+    from pelanggan a
+    inner join pengguna p on p.kodePengguna=a.kodePelanggan
+    where kodePelanggan like'%".$kata_kunci."%' or namaPelanggan like'%".$kata_kunci."%' or email like'%".$kata_kunci."%' or status='".$status."'
     ";
 
     $hasil=mysqli_query($kon,$sql);
@@ -65,10 +65,10 @@ session_start();
 
 
         $pdf->Cell(7,6,$no,1,0);
-        $pdf->Cell(13,6,$data['kode_anggota'],1,0);
-        $pdf->Cell(75,6,substr($data['nama_anggota'],0,48),1,0);
-        $pdf->Cell(40,6,$data['email'],1,0);
-        $pdf->Cell(30,6,$data['no_telp'],1,0);
+        $pdf->Cell(13,6,$data['kodePelanggan'],1,0);
+        $pdf->Cell(70,6,substr($data['namaPelanggan'],0,48),1,0);
+        $pdf->Cell(50,6,$data['email'],1,0);
+        $pdf->Cell(30,6,$data['noTelp'],1,0);
         $pdf->Cell(75,6,$data['alamat'],1,0);
         $pdf->Cell(20,6,$data['status'],1,1);
    

@@ -39,12 +39,11 @@ session_start();
                                     <tr>
                                         <th>No</th>
                                         <th>Kode</th>
-                                        <th>Judul</th>
-                                        <th>Kategori</th>
-                                        <th>Penulis</th>
-                                        <th>Penerbit</th>
-                                        <th>Jumlah Stok</th>
-                                        <th>Posisi Rak</th>
+                                        <th>Nama</th>
+                                        <th>Email</th>
+                                        <th>No Telp</th>
+                                        <th>Alamat</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -52,15 +51,19 @@ session_start();
                                     // include database
                                     include '../../../config/database.php';
                                     $kondisi="";
+                                    $status="";
+                              
+                                    if ($_GET['kata_kunci']=='aktif' or $_GET['kata_kunci']=='AKTIF'){
+                                        $status='1';
+                                    }else {
+                                        $status='0';
+                                    }
                                     $kata_kunci=$_GET['kata_kunci'];
                                     $sql="select *
-                                    from pustaka p
-                                    inner join penerbit t on t.id_penerbit=p.penerbit
-                                    inner join kategori_pustaka k on k.id_kategori_pustaka=p.kategori_pustaka
-                                    inner join penulis s on s.id_penulis=p.penulis
-                                    where p.kode_pustaka like'%".$kata_kunci."%' or p.judul_pustaka like'%".$kata_kunci."%' or nama_kategori_pustaka like'%".$kata_kunci."%' or nama_penulis like'%".$kata_kunci."%' or nama_penerbit like'%".$kata_kunci."%'
+                                    from pelanggan a
+                                    inner join pengguna p on p.kodePengguna=a.kodePelanggan
+                                    where kodePelanggan like'%".$kata_kunci."%' or namaPelanggan like'%".$kata_kunci."%' or email like'%".$kata_kunci."%' or status='".$status."'
                                     ";
-                                    
                                     $hasil=mysqli_query($kon,$sql);
                                     $no=0;
                                     $status='';
@@ -72,13 +75,21 @@ session_start();
                                 ?>
                                 <tr>
                                     <td><?php echo $no; ?></td>
-                                    <td><?php echo $data['kode_pustaka']; ?> </td>
-                                    <td><?php echo $data['judul_pustaka']; ?> </td>
-                                    <td><?php echo $data['nama_kategori_pustaka']; ?> </td>
-                                    <td><?php echo $data['nama_penulis']; ?> </td>
-                                    <td><?php echo $data['nama_penerbit']; ?> </td>
-                                    <td><?php echo $data['stok']; ?> </td>
-                                    <td><?php echo $data['rak']; ?> </td>
+                                    <td><?php echo $data['kodePelanggan']; ?> </td>
+                                    <td><?php echo $data['namaPelanggan']; ?> </td>
+                                    <td><?php echo $data['email']; ?> </td>
+                                    <td><?php echo $data['noTelp']; ?> </td>
+                                    <td><?php echo $data['alamat']; ?> </td>
+                                    <td>
+                                        <?php
+                                            if ($data['status']=='1'){
+                                                echo "Aktif";
+                                            }else {
+                                                echo "Tidak Aktif";
+                                            }
+                                        ?> 
+                                    </td>
+                                
                                 </tr>
                                 <!-- bagian akhir (penutup) while -->
                                 <?php endwhile; ?>

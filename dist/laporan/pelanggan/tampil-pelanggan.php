@@ -31,9 +31,9 @@ session_start();
                         }
                         
                         $sql="select *
-                        from anggota a
-                        inner join pengguna p on p.kode_pengguna=a.kode_anggota
-                        where kode_anggota like'%".$kata_kunci."%' or nama_anggota like'%".$kata_kunci."%' or email like'%".$kata_kunci."%' or status='".$status."'
+                        from pelanggan a
+                        inner join pengguna p on p.kodePengguna=a.kodePelanggan
+                        where kodePelanggan like'%".$kata_kunci."%' or namaPelanggan like'%".$kata_kunci."%' or email like'%".$kata_kunci."%' or status='".$status."'
                         ";
                         
                         $hasil=mysqli_query($kon,$sql);
@@ -47,10 +47,10 @@ session_start();
                     ?>
                     <tr>
                         <td><?php echo $no; ?></td>
-                        <td><?php echo $data['kode_anggota']; ?> </td>
-                        <td><?php echo $data['nama_anggota']; ?> </td>
+                        <td><?php echo $data['kodePelanggan']; ?> </td>
+                        <td><?php echo $data['namaPelanggan']; ?> </td>
                         <td><?php echo $data['email']; ?> </td>
-                        <td><?php echo $data['no_telp']; ?> </td>
+                        <td><?php echo $data['noTelp']; ?> </td>
                         <td><?php echo $data['alamat']; ?> </td>
                         <td>
                             <?php
@@ -67,9 +67,9 @@ session_start();
                     <?php endwhile; ?>
                     </tbody>
                 </table>
-            <a href="laporan/anggota/cetak-laporan.php?kata_kunci=<?php if (!empty($_POST["kata_kunci"])) echo $_POST["kata_kunci"]; ?>" target='blank' class="btn btn-primary btn-icon-split"><span class="text"><i class="fas fa-print fa-sm"></i> Cetak Invoice</span></a>
-            <a href="laporan/anggota/cetak-pdf.php?kata_kunci=<?php if (!empty($_POST["kata_kunci"])) echo $_POST["kata_kunci"]; ?>" target='blank' class="btn btn-danger btn-icon-pdf"><span class="text"><i class="fas fa-file-pdf fa-sm"></i> Export PDF</span></a>
-	        <a href="laporan/anggota/cetak-excel.php?kata_kunci=<?php if (!empty($_POST["kata_kunci"])) echo $_POST["kata_kunci"]; ?>" target='blank' class="btn btn-success btn-icon-pdf"><span class="text"><i class="fas fa-file-excel fa-sm"></i> Export Excel</span></a>
+            <a href="laporan/pelanggan/cetak-laporan.php?kata_kunci=<?php if (!empty($_POST["kata_kunci"])) echo $_POST["kata_kunci"]; ?>" target='blank' class="btn btn-primary btn-icon-split"><span class="text"><i class="fas fa-print fa-sm"></i> Cetak Invoice</span></a>
+            <a href="laporan/pelanggan/cetak-pdf.php?kata_kunci=<?php if (!empty($_POST["kata_kunci"])) echo $_POST["kata_kunci"]; ?>" target='blank' class="btn btn-danger btn-icon-pdf"><span class="text"><i class="fas fa-file-pdf fa-sm"></i> Export PDF</span></a>
+	        <a href="laporan/pelanggan/cetak-excel.php?kata_kunci=<?php if (!empty($_POST["kata_kunci"])) echo $_POST["kata_kunci"]; ?>" target='blank' class="btn btn-success btn-icon-pdf"><span class="text"><i class="fas fa-file-excel fa-sm"></i> Export Excel</span></a>
         </div>
     </div>
 </div>

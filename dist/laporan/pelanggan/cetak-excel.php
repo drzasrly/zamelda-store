@@ -8,9 +8,9 @@ session_start();
 
     //Membuat file format excel
     header("Content-type: application/vnd-ms-excel");
-    header("Content-Disposition: attachment; filename=LAPORAN ANGGOTA ".strtoupper($row['nama_aplikasi']).".xls");
+    header("Content-Disposition: attachment; filename=LAPORAN PELANGGAN ".strtoupper($row['nama_aplikasi']).".xls");
 ?>  
-<h2><center>LAPORAN ANGGOTA <?php echo strtoupper($row['nama_aplikasi']);?></center></h2>
+<h2><center>LAPORAN PELANGGAN <?php echo strtoupper($row['nama_aplikasi']);?></center></h2>
 <table border="1">
 <thead class="text-center">
     <tr>
@@ -39,9 +39,9 @@ session_start();
     $kata_kunci=$_GET['kata_kunci'];
 
     $sql="select *
-    from anggota a
-    inner join pengguna p on p.kode_pengguna=a.kode_anggota
-    where kode_anggota like'%".$kata_kunci."%' or nama_anggota like'%".$kata_kunci."%' or email like'%".$kata_kunci."%' or status='".$status."'
+    from pelanggan a
+    inner join pengguna p on p.kodePengguna=a.kodePelanggan
+    where kodePelanggan like'%".$kata_kunci."%' or namaPelanggan like'%".$kata_kunci."%' or email like'%".$kata_kunci."%' or status='".$status."'
     ";
     
     $hasil=mysqli_query($kon,$sql);
@@ -55,10 +55,10 @@ session_start();
 ?>
 <tr>
     <td><?php echo $no; ?></td>
-    <td><?php echo $data['kode_anggota']; ?> </td>
-    <td><?php echo $data['nama_anggota']; ?> </td>
+    <td><?php echo $data['kodePelanggan']; ?> </td>
+    <td><?php echo $data['namaPelanggan']; ?> </td>
     <td><?php echo $data['email']; ?> </td>
-    <td><?php echo $data['no_telp']; ?> </td>
+    <td><?php echo $data['noTelp']; ?> </td>
     <td><?php echo $data['alamat']; ?> </td>
     <td>
         <?php
