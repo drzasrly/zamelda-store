@@ -3,7 +3,7 @@
     $user = "root";
     $password = "";
 
-    $db = "zazamamaldada";
+    $db = "zamelda";
     $kon = mysqli_connect($host, $user, $password, $db);
     if (!$kon){
           die("Koneksi gagal:".mysqli_connect_error());
