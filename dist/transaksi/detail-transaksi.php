@@ -50,6 +50,8 @@
                                         $ambil = mysqli_fetch_array($query);
                                         $kodePelanggan=$ambil['kodePelanggan'];
                                         $alamatLengkap = $ambil['alamat_detail'] . ', ' . $ambil['kota'] . ', ' . $ambil['provinsi'];
+                                        $kota = $ambil['kota'];
+                                        $provinsi = $ambil['provinsi'];
                                         if (empty(trim($ambil['alamat_detail']))) {
                                             $alamatLengkap = "Alamat belum tersedia";
                                         }
@@ -180,6 +182,8 @@
                                         <?php if ($ambil['status'] == 2): ?>
                                             <button class="btn btn-sm btn-info btn-lihat-peta" 
                                                 data-alamat="<?= htmlspecialchars($alamatLengkap) ?>"
+                                                data-provinsi="<?= htmlspecialchars($provinsi) ?>"
+                                                data-kota="<?= htmlspecialchars($kota) ?>"
                                                 data-id_detail_transaksi="<?= $ambil['id_detail_transaksi'] ?>" >
                                                 Dikirim
                                             </button>
@@ -381,111 +385,164 @@
         $('#modal').modal('show');
     });
 
-
 let map = null;
 let routingControl = null;
-let sudahDimuat = false; // Flag global untuk status peta
+let sudahDimuat = false;
+
+const bandaraUtama = {
+    "Aceh": [5.5189, 95.4204], "Sumatera Utara": [3.5592, 98.6722], "Riau": [0.4608, 101.4445],
+    "Sumatera Barat": [-0.8746, 100.3529], "Lampung": [-5.242, 105.178], "Banten": [-6.1256, 106.6559],
+    "DKI Jakarta": [-6.1256, 106.6559], "Jawa Barat": [-6.5569, 106.7539], "Jawa Tengah": [-7.5167, 110.7575],
+    "DI Yogyakarta": [-7.7882, 110.4318], "Jawa Timur": [-7.3799, 112.7861], "Bali": [-8.7482, 115.1668],
+    "NTB": [-8.5613, 116.094], "Kalimantan Barat": [-0.1507, 109.4039], "Kalimantan Timur": [0.4847, 117.156],
+    "Kalimantan Selatan": [-3.4422, 114.761], "Sulawesi Selatan": [-5.0615, 119.5541], "Sulawesi Utara": [1.5493, 124.9260],
+    "Maluku": [-3.7078, 128.0895], "Papua": [-2.5766, 140.5164]
+};
+
+function getBandaraByProvinsi(provinsi) {
+    return bandaraUtama[provinsi] || null;
+}
+
+function isLuarPulauJawa(provinsi) {
+    const provinsiJawa = ["Banten", "DKI Jakarta", "Jawa Barat", "Jawa Tengah", "DI Yogyakarta", "Jawa Timur"];
+    return !provinsiJawa.includes(provinsi);
+}
 
 $(document).on('click', '.btn-lihat-peta', function () {
-    const alamatTujuan = $(this).data('alamat');
-    const id_detail_transaksi = $(this).data('id_detail_transaksi'); // ✅ Tangkap id_detail_transaksi
-    const asal = [-7.2575, 112.7521];
+    const alamat = $(this).data('alamat');
+    const kota = $(this).data('kota');
+    const provinsi = $(this).data('provinsi');
+    const id_detail_transaksi = $(this).data('id_detail_transaksi');
+
+    const asal = [-7.2575, 112.7521]; // Gudang Surabaya
+    const bandaraAsal = getBandaraByProvinsi("Jawa Timur");
+    const bandaraTujuan = getBandaraByProvinsi(provinsi);
+    const isLintasPulau = isLuarPulauJawa(provinsi);
+    const queryAlamat = `${alamat}, ${kota}, ${provinsi}, Indonesia`;
 
     $('#modalPeta').modal('show');
 
     setTimeout(() => {
         if (sudahDimuat) return;
 
-        $.getJSON(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(alamatTujuan)}`, function (data) {
-            if (data && data.length > 0) {
-                const tujuan = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+        $.getJSON(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=ID&limit=1&q=${encodeURIComponent(queryAlamat)}`, function (data) {
+            if (!data || data.length === 0) {
+                alert("Gagal menemukan lokasi tujuan.");
+                return;
+            }
 
-                map = L.map('mapPeta').setView(asal, 10);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; OpenStreetMap contributors'
-                }).addTo(map);
+            const tujuan = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+            map = L.map('mapPeta').setView(asal, 5);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
 
-                routingControl = L.Routing.control({
-                    waypoints: [L.latLng(asal), L.latLng(tujuan)],
-                    createMarker: function (i, wp, nWps) {
-                        return L.marker(wp.latLng).bindPopup(i === 0 ? "Gudang/Asal" : "Tujuan");
-                    },
-                    routeWhileDragging: false,
-                    addWaypoints: false,
-                    show: false
-                }).addTo(map);
+            const waypoints = isLintasPulau && bandaraTujuan ?
+                [L.latLng(asal), L.latLng(bandaraAsal), L.latLng(bandaraTujuan), L.latLng(tujuan)] :
+                [L.latLng(asal), L.latLng(tujuan)];
 
-                routingControl.on('routesfound', function (e) {
-                    const coords = e.routes[0].coordinates;
-                    let i = 0;
-                    let marker = L.marker(coords[0], {
-                        icon: L.icon({
-                            iconUrl: 'transaksi/motor.png',
-                            iconSize: [40, 40],
-                            iconAnchor: [20, 20]
-                        })
-                    }).addTo(map);
+            routingControl = L.Routing.control({
+                waypoints: waypoints,
+                createMarker: function (i, wp) {
+                    const popupText = (i === 0) ? "Gudang" : (i === waypoints.length - 1 ? "Tujuan" : "Transit");
+                    return L.marker(wp.latLng).bindPopup(popupText);
+                },
+                routeWhileDragging: false,
+                addWaypoints: false,
+                show: false
+            }).addTo(map);
 
-                    marker.on('click', function () {
+            routingControl.on('routesfound', function (e) {
+                const coords = e.routes[0].coordinates;
+
+                let i = 0;
+                const storageKey = 'tracking_pos_' + id_detail_transaksi;
+                const stored = JSON.parse(localStorage.getItem(storageKey));
+                if (stored && Date.now() - stored.timestamp < 15 * 60 * 1000) {
+                    i = stored.index;
+                }
+
+                const iconMotor = L.icon({ iconUrl: 'transaksi/motor.png', iconSize: [40, 40], iconAnchor: [20, 20] });
+                const iconPesawat = L.icon({ iconUrl: 'transaksi/pesawat.png', iconSize: [40, 40], iconAnchor: [20, 20] });
+                let marker = L.marker(coords[i], { icon: isLintasPulau ? iconPesawat : iconMotor }).addTo(map);
+
+                let bandaraTujuanIndex = -1;
+                if (isLintasPulau && bandaraTujuan) {
+                    bandaraTujuanIndex = coords.findIndex(c =>
+                        Math.abs(c.lat - bandaraTujuan[0]) < 0.01 && Math.abs(c.lng - bandaraTujuan[1]) < 0.01
+                    );
+                }
+
+                const anim = setInterval(() => {
+                    if (i < coords.length) {
+                        marker.setLatLng(coords[i]);
+
+                        localStorage.setItem(storageKey, JSON.stringify({ index: i, timestamp: Date.now() }));
+
+                        // Ganti dari pesawat ke motor
+                        if (i === bandaraTujuanIndex && isLintasPulau) {
+                            marker._icon.style.transition = "opacity 0.3s";
+                            marker._icon.style.opacity = 0;
+                            setTimeout(() => {
+                                marker.setIcon(iconMotor);
+                                marker._icon.style.opacity = 1;
+                                L.DomUtil.addClass(marker._icon, 'zoom-pop');
+                                L.DomUtil.addClass(marker._icon, 'rotate-360');
+                                setTimeout(() => {
+                                    L.DomUtil.removeClass(marker._icon, 'zoom-pop');
+                                    L.DomUtil.removeClass(marker._icon, 'rotate-360');
+                                }, 600);
+                            }, 300);
+                        }
+
+                        i++;
+                    } else {
+                        clearInterval(anim);
+                        localStorage.removeItem(storageKey);
+
                         Swal.fire({
-                            icon: 'question',
-                            title: 'Selesaikan Pengiriman?',
-                            text: 'Klik "Selesai" jika barang sudah diterima pelanggan.',
-                            showCancelButton: true,
-                            confirmButtonText: 'Selesai',
-                            cancelButtonText: 'Batal'
+                            icon: 'info',
+                            title: 'Barang Telah Sampai',
+                            text: 'Klik "Konfirmasi" jika barang telah diterima.',
+                            confirmButtonText: 'Konfirmasi Diterima'
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 $.post('transaksi/detail-transaksi/update-status.php', {
-                                    id_detail_transaksi: id_detail_transaksi, // ✅ Dikirim sekarang
+                                    id_detail_transaksi: id_detail_transaksi,
                                     status: '3'
-                                }, function (response) {
-                                    console.log("Respon update-status:", response);
-                                    status = '3'
-                                    Swal.fire('Berhasil!', 'Status transaksi diubah menjadi *Selesai*.', 'success')
+                                }, function () {
+                                    Swal.fire('Berhasil!', 'Transaksi telah diselesaikan.', 'success')
                                         .then(() => location.reload());
-                                }).fail(function () {
-                                    Swal.fire('Gagal!', 'Gagal mengubah status.', 'error');
                                 });
                             }
                         });
-                    });
+                    }
+                }, (isLintasPulau && i < bandaraTujuanIndex ? 2 : 10)); // Pesawat lebih cepat
+            });
 
-                    const anim = setInterval(() => {
-                        if (i < coords.length) {
-                            marker.setLatLng(coords[i]);
-                            i++;
-                        } else {
-                            clearInterval(anim);
-                            Swal.fire({
-                                icon: 'info',
-                                title: 'Barang Telah Sampai',
-                                text: 'Klik "Konfirmasi" jika barang telah diterima.',
-                                confirmButtonText: 'Konfirmasi Diterima'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    $.post('transaksi/detail-transaksi/update-status.php', {
-                                        id_detail_transaksi: id_detail_transaksi, 
-                                        status: '3'
-                                    }, function (response) {
-                                        console.log("Respon update-status:", response);
-                                        Swal.fire('Berhasil!', 'Transaksi telah diselesaikan.', 'success')
-                                            .then(() => location.reload());
-                                    }).fail(function (xhr) {
-                                        console.error("Gagal:", xhr.responseText);
-                                        Swal.fire('Gagal!', 'Terjadi kesalahan saat update status.', 'error');
-                                    });
-                                }
-                            });
-                        }
-                    }, 5);
-                });
-
-                sudahDimuat = true;
-            } else {
-                alert("Gagal menemukan lokasi tujuan.");
-            }
+            sudahDimuat = true;
         });
     }, 500);
 });
+
 </script>
+<style>
+  .rotate-360 {
+    animation: putar 0.6s linear;
+  }
+
+  @keyframes putar {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .zoom-pop {
+    animation: zoominout 0.5s ease;
+  }
+
+  @keyframes zoominout {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.5); }
+    100% { transform: scale(1); }
+  }
+</style>

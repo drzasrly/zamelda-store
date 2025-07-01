@@ -247,34 +247,62 @@ $_SESSION['total_bayar'] = $total + $ongkir;
         <input type="hidden" name="kodePelanggan" value="<?= $kodePelanggan ?>">
 
         <div class="mb-3">
-          <label class="form-label">Label Alamat (contoh: Rumah, Kantor)</label>
-          <input type="text" name="label_alamat" class="form-control" required>
-        </div>
+  <label class="form-label">Label Alamat</label>
+  <input type="text" name="label_alamat" class="form-control" required>
+</div>
 
-        <div class="mb-3">
-          <label class="form-label">Nama Penerima</label>
-          <input type="text" name="nama_penerima" class="form-control" required>
-        </div>
+<div class="mb-3">
+  <label class="form-label">Nama Penerima</label>
+  <input type="text" name="nama_penerima" class="form-control" required>
+</div>
 
-        <div class="mb-3">
-          <label class="form-label">No HP</label>
-          <input type="text" name="no_hp" class="form-control" required>
-        </div>
+<div class="mb-3">
+  <label class="form-label">No HP</label>
+  <input type="text" name="no_hp" class="form-control" required>
+</div>
 
-        <div class="mb-3">
-          <label class="form-label">Alamat Lengkap</label>
-          <textarea name="alamat_detail" class="form-control" required></textarea>
-        </div>
+<!-- ALAMAT MANUAL -->
+<div class="mb-3">
+  <label class="form-label">Detail Alamat (Jalan, RT/RW)</label>
+  <textarea name="alamat_detail_manual" class="form-control" required></textarea>
+</div>
 
-        <div class="mb-3">
-          <label class="form-label">Kota</label>
-          <input type="text" name="kota" class="form-control" required>
-        </div>
+<!-- PROVINSI -->
+<div class="mb-3">
+  <label class="form-label">Provinsi</label>
+  <select id="provinsi" name="provinsi" class="form-select" required>
+    <option value="">-- Pilih Provinsi --</option>
+  </select>
+</div>
 
-        <div class="mb-3">
-          <label class="form-label">Provinsi</label>
-          <input type="text" name="provinsi" class="form-control" required>
-        </div>
+<!-- KOTA -->
+<div class="mb-3">
+  <label class="form-label">Kota/Kabupaten</label>
+  <select id="kota" name="kota" class="form-select" required>
+    <option value="">-- Pilih Kota --</option>
+  </select>
+</div>
+
+<!-- KECAMATAN -->
+<div class="mb-3">
+  <label class="form-label">Kecamatan</label>
+  <select id="kecamatan" class="form-select" required>
+    <option value="">-- Pilih Kecamatan --</option>
+  </select>
+</div>
+
+<!-- KELURAHAN -->
+<div class="mb-3">
+  <label class="form-label">Kelurahan</label>
+  <select id="kelurahan" class="form-select" required>
+    <option value="">-- Pilih Kelurahan --</option>
+  </select>
+</div>
+
+<!-- HIDDEN COMBINED FIELD -->
+<input type="hidden" name="alamat_detail" id="alamat_detail">
+
+
       </div>
       <div class="modal-footer">
         <button type="submit" name="tambah_alamat" class="btn btn-success">Simpan Alamat</button>
@@ -320,6 +348,82 @@ function pilihAlamat(radio) {
 </script>
 
 </script>
+<script>
+function toTitleCase(str) {
+  return str.toLowerCase().split(' ').map(function(word) {
+    if (["dan", "di", "ke", "dari", "yang", "untuk"].includes(word)) {
+      return word;
+    }
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  }).join(' ');
+}
+
+function removePrefixKotaKabupaten(name) {
+  return name.replace(/^(Kota|Kabupaten)\s+/i, '').trim();
+}
+
+$(document).ready(function () {
+    $.getJSON("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json", function(data) {
+        data.forEach(function (prov) {
+            const provName = toTitleCase(prov.name);
+            $('#provinsi').append(`<option value="${provName}" data-id="${prov.id}">${provName}</option>`);
+        });
+    });
+
+    $('#provinsi').on('change', function () {
+        const id = $(this).find(':selected').data('id');
+        $('#kota').html('<option>Loading...</option>');
+        $('#kecamatan').html('<option value="">-- Pilih Kecamatan --</option>');
+        $('#kelurahan').html('<option value="">-- Pilih Kelurahan --</option>');
+
+        $.getJSON(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${id}.json`, function (data) {
+            $('#kota').html('<option value="">-- Pilih Kota --</option>');
+            data.forEach(kota => {
+                const namaKota = toTitleCase(removePrefixKotaKabupaten(kota.name));
+                $('#kota').append(`<option value="${namaKota}" data-id="${kota.id}">${namaKota}</option>`);
+            });
+        });
+    });
+
+    $('#kota').on('change', function () {
+        const id = $(this).find(':selected').data('id');
+        $('#kecamatan').html('<option>Loading...</option>');
+        $('#kelurahan').html('<option value="">-- Pilih Kelurahan --</option>');
+
+        $.getJSON(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${id}.json`, function (data) {
+            $('#kecamatan').html('<option value="">-- Pilih Kecamatan --</option>');
+            data.forEach(kec => {
+                const namaKec = toTitleCase(kec.name);
+                $('#kecamatan').append(`<option value="${namaKec}" data-id="${kec.id}">${namaKec}</option>`);
+            });
+        });
+    });
+
+    $('#kecamatan').on('change', function () {
+        const id = $(this).find(':selected').data('id');
+        $('#kelurahan').html('<option>Loading...</option>');
+
+        $.getJSON(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${id}.json`, function (data) {
+            $('#kelurahan').html('<option value="">-- Pilih Kelurahan --</option>');
+            data.forEach(kel => {
+                const namaKel = toTitleCase(kel.name);
+                $('#kelurahan').append(`<option value="${namaKel}">${namaKel}</option>`);
+            });
+        });
+    });
+
+    $('form').on('submit', function () {
+        const jalan = toTitleCase($('textarea[name="alamat_detail_manual"]').val());
+        const kel = toTitleCase($('#kelurahan').val());
+        const kec = toTitleCase($('#kecamatan').val());
+        const kota = toTitleCase($('#kota').val());
+        const prov = toTitleCase($('#provinsi').val());
+
+        $('#alamat_detail').val(`${jalan}, Kel. ${kel}, Kec. ${kec}, ${kota}, ${prov}`);
+    });
+});
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
